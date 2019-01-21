@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">BuyBuyGo</string>
+
+    <string name="facebook_app_id">351261298797218</string>
+    <string name="fb_login_protocol_scheme">fb351261298797218</string>
+
+</resources>
