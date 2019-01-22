@@ -9,7 +9,6 @@ import timber.log.Timber
 import android.content.pm.PackageManager
 import android.util.Base64
 import android.util.Log
-import android.view.WindowManager
 import com.bumptech.glide.Glide
 import com.facebook.*
 import com.facebook.login.LoginManager
@@ -26,6 +25,7 @@ class LoginActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        Timber.d("hash " + getHash())
         init()
     }
 
@@ -34,13 +34,14 @@ class LoginActivity : BaseActivity() {
         Glide.with(this)
                 .load(R.drawable.buy_for_me)
                 .into(backgroundImageView)
-        callbackManager = CallbackManager.Factory.create();
-
+        callbackManager = CallbackManager.Factory.create()
+//        loginButton.setReadPermissions(arrayListOf("email"))
         loginButton.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
             override fun onSuccess(result: LoginResult) {
                 result.let {
-                    Timber.d("result ${result.accessToken.token}")
+                    Timber.d("result ${result.accessToken.token} ${result.accessToken.dataAccessExpirationTime}")
                     loginPresenter!!.onLoginSuccess(result.accessToken.token)
+                    result.accessToken.dataAccessExpirationTime
                 }
             }
 
