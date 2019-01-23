@@ -40,8 +40,9 @@ class LoginActivity : BaseActivity() {
             override fun onSuccess(result: LoginResult) {
                 result.let {
                     Timber.d("result ${result.accessToken.token} ${result.accessToken.dataAccessExpirationTime}")
-                    loginPresenter!!.onLoginSuccess(result.accessToken.token)
-                    result.accessToken.dataAccessExpirationTime
+                    loginPresenter!!.onLoginSuccess(result.accessToken.token
+                            , result.accessToken.dataAccessExpirationTime.toString())
+
                 }
             }
 

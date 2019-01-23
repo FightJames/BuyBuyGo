@@ -4,7 +4,16 @@
     <string name="facebook_app_id">326735094614431</string>
     <string name="fb_login_protocol_scheme">fb3326735094614431</string>
 
+    //seller
+    //bottom navigation
+    <string name="commodity">Commodity</string>
+    <string name="Live">LIVE</string>
+    <string name="Order">Order</string>
+    <string name="uploadCommodity">UploadCommodity</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    //buyer
 
 </resources>

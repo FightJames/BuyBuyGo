@@ -3,6 +3,7 @@ package com.techapp.james.buybuygo.presenter
 import android.app.Activity
 import android.content.Intent
 import com.techapp.james.buybuygo.view.buyer.BuyerActivity
+import com.techapp.james.buybuygo.view.seller.SellerActivity
 
 class ChoosePresenter {
     val activity: Activity
@@ -17,6 +18,7 @@ class ChoosePresenter {
     }
 
     fun chooseSeller() {
-
+        var i = Intent(activity, SellerActivity::class.java)
+        activity.startActivity(i)
     }
 }
