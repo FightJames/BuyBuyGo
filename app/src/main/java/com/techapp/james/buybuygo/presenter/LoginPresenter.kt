@@ -17,7 +17,8 @@ class LoginPresenter {
         Configure.FB_EXPIRATIONDATE = expirationDate
         var i = Intent(activity, ChooseActivity::class.java)
         activity.startActivity(i)
-//        var t = Test()
-//        t.testRecordUser()
+        var t = Test()
+//        t.testRecordUser(activity.applicationContext, t::testUpCommodity)
+//        t.testUpCommodity(activity.applicationContext)
     }
 }

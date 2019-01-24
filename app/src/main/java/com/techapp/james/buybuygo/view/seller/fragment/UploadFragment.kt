@@ -41,7 +41,7 @@ class UploadFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_upload, container, false)
+        return inflater.inflate(R.layout.seller_fragment_upload, container, false)
     }
 
     // TODO: Rename method, update argument and hook method into UI event

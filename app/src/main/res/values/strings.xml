@@ -7,10 +7,24 @@
     //seller
     //bottom navigation
     <string name="commodity">Commodity</string>
-    <string name="Live">LIVE</string>
+    <string name="Live">Live</string>
     <string name="Order">Order</string>
     <string name="uploadCommodity">UploadCommodity</string>
+    // commodity
+    //title icon
+    <string name="addCommodity">Add</string>
+    //Field
+    <string name="name">name</string>
+    <string name="description">description</string>
+    <string name="stock">stock</string>
+    <string name="cost">cost</string>
+    <string name="unit_price">unit price</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 
+    //Live
+    //title icon
+    <string name="search">Search</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 

@@ -1,6 +1,8 @@
 package com.techapp.james.buybuygo.model.retrofitManager
 
 import android.content.Context
+import android.net.Uri
+import android.support.v4.content.res.ResourcesCompat
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.data.Commodity
 import com.techapp.james.buybuygo.presenter.Configure
@@ -14,10 +16,15 @@ import timber.log.Timber
 import java.io.BufferedInputStream
 import java.io.File
 import java.io.FileOutputStream
+import java.net.HttpURLConnection
+import android.graphics.BitmapFactory
+import android.graphics.Bitmap
+import java.io.IOException
+
 
 class Test {
 
-    fun testRecordUser() {
+    fun testRecordUser(context: Context, testT: ((context: Context) -> Unit)) {
         var root = JSONObject()
         root.put("expirationDate", Configure.FB_EXPIRATIONDATE)
         var requestBody = RequestBody.create(MediaType.parse("application/json"), root.toString())
@@ -31,6 +38,7 @@ class Test {
                     Timber.d(it.body().toString())
 //            Timber.d(r.errorBody()!!.string())
                     Timber.d(it.headers().toString())
+                    testT.invoke(context)
                 }
                 .doOnError {
                     Timber.d(it.message)
@@ -39,51 +47,146 @@ class Test {
 
     fun testUpCommodity(context: Context) {
 
-        var f = getFile(context)
+        var f = saveBitmapToFile(context, Bitmap.CompressFormat.PNG, 100)
+        Timber.d(context.packageName)
+//        val fileUri = Uri.parse("android.resource://" + context.packageName + "/" + R.raw.test)
+//        fileUri
+//        var f = File(fileUri.path)
+
         val requestFile = RequestBody.create(
                 MediaType.get("image/png"), f)
         val body = MultipartBody.Part.createFormData("images", "James", requestFile)
 
-        var c = Commodity("hello", "des", 123, 100, 2, f)
+        var c = Commodity("hello", "des", 123, 100, 2, Uri.fromFile(f))
 
         val name = createPartFromString(c.name)
         val description = createPartFromString(c.description)
         val stock = createPartFromString(c.stock.toString())
         val cost = createPartFromString(c.cost.toString())
+        Timber.d(c.unit_price.toString())
         val unit_pirce = createPartFromString(c.unit_price.toString())
         var map = HashMap<String, RequestBody>()
+
         map.put("name", name)
         map.put("description", description)
         map.put("stock", stock)
         map.put("cost", cost)
-        map.put("unit_pirce", unit_pirce)
+        map.put("unit_price", unit_pirce)
+
+
+        //test json
+
+//        var root = JSONObject()
+//        root.put("name", name)
+//        root.put("description", description)
+//        root.put("stock", stock)
+//        root.put("cost", cost)
+//        root.put("unit_pirce", unit_pirce)
+//        var requestBody = RequestBody.create(MediaType.parse("application/json"), root.toString())
+
 
         var raySeller = RetrofitManager.getInstance().getRaySeller()
-        Thread({
-            Timber.d(Configure.FB_ACESS_TOKEN)
-            var s = raySeller.insertItem("Bearer " + Configure.FB_ACESS_TOKEN, map, body)
-            var r = s.execute()
+        Timber.d(Configure.FB_ACESS_TOKEN)
+//        var s = raySeller.insertItem("Bearer " + Configure.FB_ACESS_TOKEN, map, body)
 
-            Timber.d(r.message())
-            Timber.d(r.isSuccessful.toString())
-            Timber.d(r.body().toString())
-            Timber.d(r.errorBody()!!.string())
-            Timber.d(r.headers().toString())
-        }).start()
+        var s = raySeller.insertItem("Bearer " + Configure.FB_ACESS_TOKEN, map, body)
 
+//        Timber.d("*** " + s.request().body()?.contentType()?.type())
+        s.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSuccess {
+                    Timber.d(it.message())
+                    Timber.d(it.isSuccessful.toString())
+                    Timber.d(it.body().toString())
+                    it.errorBody()?.let {
+                        Timber.d(it.string())
+                    }
+                    Timber.d(it.headers().toString())
+                }
+                .doOnError { }
+                .subscribe()
+
+
+//        map.put("name", name)
+//        map.put("description", description)
+//        map.put("stock", stock)
+//        map.put("cost", cost)
+//        map.put("unit_pirce", unit_pirce)
+//
+//        val requestBody: RequestBody = MultipartBody.Builder()
+//                .setType(MultipartBody.FORM)
+//                .addFormDataPart("name", name.toString())
+//                .addFormDataPart("description", description.toString())
+//                .addFormDataPart("stock", stock.toString())
+//                .addFormDataPart("cost", cost.toString())
+//                .addFormDataPart("unit_pirce", unit_pirce.toString())
+//                .addFormDataPart("images", "Ray", requestFile)
+//                .build()
+//        var ob = raySeller.insertItem("Bearer " + Configure.FB_ACESS_TOKEN, requestBody)
+//        ob.subscribeOn(Schedulers.newThread())
+//                .observeOn(AndroidSchedulers.mainThread())
+//
+//                .doOnSuccess {
+//                    Timber.d(it.message())
+//                    Timber.d(it.isSuccessful.toString())
+//                    Timber.d(it.body().toString())
+//                    it.errorBody()?.let {
+//                        Timber.d(it.string())
+//                    }
+//                    Timber.d(it.headers().toString())
+//                }
+//                .doOnError { }
+//                .subscribe()
+//
+//        var obPart = raySeller.insertItem("Bearer " + Configure.FB_ACESS_TOKEN, c.name, c.description, c.stock, c.cost, c.unit_price)
+//
+//        obPart.subscribeOn(Schedulers.newThread())
+//                .observeOn(AndroidSchedulers.mainThread())
+//
+//                .doOnSuccess {
+//                    Timber.d(it.message())
+//                    Timber.d(it.isSuccessful.toString())
+//                    Timber.d(it.body().toString())
+//                    it.errorBody()?.let {
+//                        Timber.d(it.string())
+//                    }
+//                    Timber.d(it.headers().toString())
+//                }
+//                .doOnError { }
+////                .subscribe()
     }
 
-    fun createPartFromString(des: String): RequestBody {
+    protected fun createPartFromString(des: String): RequestBody {
         return RequestBody.create(okhttp3.MultipartBody.FORM, des)
     }
 
-    fun getFile(context: Context): File {
-        var f = File(context.getCacheDir(), "Jjjj.png")
-        f.createNewFile()
-        var bis = BufferedInputStream(context.getResources().openRawResource(R.raw.test))
-        val buffer = ByteArray(bis.available())
-        var fout = FileOutputStream(f)
-        fout.write(buffer)
-        return f
+
+    fun saveBitmapToFile(context: Context,
+                         format: Bitmap.CompressFormat, quality: Int): File {
+
+        val bm = BitmapFactory.decodeResource(context.getResources(), R.drawable.test)
+        val imageFile = File(context.getCacheDir(), "Jjjj.png")
+        var fos: FileOutputStream? = null
+        try {
+            fos = FileOutputStream(imageFile)
+
+            bm.compress(format, quality, fos)
+
+            fos.close()
+
+            return imageFile
+        } catch (e: IOException) {
+            Timber.e("app " + e.message.toString())
+            if (fos != null) {
+                try {
+                    fos.close()
+                } catch (e1: IOException) {
+                    e1.printStackTrace()
+                }
+
+            }
+        }
+
+        return imageFile
     }
 }

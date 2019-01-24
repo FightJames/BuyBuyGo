@@ -14,12 +14,13 @@ class RetrofitManager {
     private var retrofit: Retrofit
 
     constructor() {
+        //https://facebookoptimizedlivestreamsellingsystem.rayawesomespace.space/api/
         var logging = HttpLoggingInterceptor()
         logging.level = HttpLoggingInterceptor.Level.BODY
         var httpClient = OkHttpClient.Builder()
         httpClient.addInterceptor(logging)
         retrofit = Retrofit.Builder()
-                .baseUrl("https://facebookoptimizedlivestreamsellingsystem.rayawesomespace.space/api/")
+                .baseUrl("https://facebookoptimizedlivestreamsellingsystem.rayawesomespace.space/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(httpClient.build())

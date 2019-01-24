@@ -1,12 +1,13 @@
 package com.techapp.james.buybuygo.view.seller
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
-import android.view.MotionEvent
+import android.view.Menu
 import com.techapp.james.buybuygo.R
-import com.techapp.james.buybuygo.view.seller.fragment.CommodityFragment
+import com.techapp.james.buybuygo.view.seller.fragment.commodity.CommodityFragment
 import com.techapp.james.buybuygo.view.seller.fragment.LiveFragment
 import com.techapp.james.buybuygo.view.seller.fragment.OrderFragment
 import com.techapp.james.buybuygo.view.seller.fragment.UploadFragment
@@ -23,7 +24,7 @@ class SellerActivity : AppCompatActivity() {
         var uploadFragment = UploadFragment.newInstance()
         fList = arrayListOf<Fragment>(commodityFragment, LiveFragment, orderFragment, uploadFragment)
 
-        viewPagerRoot.adapter = ContentPagerAdapter(fList, supportFragmentManager)
+        viewPagerRoot.adapter = ContentPagerAdapter(fList as List<Fragment>, supportFragmentManager)
         viewPagerRoot.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(p0: Int) {
             }
@@ -40,5 +41,15 @@ class SellerActivity : AppCompatActivity() {
             viewPagerRoot.currentItem = it.order
             true
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+
+        return super.onPrepareOptionsMenu(menu)
     }
 }
