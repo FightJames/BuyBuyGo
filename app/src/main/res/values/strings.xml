@@ -10,10 +10,11 @@
     <string name="Live">Live</string>
     <string name="Order">Order</string>
     <string name="uploadCommodity">UploadCommodity</string>
-    // commodity
+    // Commodity Fragment
     //title icon
     <string name="addCommodity">Add</string>
-    //Field
+    //Dialog
+    //Create ,Information Field
     <string name="name">name</string>
     <string name="description">description</string>
     <string name="stock">stock</string>
@@ -21,8 +22,12 @@
     <string name="unit_price">unit price</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="modify">Modify</string>
+    //RecyclerView Item
+    <string name="push">Push</string>
 
-    //Live
+
+    //Live Fragment
     //title icon
     <string name="search">Search</string>
     <!-- TODO: Remove or change this placeholder text -->

@@ -3,6 +3,9 @@ package com.techapp.james.buybuygo.model.retrofitManager
 import com.techapp.james.buybuygo.presenter.Configure
 import io.reactivex.Single
 import bolts.Task
+import com.techapp.james.buybuygo.model.data.Wrapper
+import io.reactivex.SingleObserver
+import io.reactivex.SingleOnSubscribe
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -22,5 +25,6 @@ interface RaySeller {
 
     @Headers("X-Requested-With: XMLHttpRequest")
     @GET("/api/items")
-    fun getUploadedItem(@Header("Authorization") token: String): Single<Response<ResponseBody>>
+    fun getUploadedItem(@Header("Authorization") token: String): Single<Response<Wrapper>>
+
 }

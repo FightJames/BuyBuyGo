@@ -55,9 +55,9 @@ class Test {
 
         val requestFile = RequestBody.create(
                 MediaType.get("image/png"), f)
-        val body = MultipartBody.Part.createFormData("images", "James", requestFile)
+        val body = MultipartBody.Part.createFormData("imageUri", "James", requestFile)
 
-        var c = Commodity("hello", "des", 123, 100, 2, Uri.fromFile(f))
+        var c = Commodity("hello", "des", 123, 100, 2, Uri.fromFile(f).toString())
 
         val name = createPartFromString(c.name)
         val description = createPartFromString(c.description)
@@ -120,7 +120,7 @@ class Test {
 //                .addFormDataPart("stock", stock.toString())
 //                .addFormDataPart("cost", cost.toString())
 //                .addFormDataPart("unit_pirce", unit_pirce.toString())
-//                .addFormDataPart("images", "Ray", requestFile)
+//                .addFormDataPart("imageUri", "Ray", requestFile)
 //                .build()
 //        var ob = raySeller.insertItem("Bearer " + Configure.FB_ACESS_TOKEN, requestBody)
 //        ob.subscribeOn(Schedulers.newThread())
@@ -154,6 +154,29 @@ class Test {
 //                }
 //                .doOnError { }
 ////                .subscribe()
+    }
+
+    fun testGetItems(context: Context) {
+        var raySeller = RetrofitManager.getInstance().getRaySeller()
+        Timber.d(Configure.FB_ACESS_TOKEN)
+        var sW = raySeller.getUploadedItem("Bearer " + Configure.FB_ACESS_TOKEN)
+        sW.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSuccess {
+                    var wrapper = it.body()
+                    wrapper?.let {
+                        Timber.d(it.result.toString())
+                        Timber.d(it.response.size.toString())
+                        var data = it.response
+                        for (e: Commodity in data) {
+                            Timber.d(e.name)
+                            Timber.d(e.imageUri)
+                        }
+                    }
+                }
+                .doOnError {
+                    Timber.d(it.message)
+                }.subscribe()
     }
 
     protected fun createPartFromString(des: String): RequestBody {

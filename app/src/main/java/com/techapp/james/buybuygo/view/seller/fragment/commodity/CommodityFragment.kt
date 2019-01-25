@@ -14,9 +14,17 @@ import android.support.v7.widget.GridLayoutManager
 import android.view.*
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.data.Commodity
+import com.techapp.james.buybuygo.model.retrofitManager.RetrofitManager
+import com.techapp.james.buybuygo.presenter.Configure
 import com.theartofdev.edmodo.cropper.CropImage
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
+import io.reactivex.subscribers.ResourceSubscriber
 import kotlinx.android.synthetic.main.fragment_commodity.*
 import kotlinx.android.synthetic.main.seller_fragment_commodity_dialog.view.*
+import org.reactivestreams.Subscriber
+import org.reactivestreams.Subscription
 import timber.log.Timber
 import java.io.File
 
@@ -24,7 +32,9 @@ import java.io.File
 class CommodityFragment : Fragment() {
     private var dialog: Dialog? = null
     private var customerView: View? = null
-    lateinit var fileUri: Uri
+    val disposeList = ArrayList<Disposable>()
+    var dataList = ArrayList<Commodity>()
+    private lateinit var fileUri: Uri
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -56,15 +66,33 @@ class CommodityFragment : Fragment() {
         init()
     }
 
-
     override fun onDetach() {
         super.onDetach()
         dialog = null
     }
 
     private fun init() {
+        var raySeller = RetrofitManager.getInstance().getRaySeller()
+        var gW = raySeller.getUploadedItem("Bearer " + Configure.FB_ACESS_TOKEN)
+
+        gW.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSuccess {
+                    var commodityList = it.body()?.response
+                    commodityList?.let {
+                        if (commodityList.size != 0) {
+                            itemRecyclerView.adapter?.let {
+                                (it as ListAdapter).dList = commodityList
+                                it.notifyDataSetChanged()
+                            }
+                        }
+                    }
+                }
+                .subscribe()
+// gW cancel   resarch
         itemRecyclerView.layoutManager = GridLayoutManager(this.activity, 3, GridLayoutManager.VERTICAL, false)
-        itemRecyclerView.adapter = ListAdapter(arrayListOf("1", "2"), this.activity!!, this::onCreateDialog)
+//        itemRecyclerView.addItemDecoration(GItemDecoration(this.activity!!.applicationContext, R.dimen.grid_column))
+        itemRecyclerView.adapter = ListAdapter(dataList, this.activity!!, this::onCreateDialog)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -85,13 +113,12 @@ class CommodityFragment : Fragment() {
         }
     }
 
-
     private fun onCreateDialog(): Dialog {
         return activity?.let {
             val builder = AlertDialog.Builder(it)
             customerView = layoutInflater.inflate(R.layout.seller_fragment_commodity_dialog, null)
             customerView!!.commodityImageView.setOnClickListener {
-                fileUri = createImageFileUri("input")
+                fileUri = createImageFileUri("cacheImage")
                 var i = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                 i.putExtra(MediaStore.EXTRA_OUTPUT, fileUri)
                 startActivityForResult(i, CAMERA_RESULT)
@@ -120,11 +147,11 @@ class CommodityFragment : Fragment() {
                 it.stockField.setText(commodity.stock)
                 it.costField.setText(commodity.cost)
                 it.unitPriceField.setText(commodity.unit_price)
-                it.commodityImageView.setImageURI(commodity.images)
+                it.commodityImageView.setImageURI(Uri.parse(commodity.imageUri))
             }
 
             customerView!!.commodityImageView.setOnClickListener {
-                fileUri = createImageFileUri("input")
+                fileUri = createImageFileUri("cacheImage")
                 var i = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                 i.putExtra(MediaStore.EXTRA_OUTPUT, fileUri)
                 startActivityForResult(i, CAMERA_RESULT)
@@ -141,6 +168,11 @@ class CommodityFragment : Fragment() {
                             })
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        disposeList
     }
 
     companion object {
