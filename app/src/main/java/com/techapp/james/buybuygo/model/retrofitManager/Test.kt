@@ -19,7 +19,13 @@ import java.io.FileOutputStream
 import java.net.HttpURLConnection
 import android.graphics.BitmapFactory
 import android.graphics.Bitmap
+import io.reactivex.Single
 import java.io.IOException
+import io.reactivex.internal.disposables.DisposableHelper.isDisposed
+import io.reactivex.observers.DisposableSingleObserver
+import io.reactivex.disposables.Disposable
+
+
 
 
 class Test {
@@ -209,7 +215,9 @@ class Test {
 
             }
         }
-
         return imageFile
     }
+   private fun testRx(){
+
+   }
 }

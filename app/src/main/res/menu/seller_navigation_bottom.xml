@@ -22,4 +22,9 @@
         android:orderInCategory="3"
         android:title="@string/Order" />
 
+    <item
+        android:id="@+id/action_Info"
+        android:icon="@drawable/ic_person_black_24dp"
+        android:orderInCategory="4"
+        android:title="@string/userInfo" />
 </menu>

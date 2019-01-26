@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_Live"
+        android:icon="@drawable/ic_live_black_24dp"
+        android:orderInCategory="0"
+        android:title="@string/Live" />
+
+    <item
+        android:id="@+id/action_Order"
+        android:icon="@drawable/ic_order_color_black_24dp"
+        android:orderInCategory="1"
+        android:title="@string/Order" />
+
+    <item
+        android:id="@+id/action_Info"
+        android:icon="@drawable/ic_person_black_24dp"
+        android:orderInCategory="2"
+        android:title="@string/userInfo" />
+</menu>

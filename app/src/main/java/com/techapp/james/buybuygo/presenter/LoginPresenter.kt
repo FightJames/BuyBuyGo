@@ -39,6 +39,9 @@ class LoginPresenter {
         var result = rayCommon.recordUser("Bearer " + Configure.FB_ACESS_TOKEN, requestBody)
         result.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe {
+
+                }
                 .doOnSuccess {}
                 .doOnError {}
                 .subscribe()

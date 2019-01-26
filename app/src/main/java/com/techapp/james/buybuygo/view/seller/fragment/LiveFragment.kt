@@ -37,6 +37,8 @@ class LiveFragment : Fragment() {
         inflater.inflate(R.menu.seller_live, menu)
         var searchItem = menu!!.findItem(R.id.search)
         var searchView: SearchView = searchItem.actionView as SearchView
+        searchView.isSubmitButtonEnabled = true
+        searchView.queryHint = "Give Me a FB Live Url"
         searchView.setIconifiedByDefault(true)
         searchView.maxWidth = Integer.MAX_VALUE
         searchView.setOnQueryTextListener(

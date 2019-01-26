@@ -27,6 +27,7 @@ import org.reactivestreams.Subscriber
 import org.reactivestreams.Subscription
 import timber.log.Timber
 import java.io.File
+import android.app.ProgressDialog
 
 
 class CommodityFragment : Fragment() {
@@ -78,6 +79,7 @@ class CommodityFragment : Fragment() {
         gW.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSuccess {
+                    loadItemProgressBar.visibility = View.GONE
                     var commodityList = it.body()?.response
                     commodityList?.let {
                         if (commodityList.size != 0) {
@@ -87,6 +89,9 @@ class CommodityFragment : Fragment() {
                             }
                         }
                     }
+                }
+                .doOnSubscribe {
+                    loadItemProgressBar.visibility = View.VISIBLE
                 }
                 .subscribe()
 // gW cancel   resarch

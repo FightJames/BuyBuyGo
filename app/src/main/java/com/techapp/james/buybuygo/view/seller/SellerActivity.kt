@@ -18,6 +18,7 @@ class SellerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_seller)
+
         var commodityFragment = CommodityFragment.newInstance()
         var LiveFragment = LiveFragment.newInstance()
         var orderFragment = OrderFragment.newInstance()

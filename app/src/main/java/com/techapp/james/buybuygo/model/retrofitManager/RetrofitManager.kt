@@ -20,7 +20,7 @@ class RetrofitManager {
         var httpClient = OkHttpClient.Builder()
         httpClient.addInterceptor(logging)
         retrofit = Retrofit.Builder()
-                .baseUrl("https://facebookoptimizedlivestreamsellingsystem.rayawesomespace.space/")
+                .baseUrl("https://facebookoptimizedlivestreamsellingsystem.rayawesomespace.space/api/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(httpClient.build())

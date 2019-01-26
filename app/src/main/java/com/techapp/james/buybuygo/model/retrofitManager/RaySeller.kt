@@ -3,6 +3,7 @@ package com.techapp.james.buybuygo.model.retrofitManager
 import com.techapp.james.buybuygo.presenter.Configure
 import io.reactivex.Single
 import bolts.Task
+import com.techapp.james.buybuygo.model.data.Commodity
 import com.techapp.james.buybuygo.model.data.Wrapper
 import io.reactivex.SingleObserver
 import io.reactivex.SingleOnSubscribe
@@ -17,14 +18,14 @@ import retrofit2.http.*
 interface RaySeller {
     //if this(Headers) annotation include same key-value, it will override other annotation header.
     @Headers("X-Requested-With: XMLHttpRequest")
-    @POST("/api/items")
+    @POST("items")
     //this annotation will provide a header for you
     @Multipart
     fun insertItem(@Header("Authorization") token: String, @PartMap() partMap: Map<String, @JvmSuppressWildcards RequestBody>, @Part file: MultipartBody.Part): Single<Response<ResponseBody>>
 
 
     @Headers("X-Requested-With: XMLHttpRequest")
-    @GET("/api/items")
-    fun getUploadedItem(@Header("Authorization") token: String): Single<Response<Wrapper>>
+    @GET("items")
+    fun getUploadedItem(@Header("Authorization") token: String): Single<Response<Wrapper<ArrayList<Commodity>>>>
 
 }

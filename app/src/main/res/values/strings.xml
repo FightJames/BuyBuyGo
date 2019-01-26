@@ -4,6 +4,9 @@
     <string name="facebook_app_id">326735094614431</string>
     <string name="fb_login_protocol_scheme">fb3326735094614431</string>
 
+    //common
+    <string name="userInfo">UserInfo</string>
+
     //seller
     //bottom navigation
     <string name="commodity">Commodity</string>
