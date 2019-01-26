@@ -28,6 +28,8 @@ import org.reactivestreams.Subscription
 import timber.log.Timber
 import java.io.File
 import android.app.ProgressDialog
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 
 
 class CommodityFragment : Fragment() {
@@ -74,21 +76,28 @@ class CommodityFragment : Fragment() {
 
     private fun init() {
         var raySeller = RetrofitManager.getInstance().getRaySeller()
-        var gW = raySeller.getUploadedItem("Bearer " + Configure.FB_ACESS_TOKEN)
+        var gW = raySeller.getUploadedItem(Configure.RAY_ACESS_TOKEN)
 
         gW.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSuccess {
                     loadItemProgressBar.visibility = View.GONE
-                    var commodityList = it.body()?.response
-                    commodityList?.let {
-                        if (commodityList.size != 0) {
-                            itemRecyclerView.adapter?.let {
-                                (it as ListAdapter).dList = commodityList
-                                it.notifyDataSetChanged()
+                    var commodityWrapper = it.body()
+                    Timber.d("+++ " + it.body()!!.response.size)
+                    if (commodityWrapper!!.result) {
+                        var commodityList = commodityWrapper.response
+                        commodityList?.let {
+                            if (commodityList.size != 0) {
+                                itemRecyclerView.adapter?.let {
+                                    (it as ListAdapter).dList = commodityList
+                                    it.notifyDataSetChanged()
+                                }
                             }
                         }
                     }
+                }
+                .doOnError {
+                    Timber.d("error  " + it.message)
                 }
                 .doOnSubscribe {
                     loadItemProgressBar.visibility = View.VISIBLE

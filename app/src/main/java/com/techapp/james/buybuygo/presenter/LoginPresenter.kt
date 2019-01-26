@@ -40,9 +40,12 @@ class LoginPresenter {
         result.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe {
-
+                    Configure.RAY_ACESS_TOKEN = "Bearer ${Configure.FB_ACESS_TOKEN}"
                 }
-                .doOnSuccess {}
+                .doOnSuccess {
+//                    var test = Test()
+//                    test.testGetUser()
+                }
                 .doOnError {}
                 .subscribe()
     }

@@ -15,6 +15,8 @@ import com.facebook.login.LoginManager
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.presenter.LoginPresenter
 import com.techapp.james.buybuygo.view.BaseActivity
+import io.reactivex.*
+import io.reactivex.functions.BiFunction
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
@@ -35,14 +37,14 @@ class LoginActivity : BaseActivity() {
                 .load(R.drawable.buy_for_me)
                 .into(backgroundImageView)
         callbackManager = CallbackManager.Factory.create()
-//        loginButton.setReadPermissions(arrayListOf("email"))
+        loginButton.setReadPermissions(arrayListOf("email"))
         loginButton.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
             override fun onSuccess(result: LoginResult) {
                 result.let {
                     Timber.d("result ${result.accessToken.token} ${result.accessToken.dataAccessExpirationTime}")
+
                     loginPresenter!!.onLoginSuccess(result.accessToken.token
                             , result.accessToken.dataAccessExpirationTime.toString())
-
                 }
             }
 

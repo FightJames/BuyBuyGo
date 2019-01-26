@@ -38,6 +38,7 @@ class RetrofitManager {
         }
     }
 
-    fun getRaySeller() = retrofit.create(RaySeller::class.java)
     fun getRayCommon() = retrofit.create(RayCommon::class.java)
+    fun getRaySeller() = retrofit.create(RaySeller::class.java)
+    fun getRayBuyer() = retrofit.create(RayBuyer::class.java)
 }

@@ -2,7 +2,6 @@ package com.techapp.james.buybuygo.model.retrofitManager
 
 import android.content.Context
 import android.net.Uri
-import android.support.v4.content.res.ResourcesCompat
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.data.Commodity
 import com.techapp.james.buybuygo.presenter.Configure
@@ -13,23 +12,24 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.json.JSONObject
 import timber.log.Timber
-import java.io.BufferedInputStream
 import java.io.File
 import java.io.FileOutputStream
-import java.net.HttpURLConnection
 import android.graphics.BitmapFactory
 import android.graphics.Bitmap
+import com.techapp.james.buybuygo.model.data.Recipients
+import com.techapp.james.buybuygo.model.data.User
+import com.techapp.james.buybuygo.model.data.Wrapper
 import io.reactivex.Single
+import io.reactivex.SingleEmitter
+import io.reactivex.SingleOnSubscribe
+import io.reactivex.flowables.ConnectableFlowable
 import java.io.IOException
-import io.reactivex.internal.disposables.DisposableHelper.isDisposed
-import io.reactivex.observers.DisposableSingleObserver
-import io.reactivex.disposables.Disposable
-
-
+import io.reactivex.functions.BiFunction
+import retrofit2.Response
 
 
 class Test {
-
+    var retrofit = RetrofitManager.getInstance()
     fun testRecordUser(context: Context, testT: ((context: Context) -> Unit)) {
         var root = JSONObject()
         root.put("expirationDate", Configure.FB_EXPIRATIONDATE)
@@ -163,9 +163,9 @@ class Test {
     }
 
     fun testGetItems(context: Context) {
-        var raySeller = RetrofitManager.getInstance().getRaySeller()
+        var raySeller = retrofit.getRaySeller()
         Timber.d(Configure.FB_ACESS_TOKEN)
-        var sW = raySeller.getUploadedItem("Bearer " + Configure.FB_ACESS_TOKEN)
+        var sW = raySeller.getUploadedItem(Configure.RAY_ACESS_TOKEN)
         sW.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSuccess {
@@ -183,6 +183,62 @@ class Test {
                 .doOnError {
                     Timber.d(it.message)
                 }.subscribe()
+    }
+
+    fun testGetUser() {
+        var rCommon = retrofit.getRayCommon()
+        var rBuyer = retrofit.getRayBuyer()
+        Timber.d(Configure.RAY_ACESS_TOKEN)
+        var uSingle = rCommon.getUser(Configure.RAY_ACESS_TOKEN)
+//        uSingle.
+// subscribeOn(Schedulers.newThread())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .doOnSuccess {
+//                    Timber.d("userResult " + it.isSuccessful.toString())
+//                    var userWrapper = it.body()!!
+//                    var user = userWrapper.response
+//                    Timber.d(user.name)
+//                }.subscribe()
+
+//                .subscribe()
+        uSingle.zipWith(rBuyer.getRecipients(Configure.RAY_ACESS_TOKEN), object : BiFunction<Response<Wrapper<User>>, Response<Wrapper<Recipients>>, User> {
+            override fun apply(t1: Response<Wrapper<User>>, t2: Response<Wrapper<Recipients>>): User {
+                var userWrapper = t1.body()!!
+                if (t2.isSuccessful) {
+                    var recipientsWrapper = t2.body()!!
+                    if (recipientsWrapper.result) {
+                        var user = userWrapper.response
+                        var recipients = recipientsWrapper.response
+                        user.recipients = recipients
+                        Timber.d("ok " + user.name + " " + user.email)
+                        return user
+                    }
+                }
+                userWrapper = t1.body()!!
+                var user = userWrapper.response
+                return user
+            }
+        }).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe()
+    }
+
+    fun testZipWithRxKotlin() {
+        var sOnSub = object : SingleOnSubscribe<String> {
+            override fun subscribe(emitter: SingleEmitter<String>) {
+                emitter.onSuccess("James")
+            }
+        }
+
+        var s1 = Single.create(sOnSub)
+        var s2 = Single.just("hello")
+        s1.zipWith(s2, object : BiFunction<String, String, String> {
+            override fun apply(t1: String, t2: String): String {
+                return "$t1 $t2"
+            }
+        })
+                .doOnSuccess { Timber.d(it) } // James hello
+                .subscribe()
     }
 
     protected fun createPartFromString(des: String): RequestBody {
@@ -217,7 +273,4 @@ class Test {
         }
         return imageFile
     }
-   private fun testRx(){
-
-   }
 }

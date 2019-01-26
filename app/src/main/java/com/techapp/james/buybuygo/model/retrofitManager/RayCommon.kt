@@ -20,6 +20,6 @@ interface RayCommon {
     @Headers("Content-Type:application/json",
             "X-Requested-With:XMLHttpRequest")
     @GET("users")
-    fun getUser(@Header("Authorization") token: String, @Body requestBody: RequestBody): Single<Response<Wrapper<User>>>
+    fun getUser(@Header("Authorization") token: String): Single<Response<Wrapper<User>>>
 
 }
