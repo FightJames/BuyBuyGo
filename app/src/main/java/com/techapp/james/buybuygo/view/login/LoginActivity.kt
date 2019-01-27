@@ -1,5 +1,7 @@
 package com.techapp.james.buybuygo.view.login
 
+import android.app.Activity
+import android.app.ActivityManager
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -45,6 +47,7 @@ class LoginActivity : BaseActivity() {
 
                     loginPresenter!!.onLoginSuccess(result.accessToken.token
                             , result.accessToken.dataAccessExpirationTime.toString())
+                    ActivityManager.isUserAMonkey()
                 }
             }
 

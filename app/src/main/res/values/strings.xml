@@ -6,6 +6,10 @@
 
     //common
     <string name="userInfo">UserInfo</string>
+    <string name="displayName">Display name</string>
+    <string name="email">Email</string>
+    <string name="id">ID</string>
+    <string name="address">Address</string>
 
     //seller
     //bottom navigation

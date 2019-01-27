@@ -6,8 +6,11 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.SearchView
 import android.view.*
+import android.webkit.WebViewClient
 
 import com.techapp.james.buybuygo.R
+import kotlinx.android.synthetic.main.seller_fragment_live.*
+import timber.log.Timber
 
 class LiveFragment : Fragment() {
     private var listener: OnFragmentInteractionListener? = null
@@ -32,6 +35,40 @@ class LiveFragment : Fragment() {
         listener = null
     }
 
+    override fun onStart() {
+        super.onStart()
+        liveWebView.settings.setJavaScriptEnabled(true)
+        liveWebView.settings.setJavaScriptCanOpenWindowsAutomatically(false)
+        liveWebView.isVerticalScrollBarEnabled = false
+        liveWebView.isHorizontalScrollBarEnabled = false
+        liveWebView.settings.setAppCacheEnabled(false);
+        liveWebView.setWebViewClient(WebViewClient());
+    }
+
+    private fun loadWebView(fbStreamUrl: String) {
+        var pattern = "^[0-9]*\$".toRegex()
+        var sArray = fbStreamUrl.split("/")
+        Timber.d("Video id ${sArray[sArray.size - 2]}")
+        var id = sArray[sArray.size - 2]
+        if (!pattern.matches(id)) {
+            sArray = fbStreamUrl.split("=")
+            id = sArray[sArray.size - 1]
+        }
+        Timber.d("filter ${id.toRegex().matches("^[0-9]*\$")}")
+        var streamTestUrl = "<html><body>" +
+                "<iframe" + " src=\"https://www.facebook.com/video/embed?video_id=$id\"" +
+                " width=\"100%\"" +
+                " height=\"${root.height + 500}\"" +
+                " style=\"border:0;overflow:hidden\"top:0px; left:0px; bottom:0px; right:0px; margin:0; padding=0; " +
+                " scrolling=\"no\"" +
+                " frameBorder=\"0\"" +
+                " allowTransparency=\"true\"" +
+                " allowFullScreen=\"true\">" +
+                "</iframe></ body></html >"
+        liveWebView.loadData(streamTestUrl, "text/html", null)
+    }
+
+
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.seller_live, menu)
@@ -45,10 +82,9 @@ class LiveFragment : Fragment() {
                 object : SearchView.OnQueryTextListener {
                     override fun onQueryTextSubmit(input: String?): Boolean {
                         input?.let {
-                            //                            Toast.makeText(this@BookActivity, p0, Toast.LENGTH_LONG).show()
                             //input is a url which seller live in facebook
                             //post api/channel to get channel
-
+                            loadWebView(input)
                             searchView.setQuery("", true)
 
                         }

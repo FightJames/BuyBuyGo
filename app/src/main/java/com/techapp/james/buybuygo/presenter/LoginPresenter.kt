@@ -1,12 +1,16 @@
 package com.techapp.james.buybuygo.presenter
 
 import android.app.Activity
+import android.app.ActivityManager
+import android.content.Context
 import android.content.Intent
+import android.view.View
 import com.techapp.james.buybuygo.model.retrofitManager.RetrofitManager
 import com.techapp.james.buybuygo.model.retrofitManager.Test
 import com.techapp.james.buybuygo.view.choose.ChooseActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import org.json.JSONObject
@@ -23,8 +27,6 @@ class LoginPresenter {
         Configure.FB_EXPIRATIONDATE = expirationDate
         //bug in here when network is slow, It lead other page cant fetch backend item data.
         loginBackEnd()
-        var i = Intent(activity, ChooseActivity::class.java)
-        activity.startActivity(i)
 //        var t = Test()
 //        t.testRecordUser(activity.applicationContext, t::testUpCommodity)
 //        t.testUpCommodity(activity.applicationContext)
@@ -41,10 +43,12 @@ class LoginPresenter {
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe {
                     Configure.RAY_ACESS_TOKEN = "Bearer ${Configure.FB_ACESS_TOKEN}"
+                    activity.progressBar.visibility = View.VISIBLE
                 }
                 .doOnSuccess {
-//                    var test = Test()
-//                    test.testGetUser()
+                    activity.progressBar.visibility = View.GONE
+                    var i = Intent(activity, ChooseActivity::class.java)
+                    activity.startActivity(i)
                 }
                 .doOnError {}
                 .subscribe()

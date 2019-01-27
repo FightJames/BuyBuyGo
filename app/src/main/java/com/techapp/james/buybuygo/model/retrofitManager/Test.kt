@@ -63,7 +63,7 @@ class Test {
                 MediaType.get("image/png"), f)
         val body = MultipartBody.Part.createFormData("imageUri", "James", requestFile)
 
-        var c = Commodity("hello", "des", 123, 100, 2, Uri.fromFile(f).toString())
+        var c = Commodity("sdkjf", "hello", "des", 123, 100, 2, Uri.fromFile(f).toString())
 
         val name = createPartFromString(c.name)
         val description = createPartFromString(c.description)
@@ -272,5 +272,19 @@ class Test {
             }
         }
         return imageFile
+    }
+
+    private fun testRegex() {
+        var sArray = "https://www.facebook.com/anastasia918.ha/videos/1012107512284640/".split("/")
+        Timber.d("Video id ${sArray[sArray.size - 2]}")
+        var id = sArray[sArray.size - 2]
+        var pattern = "^[0-9]*\$".toRegex()
+        Timber.d("filter ${pattern.matches(id)}")
+
+        sArray = "https://m.facebook.com/story.php?story_fbid=2342076282469919&id=173022516043744".split("=")
+
+        id = sArray[sArray.size - 1]
+        Timber.d("Video id $id")
+        Timber.d("filter ${pattern.matches(id)}")
     }
 }
