@@ -12,5 +12,5 @@ interface RayBuyer {
     @Headers("Content-Type: application/json",
             "X-Requested-With: XMLHttpRequest")
     @GET("recipients")
-    fun getRecipients(@Header("Authorization") token: String): Single<Response<Wrapper<Recipients>>>
+    fun getRecipients(@Header("Authorization") token: String): Single<Response<Wrapper<ArrayList<Recipients>>>>
 }

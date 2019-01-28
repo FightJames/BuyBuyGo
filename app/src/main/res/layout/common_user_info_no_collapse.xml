@@ -87,7 +87,7 @@
         app:layout_constraintTop_toBottomOf="@+id/emailLabel" />
 
     <TextView
-        android:id="@+id/idLabel"
+        android:id="@+id/userIdLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -99,7 +99,7 @@
         app:layout_constraintTop_toBottomOf="@+id/horizontalLineId" />
 
     <TextView
-        android:id="@+id/idField"
+        android:id="@+id/userIdField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -112,6 +112,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/idLabel"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/userIdLabel" />
 </android.support.constraint.ConstraintLayout>

@@ -23,6 +23,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.support.annotation.RequiresApi
+import android.view.View
 import com.techapp.james.buybuygo.presenter.Configure
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -40,6 +41,17 @@ class ChooseActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_choose)
         init()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        sellerTextView.visibility = View.VISIBLE
+        buyerTextView.visibility = View.VISIBLE
+        loadUserDataprogressBar.visibility = View.GONE
+    }
+
+    override fun onPause() {
+        super.onPause()
     }
 
     fun init() {

@@ -5,8 +5,8 @@ import com.google.gson.annotations.SerializedName
 
 class Recipients(@SerializedName("recipient_id") var id: String,
                  var name: String,
-                 var phone: Phone,
-                 var address: Address
+                 var phone: Phone= Phone(),
+                 var address: Address=Address()
 )
 
 

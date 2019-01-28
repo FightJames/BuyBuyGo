@@ -8,39 +8,30 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v4.app.Fragment
-import android.support.v4.content.FileProvider
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.GridLayoutManager
 import android.view.*
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.data.Commodity
-import com.techapp.james.buybuygo.model.retrofitManager.RetrofitManager
-import com.techapp.james.buybuygo.presenter.Configure
+import com.techapp.james.buybuygo.model.file.FileManager
+import com.techapp.james.buybuygo.presenter.seller.CommodityPresenter
 import com.theartofdev.edmodo.cropper.CropImage
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
-import io.reactivex.subscribers.ResourceSubscriber
 import kotlinx.android.synthetic.main.fragment_commodity.*
 import kotlinx.android.synthetic.main.seller_fragment_commodity_dialog.view.*
-import org.reactivestreams.Subscriber
-import org.reactivestreams.Subscription
 import timber.log.Timber
 import java.io.File
-import android.app.ProgressDialog
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 
 
 class CommodityFragment : Fragment() {
     private var dialog: Dialog? = null
     private var customerView: View? = null
-    val disposeList = ArrayList<Disposable>()
     var dataList = ArrayList<Commodity>()
+    var presenter: CommodityPresenter? = null
     private lateinit var fileUri: Uri
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        presenter = CommodityPresenter(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -75,38 +66,9 @@ class CommodityFragment : Fragment() {
     }
 
     private fun init() {
-        var raySeller = RetrofitManager.getInstance().getRaySeller()
-        var gW = raySeller.getUploadedItem(Configure.RAY_ACESS_TOKEN)
-
-        gW.subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSuccess {
-                    loadItemProgressBar.visibility = View.GONE
-                    var commodityWrapper = it.body()
-                    Timber.d("+++ " + it.body()!!.response.size)
-                    if (commodityWrapper!!.result) {
-                        var commodityList = commodityWrapper.response
-                        commodityList?.let {
-                            if (commodityList.size != 0) {
-                                itemRecyclerView.adapter?.let {
-                                    (it as ListAdapter).dList = commodityList
-                                    it.notifyDataSetChanged()
-                                }
-                            }
-                        }
-                    }
-                }
-                .doOnError {
-                    Timber.d("error  " + it.message)
-                }
-                .doOnSubscribe {
-                    loadItemProgressBar.visibility = View.VISIBLE
-                }
-                .subscribe()
-// gW cancel   resarch
         itemRecyclerView.layoutManager = GridLayoutManager(this.activity, 3, GridLayoutManager.VERTICAL, false)
-//        itemRecyclerView.addItemDecoration(GItemDecoration(this.activity!!.applicationContext, R.dimen.grid_column))
         itemRecyclerView.adapter = ListAdapter(dataList, this.activity!!, this::onCreateDialog)
+        presenter!!.getUploadItem(itemRecyclerView.adapter!!)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -132,19 +94,21 @@ class CommodityFragment : Fragment() {
             val builder = AlertDialog.Builder(it)
             customerView = layoutInflater.inflate(R.layout.seller_fragment_commodity_dialog, null)
             customerView!!.commodityImageView.setOnClickListener {
-                fileUri = createImageFileUri("cacheImage")
+                fileUri = FileManager.createImageFileUri("cacheImage", this.activity!!.applicationContext)
                 var i = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                 i.putExtra(MediaStore.EXTRA_OUTPUT, fileUri)
                 startActivityForResult(i, CAMERA_RESULT)
             }
             builder.setView(customerView)
                     // Add action buttons
-                    .setPositiveButton(R.string.ok,
-                            DialogInterface.OnClickListener { dialog, id ->
-                                Timber.d("name " + customerView!!.nameField.text.toString())
-                            })
+                    .setPositiveButton(R.string.ok, { dialog, id ->
+                        Timber.d("name " + customerView!!.nameField.text.toString())
+
+                        var file = File(fileUri.path)
+                        Timber.d("is File exits " + file.exists())
+                    })
                     .setNegativeButton(R.string.cancel,
-                            DialogInterface.OnClickListener { dialog, id ->
+                            { dialog, id ->
                                 dialog.cancel()
                             })
             builder.create()
@@ -165,7 +129,7 @@ class CommodityFragment : Fragment() {
             }
 
             customerView!!.commodityImageView.setOnClickListener {
-                fileUri = createImageFileUri("cacheImage")
+                fileUri = FileManager.createImageFileUri("cacheImage", this.activity!!.applicationContext)
                 var i = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                 i.putExtra(MediaStore.EXTRA_OUTPUT, fileUri)
                 startActivityForResult(i, CAMERA_RESULT)
@@ -186,7 +150,7 @@ class CommodityFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        disposeList
+        presenter = null
     }
 
     companion object {
@@ -194,16 +158,5 @@ class CommodityFragment : Fragment() {
         @JvmStatic
         fun newInstance() =
                 CommodityFragment()
-    }
-
-    fun createImageFileUri(fileName: String): Uri {
-        var file: File? = null
-        val filePath = this.activity!!.filesDir.toString() + "/images/$fileName.jpg"
-        file = File(filePath)
-        if (!file.getParentFile().exists()) {
-            file.getParentFile().mkdir()
-        }
-        //share file to camera
-        return FileProvider.getUriForFile(this.activity!!.applicationContext, "buybuygo.fileProvider", file!!)
     }
 }

@@ -1,23 +1,19 @@
 package com.techapp.james.buybuygo.view.commonFragment
 
 import android.app.Activity
-import android.app.Dialog
-import android.content.Context
-import android.content.DialogInterface
-import android.support.v7.app.AlertDialog
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.data.User
 import kotlinx.android.synthetic.main.common_user_info_collapse.view.*
-import timber.log.Timber
+import kotlinx.android.synthetic.main.common_user_info_collapse_recipient_item.view.*
+import kotlinx.android.synthetic.main.user_common_dialog_recipient.view.*
 
 class ExpandableAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
     var layoutInflater: LayoutInflater
-    var context: Context
+    var context: Activity
     var mode = BUYER_MODE
     var data: User
     var dialogHelper: DialogHelper
@@ -29,44 +25,66 @@ class ExpandableAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
         val COLLAPSE = 1
     }
 
-    constructor(context: Context, user: User) : this(context, 0, user)
-    constructor(context: Context, mode: Int, user: User) {
+    constructor(context: Activity, user: User) : this(context, 0, user)
+    constructor(context: Activity, mode: Int, user: User) {
         this.context = context
         this.layoutInflater = LayoutInflater.from(context)
         this.data = user
         this.mode = mode
-        dialogHelper = DialogHelper(context as Activity)
+        dialogHelper = DialogHelper(context)
     }
 
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, index: Int) {
         when (viewHolder) {
             is ItemViewHolder -> {
-
+                viewHolder.setData(data, context)
             }
             is CollapseItemViewHolder -> {
 
-                var leftPadding = context.getResources().getDimension(R.dimen.addressPaddingLeft)
-                var rightPadding = context.getResources().getDimension(R.dimen.addressPaddingRight)
-                var topPadding = context.getResources().getDimension(R.dimen.addressPaddingTop)
-                var textView2 = TextView(context)
-//                var address = data.recipients!!.address
-                textView2.setPadding(topPadding.toInt(), leftPadding.toInt(), 0, rightPadding.toInt())
-                textView2.text = "Hello James"
-                viewHolder.itemView.itemContainer.addView(textView2)
-
-                viewHolder.itemView.setOnClickListener(object : View.OnClickListener {
-                    var isCollapse = true
-                    override fun onClick(v: View?) {
-                        if (isCollapse) {
-                            viewHolder.itemView.itemContainer.visibility = View.VISIBLE
-                            isCollapse = false
-                        } else {
-                            viewHolder.itemView.itemContainer.visibility = View.GONE
-                            isCollapse = true
+                viewHolder.itemView.addRecipientImageView.setOnClickListener {
+                    dialogHelper.onCreateRecipientDialog(object:DialogHelper.OnOkPress{
+                        override fun onOkPress(view: View) {
                         }
-                    }
-                })
+                    }).show()
+                }
+                data.recipients?.let {
+                    viewHolder.enableCollapse(true)
+                    viewHolder.itemView.itemContainer.removeAllViews()
+                    it.forEach { r ->
+                        //                        Timber.d("1")
+                        var recipientView = layoutInflater.inflate(
+                                R.layout.common_user_info_collapse_recipient_item,
+                                viewHolder.itemView.itemContainer, false)
+                        var phone = r.phone
+                        var address = r.address
 
+                        recipientView.idLabel.text = r.id
+                        recipientView.nameLabel.text = r.name
+
+                        recipientView.idLabel.setOnClickListener {
+                            dialogHelper.onCreateRecipientDialog(r,
+                                    object : DialogHelper.OnOkPress {
+                                        override fun onOkPress(view: View) {
+                                            var phone = r.phone
+                                            var address = r.address
+                                            r.name = view.nameField.text
+                                                    .toString()
+                                            phone.code = view.codeField.text
+                                                    .toString()
+                                            phone.number = view.numberField
+                                                    .text.toString()
+                                            address.countryCode = view.countryCodeField.text.toString()
+                                            address.postCode = view.postCodeField.text.toString()
+                                            address.city = view.cityField.text.toString()
+                                            address.district = view.districtField.text.toString()
+                                            address.others = view.othersField.text.toString()
+                                        }
+                                    }).show()
+                        }
+
+                        viewHolder.itemView.itemContainer.addView(recipientView)
+                    }
+                }
             }
         }
     }

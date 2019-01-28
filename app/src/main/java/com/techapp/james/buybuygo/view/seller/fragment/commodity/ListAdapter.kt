@@ -30,5 +30,4 @@ class ListAdapter(var dList: ArrayList<Commodity>,
             }
         }
     }
-
 }

@@ -5,30 +5,46 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
+import android.view.View
+import android.widget.EditText
 import com.techapp.james.buybuygo.R
-import com.techapp.james.buybuygo.model.data.Address
 import com.techapp.james.buybuygo.model.data.Phone
+import com.techapp.james.buybuygo.model.data.Recipients
 import kotlinx.android.synthetic.main.common_user_dialog_address.view.*
 import kotlinx.android.synthetic.main.user_common_dialog.view.*
-import kotlinx.android.synthetic.main.user_common_dialog_phone.view.*
+import kotlinx.android.synthetic.main.user_common_dialog_recipient.view.*
+import timber.log.Timber
 
 
 class DialogHelper(val activity: Activity) {
+    interface OnOkPress {
+        fun onOkPress(view: View)
+    }
 
-    private fun onCreateAddressFieldDialog(content: Address, okDoing: DialogInterface.OnClickListener): Dialog {
+    fun onCreateRecipientDialog(content: Recipients, okDoing: OnOkPress): Dialog {
         return activity.let {
             val builder = AlertDialog.Builder(it)
-            var customerView = LayoutInflater.from(activity).inflate(R.layout.common_user_dialog_address, null)
+            var address = content.address
+            var phone = content.phone
+            var customerView = LayoutInflater.from(activity).inflate(R.layout.user_common_dialog_recipient, null, false)
             customerView!!.let {
-                it.countryCodeField.setText(content.countryCode)
-                it.postCodeField.setText(content.postCode)
-                it.cityField.setText(content.city)
-                it.districtField.setText(content.district)
-                it.othersField.setText(content.others)
+                it.codeField.setText(phone.code)
+                it.numberField.setText(phone.number)
+                it.countryCodeField.setText(address.countryCode)
+                it.postCodeField.setText(address.postCode)
+                it.cityField.setText(address.city)
+                it.districtField.setText(address.district)
+                it.othersField.setText(address.others)
+                it.nameField.setText(content.name)
             }
             builder.setView(customerView)
                     // Add action buttons
-                    .setPositiveButton(R.string.ok, okDoing)
+                    .setPositiveButton(R.string.ok, object : DialogInterface.OnClickListener {
+                        override fun onClick(dialog: DialogInterface?, which: Int) {
+                            okDoing.onOkPress(customerView)
+                        }
+
+                    })
                     .setNegativeButton(R.string.cancel,
                             DialogInterface.OnClickListener { dialog, id ->
                                 dialog.cancel()
@@ -37,7 +53,33 @@ class DialogHelper(val activity: Activity) {
         } ?: throw IllegalStateException("Activity cannot be null")
     }
 
-    private fun onCreateOneFieldDialog(content: String, okDoing: DialogInterface.OnClickListener): Dialog {
+    fun onCreateRecipientDialog(okDoing: OnOkPress): Dialog {
+        return activity.let {
+            val builder = AlertDialog.Builder(it)
+            var customerView = LayoutInflater.from(activity).inflate(R.layout.user_common_dialog_recipient, null, false)
+            builder.setView(customerView)
+                    // Add action buttons
+                    .setPositiveButton(R.string.ok, null)
+                    .setNegativeButton(R.string.cancel,
+                            DialogInterface.OnClickListener { dialog, id ->
+                                dialog.cancel()
+                            })
+            var dialog = builder.create()
+            dialog.setOnShowListener { dialogInterface ->
+                var positiveBtn = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                positiveBtn.setOnClickListener { v ->
+                    var namefield = dialog.findViewById<EditText>(R.id.nameField)
+//                    namefield?.setText("Activity cannot be null")
+//                    dialog.dismiss()
+                }
+            }
+            dialog
+
+        } ?: throw IllegalStateException("Activity cannot be null")
+    }
+
+
+    fun onCreateOneFieldDialog(content: String, okDoing: OnOkPress): Dialog {
         return activity.let {
             val builder = AlertDialog.Builder(it)
             var customerView = LayoutInflater.from(activity).inflate(R.layout.user_common_dialog, null)
@@ -47,7 +89,12 @@ class DialogHelper(val activity: Activity) {
 
             builder.setView(customerView)
                     // Add action buttons
-                    .setPositiveButton(R.string.ok, okDoing)
+                    .setPositiveButton(R.string.ok, object : DialogInterface.OnClickListener {
+                        override fun onClick(dialog: DialogInterface?, which: Int) {
+                            okDoing.onOkPress(customerView)
+                        }
+
+                    })
                     .setNegativeButton(R.string.cancel,
                             DialogInterface.OnClickListener { dialog, id ->
                                 dialog.cancel()
@@ -56,17 +103,22 @@ class DialogHelper(val activity: Activity) {
         } ?: throw IllegalStateException("Activity cannot be null")
     }
 
-    private fun onCreatePhoneFieldDialog(content: Phone, okDoing: DialogInterface.OnClickListener): Dialog {
+    fun onCreatePhoneFieldDialog(content: Phone, okDoing: OnOkPress): Dialog {
         return activity.let {
             val builder = AlertDialog.Builder(it)
-            var customerView = LayoutInflater.from(activity).inflate(R.layout.common_user_dialog_address, null)
+            var customerView = LayoutInflater.from(activity).inflate(R.layout.user_common_dialog_recipient, null)
             customerView!!.let {
-                it.phoneCodeEditText.setText(content.code)
-                it.phoneCodeEditText.setText(content.number)
+                it.codeField.setText(content.code)
+                it.codeField.setText(content.number)
             }
             builder.setView(customerView)
                     // Add action buttons
-                    .setPositiveButton(R.string.ok, okDoing)
+                    .setPositiveButton(R.string.ok, object : DialogInterface.OnClickListener {
+                        override fun onClick(dialog: DialogInterface?, which: Int) {
+                            okDoing.onOkPress(customerView)
+                        }
+
+                    })
                     .setNegativeButton(R.string.cancel,
                             DialogInterface.OnClickListener { dialog, id ->
                                 dialog.cancel()

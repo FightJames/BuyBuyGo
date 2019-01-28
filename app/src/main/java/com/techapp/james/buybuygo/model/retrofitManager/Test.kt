@@ -201,8 +201,8 @@ class Test {
 //                }.subscribe()
 
 //                .subscribe()
-        uSingle.zipWith(rBuyer.getRecipients(Configure.RAY_ACESS_TOKEN), object : BiFunction<Response<Wrapper<User>>, Response<Wrapper<Recipients>>, User> {
-            override fun apply(t1: Response<Wrapper<User>>, t2: Response<Wrapper<Recipients>>): User {
+        uSingle.zipWith(rBuyer.getRecipients(Configure.RAY_ACESS_TOKEN), object : BiFunction<Response<Wrapper<User>>, Response<Wrapper<ArrayList<Recipients>>>, User> {
+            override fun apply(t1: Response<Wrapper<User>>, t2: Response<Wrapper<ArrayList<Recipients>>>): User {
                 var userWrapper = t1.body()!!
                 if (t2.isSuccessful) {
                     var recipientsWrapper = t2.body()!!

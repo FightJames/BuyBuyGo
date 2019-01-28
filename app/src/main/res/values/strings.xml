@@ -10,6 +10,7 @@
     <string name="email">Email</string>
     <string name="id">ID</string>
     <string name="address">Address</string>
+    <string name="recipient">Recipient</string>
 
     //seller
     //bottom navigation
@@ -22,11 +23,11 @@
     <string name="addCommodity">Add</string>
     //Dialog
     //Create ,Information Field
-    <string name="name">name</string>
-    <string name="description">description</string>
-    <string name="stock">stock</string>
-    <string name="cost">cost</string>
-    <string name="unit_price">unit price</string>
+    <string name="name">Name</string>
+    <string name="description">Description</string>
+    <string name="stock">Stock</string>
+    <string name="cost">Cost</string>
+    <string name="unit_price">Unit price</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="modify">Modify</string>

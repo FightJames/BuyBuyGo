@@ -1,5 +1,6 @@
 package com.techapp.james.buybuygo.view.commonFragment
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
@@ -13,8 +14,10 @@ import android.view.View
 import android.view.ViewGroup
 
 import com.techapp.james.buybuygo.R
+import com.techapp.james.buybuygo.model.data.Phone
 import com.techapp.james.buybuygo.model.data.Recipients
 import com.techapp.james.buybuygo.model.data.User
+import com.techapp.james.buybuygo.presenter.Configure
 import kotlinx.android.synthetic.main.fragment_user_info.*
 
 
@@ -32,9 +35,9 @@ class UserInfoFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         userInfoList.layoutManager = LinearLayoutManager(this.activity)
-
-        var user = User("sjdf", "sdlkfj", "dsfjl", "dslfkj", null)
-        userInfoList.adapter = ExpandableAdapter(this.activity as Context, user)
+//        var u = User("sdlfj", "sdlfj", "sdlfj", "sdlfj", arrayListOf(Recipients("sdlfj", "sdlfj"), Recipients("sdlfj", "sdlfj")))
+        userInfoList.adapter = ExpandableAdapter(this.activity as Activity, Configure.user)
+//        userInfoList.adapter = ExpandableAdapter(this.activity as Activity, u)
         var itemDecoration = DividerItemDecoration(this.activity, DividerItemDecoration.VERTICAL)
         itemDecoration.setDrawable(ContextCompat.getDrawable(this.activity as Context, R.drawable.user_info_divider_shape)!!)
 
