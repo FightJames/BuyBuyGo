@@ -10,6 +10,7 @@ import android.widget.Toast
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.view.buyer.fragment.ContentPagerAdapter
 import com.techapp.james.buybuygo.view.buyer.fragment.LiveFragment
+import com.techapp.james.buybuygo.view.commonFragment.ExpandableAdapter
 import com.techapp.james.buybuygo.view.commonFragment.UserInfoFragment
 import com.techapp.james.buybuygo.view.seller.fragment.OrderFragment
 import kotlinx.android.synthetic.main.activity_buyer.*
@@ -22,7 +23,7 @@ class BuyerActivity : AppCompatActivity() {
         setContentView(R.layout.activity_buyer)
         var liveFragment = LiveFragment.newInstance()
         var orderFragment = OrderFragment.newInstance()
-        var userInfoFragment = UserInfoFragment.newInstance()
+        var userInfoFragment = UserInfoFragment.newInstance(ExpandableAdapter.BUYER_MODE)
         fList = arrayListOf<Fragment>(liveFragment, orderFragment, userInfoFragment)
 
         viewPagerRoot.adapter = ContentPagerAdapter(fList as List<Fragment>, supportFragmentManager)

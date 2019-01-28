@@ -24,7 +24,6 @@ class ChoosePresenter {
     }
 
     fun chooseBuyer() {
-
         var common = RetrofitManager.getInstance().getRayCommon()
         var buyer = RetrofitManager.getInstance().getRayBuyer()
         common.getUser(Configure.RAY_ACESS_TOKEN)
@@ -44,17 +43,29 @@ class ChoosePresenter {
                     activity.loadUserDataprogressBar.visibility = View.VISIBLE
                 }
                 .doOnSuccess {
-
                     var i = Intent(activity, BuyerActivity::class.java)
                     activity.startActivity(i)
                     Configure.user = it
                 }.subscribe()
-
-
     }
 
     fun chooseSeller() {
-        var i = Intent(activity, SellerActivity::class.java)
-        activity.startActivity(i)
+        var common = RetrofitManager.getInstance().getRayCommon()
+        common.getUser(Configure.RAY_ACESS_TOKEN)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe {
+                    activity.sellerTextView.visibility = View.INVISIBLE
+                    activity.buyerTextView.visibility = View.INVISIBLE
+                    activity.loadUserDataprogressBar.visibility = View.VISIBLE
+                }
+                .doOnSuccess {
+                    it.body()?.let {
+                        Configure.user = it.response
+                    }
+                    var i = Intent(activity, SellerActivity::class.java)
+                    activity.startActivity(i)
+                }.subscribe()
+
     }
 }

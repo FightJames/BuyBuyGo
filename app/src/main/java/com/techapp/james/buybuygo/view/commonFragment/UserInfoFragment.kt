@@ -20,15 +20,15 @@ import com.techapp.james.buybuygo.model.data.User
 import com.techapp.james.buybuygo.presenter.Configure
 import kotlinx.android.synthetic.main.fragment_user_info.*
 
+const val MODE = "Mode"
 
 class UserInfoFragment : Fragment() {
     private var listener: OnFragmentInteractionListener? = null
-
+    private var mode: Int = ExpandableAdapter.BUYER_MODE
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            //            param1 = it.getString(ARG_PARAM1)
-//            param2 = it.getString(ARG_PARAM2)
+            mode = it.getInt(MODE)
         }
     }
 
@@ -36,7 +36,7 @@ class UserInfoFragment : Fragment() {
         super.onStart()
         userInfoList.layoutManager = LinearLayoutManager(this.activity)
 //        var u = User("sdlfj", "sdlfj", "sdlfj", "sdlfj", arrayListOf(Recipients("sdlfj", "sdlfj"), Recipients("sdlfj", "sdlfj")))
-        userInfoList.adapter = ExpandableAdapter(this.activity as Activity, Configure.user)
+        userInfoList.adapter = ExpandableAdapter(this.activity as Activity, mode, Configure.user)
 //        userInfoList.adapter = ExpandableAdapter(this.activity as Activity, u)
         var itemDecoration = DividerItemDecoration(this.activity, DividerItemDecoration.VERTICAL)
         itemDecoration.setDrawable(ContextCompat.getDrawable(this.activity as Context, R.drawable.user_info_divider_shape)!!)
@@ -65,12 +65,11 @@ class UserInfoFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance() =
+        fun newInstance(mode: Int) =
                 UserInfoFragment().apply {
-                    //                    arguments = Bundle().apply {
-                    //                        putString(ARG_PARAM1, param1)
-//                        putString(ARG_PARAM2, param2)
-//                    }
+                    arguments = Bundle().apply {
+                        putInt(MODE, mode)
+                    }
                 }
     }
 }

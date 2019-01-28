@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
 import android.view.Menu
 import com.techapp.james.buybuygo.R
+import com.techapp.james.buybuygo.view.commonFragment.ExpandableAdapter
 import com.techapp.james.buybuygo.view.commonFragment.UserInfoFragment
 import com.techapp.james.buybuygo.view.seller.fragment.commodity.CommodityFragment
 import com.techapp.james.buybuygo.view.seller.fragment.LiveFragment
@@ -24,7 +25,7 @@ class SellerActivity : AppCompatActivity() {
         var LiveFragment = LiveFragment.newInstance()
         var orderFragment = OrderFragment.newInstance()
         var uploadFragment = UploadFragment.newInstance()
-        var userInfoFragment = UserInfoFragment.newInstance()
+        var userInfoFragment = UserInfoFragment.newInstance(ExpandableAdapter.SELLER_MODE)
         fList = arrayListOf<Fragment>(commodityFragment, LiveFragment, orderFragment, uploadFragment, userInfoFragment)
 
         viewPagerRoot.adapter = ContentPagerAdapter(fList as List<Fragment>, supportFragmentManager)

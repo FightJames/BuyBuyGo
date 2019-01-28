@@ -6,9 +6,11 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.bumptech.glide.Glide
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.data.Commodity
 import kotlinx.android.synthetic.main.seller_fragment_commodity_list_item.view.*
+import timber.log.Timber
 
 class ListAdapter(var dList: ArrayList<Commodity>,
                   val context: Context,
@@ -22,6 +24,9 @@ class ListAdapter(var dList: ArrayList<Commodity>,
 
     override fun onBindViewHolder(itemViewHolder: RecyclerView.ViewHolder, position: Int) {
         itemViewHolder.itemView.nameTextView.text = dList[position].name
+        Timber.d("image url " + dList[position].imageUri)
+        Glide.with(context).load(dList[position].imageUri).into(itemViewHolder.itemView.commodityImageView)
+
     }
 
     class ItemViewHolder : RecyclerView.ViewHolder {
