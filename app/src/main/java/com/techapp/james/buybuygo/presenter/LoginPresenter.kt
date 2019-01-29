@@ -27,8 +27,8 @@ class LoginPresenter {
         Configure.FB_EXPIRATIONDATE = expirationDate
         //bug in here when network is slow, It lead other page cant fetch backend item data.
         loginBackEnd()
-//        var t = Test()
-//        t.testRecordUser(activity.applicationContext, t::testUpCommodity)
+        var t = Test()
+        t.testRecordUser(activity.applicationContext, t::testUpCommodity)
 //        t.testUpCommodity(activity.applicationContext)
 //        t.testRecordUser(activity.applicationContext, t::testGetItems)
     }

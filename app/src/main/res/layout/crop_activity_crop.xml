@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.crop.CropActivity">
+
+    <com.theartofdev.edmodo.cropper.CropImageView xmlns:custom="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/cropImageView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        custom:layout_constraintBottom_toBottomOf="parent"
+        custom:layout_constraintEnd_toEndOf="parent"
+        custom:layout_constraintStart_toStartOf="parent"
+        custom:layout_constraintTop_toTopOf="parent" />
+</android.support.constraint.ConstraintLayout>

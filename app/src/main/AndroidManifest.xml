@@ -55,7 +55,7 @@
         <activity
             android:name=".view.buyer.BuyerActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".view.seller.SellerActivity"></activity>
+        <activity android:name=".view.seller.SellerActivity" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
@@ -69,6 +69,8 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepath" />
         </provider>
+
+        <activity android:name=".view.crop.CropActivity"></activity>
     </application>
 
 </manifest>

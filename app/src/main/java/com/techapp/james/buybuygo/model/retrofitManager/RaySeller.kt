@@ -21,7 +21,7 @@ interface RaySeller {
     @POST("items")
     //this annotation will provide a header for you
     @Multipart
-    fun insertItem(@Header("Authorization") token: String, @PartMap() partMap: Map<String, @JvmSuppressWildcards RequestBody>, @Part file: MultipartBody.Part): Single<Response<ResponseBody>>
+    fun uploadItem(@Header("Authorization") token: String, @PartMap() partMap: Map<String, @JvmSuppressWildcards RequestBody>, @Part file: MultipartBody.Part): Single<Response<ResponseBody>>
 
 
     @Headers("X-Requested-With: XMLHttpRequest")

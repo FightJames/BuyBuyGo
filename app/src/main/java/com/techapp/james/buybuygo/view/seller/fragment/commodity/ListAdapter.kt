@@ -26,6 +26,9 @@ class ListAdapter(var dList: ArrayList<Commodity>,
         itemViewHolder.itemView.nameTextView.text = dList[position].name
         Timber.d("image url " + dList[position].imageUri)
         Glide.with(context).load(dList[position].imageUri).into(itemViewHolder.itemView.commodityImageView)
+        itemViewHolder.itemView.commodityImageView.setOnClickListener {
+            getDialog.invoke(dList[position]).show()
+        }
 
     }
 

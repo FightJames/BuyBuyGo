@@ -22,7 +22,6 @@ import com.techapp.james.buybuygo.model.data.Wrapper
 import io.reactivex.Single
 import io.reactivex.SingleEmitter
 import io.reactivex.SingleOnSubscribe
-import io.reactivex.flowables.ConnectableFlowable
 import java.io.IOException
 import io.reactivex.functions.BiFunction
 import retrofit2.Response
@@ -61,7 +60,7 @@ class Test {
 
         val requestFile = RequestBody.create(
                 MediaType.get("image/png"), f)
-        val body = MultipartBody.Part.createFormData("imageUri", "James", requestFile)
+        val body = MultipartBody.Part.createFormData("images", "James", requestFile)
 
         var c = Commodity("sdkjf", "hello", "des", 123, 100, 2, Uri.fromFile(f).toString())
 
@@ -93,9 +92,9 @@ class Test {
 
         var raySeller = RetrofitManager.getInstance().getRaySeller()
         Timber.d(Configure.FB_ACESS_TOKEN)
-//        var s = raySeller.insertItem("Bearer " + Configure.FB_ACESS_TOKEN, map, body)
+//        var s = raySeller.uploadItem("Bearer " + Configure.FB_ACESS_TOKEN, map, body)
 
-        var s = raySeller.insertItem("Bearer " + Configure.FB_ACESS_TOKEN, map, body)
+        var s = raySeller.uploadItem( Configure.RAY_ACESS_TOKEN, map, body)
 
 //        Timber.d("*** " + s.request().body()?.contentType()?.type())
         s.subscribeOn(Schedulers.newThread())
@@ -128,7 +127,7 @@ class Test {
 //                .addFormDataPart("unit_pirce", unit_pirce.toString())
 //                .addFormDataPart("imageUri", "Ray", requestFile)
 //                .build()
-//        var ob = raySeller.insertItem("Bearer " + Configure.FB_ACESS_TOKEN, requestBody)
+//        var ob = raySeller.uploadItem("Bearer " + Configure.FB_ACESS_TOKEN, requestBody)
 //        ob.subscribeOn(Schedulers.newThread())
 //                .observeOn(AndroidSchedulers.mainThread())
 //
@@ -144,7 +143,7 @@ class Test {
 //                .doOnError { }
 //                .subscribe()
 //
-//        var obPart = raySeller.insertItem("Bearer " + Configure.FB_ACESS_TOKEN, c.name, c.description, c.stock, c.cost, c.unit_price)
+//        var obPart = raySeller.uploadItem("Bearer " + Configure.FB_ACESS_TOKEN, c.name, c.description, c.stock, c.cost, c.unit_price)
 //
 //        obPart.subscribeOn(Schedulers.newThread())
 //                .observeOn(AndroidSchedulers.mainThread())

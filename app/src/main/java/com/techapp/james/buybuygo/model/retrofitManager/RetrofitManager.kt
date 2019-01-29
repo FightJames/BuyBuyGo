@@ -8,6 +8,7 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 class RetrofitManager {
 
@@ -19,8 +20,11 @@ class RetrofitManager {
         logging.level = HttpLoggingInterceptor.Level.BODY
         var httpClient = OkHttpClient.Builder()
         httpClient.addInterceptor(logging)
+        httpClient.connectTimeout(30, TimeUnit.SECONDS); // connect timeout
+        httpClient.readTimeout(30, TimeUnit.SECONDS);
         retrofit = Retrofit.Builder()
                 .baseUrl("https://facebookoptimizedlivestreamsellingsystem.rayawesomespace.space/api/")
+//                .baseUrl("https://c910e548.ngrok.io/api/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(httpClient.build())

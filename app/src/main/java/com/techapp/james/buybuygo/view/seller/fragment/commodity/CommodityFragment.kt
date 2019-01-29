@@ -1,5 +1,6 @@
 package com.techapp.james.buybuygo.view.seller.fragment.commodity
 
+import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.app.Dialog
 import android.content.DialogInterface
@@ -11,18 +12,18 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.GridLayoutManager
 import android.view.*
+import com.bumptech.glide.Glide
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.data.Commodity
 import com.techapp.james.buybuygo.model.file.FileData
 import com.techapp.james.buybuygo.model.file.FileManager
 import com.techapp.james.buybuygo.presenter.seller.CommodityPresenter
-import com.theartofdev.edmodo.cropper.CropImage
+import com.techapp.james.buybuygo.view.crop.CropActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_commodity.*
 import kotlinx.android.synthetic.main.seller_fragment_commodity_dialog.view.*
 import timber.log.Timber
-import java.io.File
 
 
 class CommodityFragment : Fragment() {
@@ -44,6 +45,7 @@ class CommodityFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         super.onCreateOptionsMenu(menu, inflater)
+
         val inflater = this.activity!!.menuInflater
         inflater.inflate(R.menu.seller_commodity, menu)
     }
@@ -74,52 +76,6 @@ class CommodityFragment : Fragment() {
         getItem()
     }
 
-    private fun getItem() {
-        presenter!!.getUploadItem().subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSuccess {
-                    loadItemProgressBar.visibility = View.GONE
-                    var commodityWrapper = it.body()
-                    Timber.d("+++ " + it.body()!!.response.size)
-                    if (commodityWrapper!!.result) {
-                        var commodityList = commodityWrapper.response
-                        commodityList?.let {
-                            if (commodityList.size != 0) {
-                                itemRecyclerView.adapter?.let {
-                                    (it as ListAdapter).dList = commodityList
-                                    it.notifyDataSetChanged()
-                                }
-                            }
-                        }
-                    }
-                }
-                .doOnError {
-                    Timber.d("error  " + it.message)
-                }
-                .doOnSubscribe {
-                    loadItemProgressBar.visibility = View.VISIBLE
-                }
-                .subscribe()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            CAMERA_RESULT -> {
-                CropImage.activity(fileData.fileUri)
-                        .start(this.activity!!, this)
-
-            }
-            CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE -> {
-                if (resultCode == RESULT_OK) {
-                    var result = CropImage.getActivityResult(data!!)
-                    customerView?.let {
-                        it.commodityImageView.setImageURI(result.uri)
-                    }
-                }
-            }
-        }
-    }
 
     private fun onCreateDialog(): Dialog {
         return activity?.let {
@@ -141,7 +97,7 @@ class CommodityFragment : Fragment() {
                                 customerView!!.stockField.text.toString().toInt(),
                                 customerView!!.costField.text.toString().toInt(),
                                 customerView!!.unitPriceField.text.toString().toInt(),
-                                fileData.toString())
+                                fileData.fileUri.toString())
                         var insOb = presenter!!.insertItem(commodity, fileData)
                         insOb.subscribeOn(Schedulers.newThread())
                                 .observeOn(AndroidSchedulers.mainThread())
@@ -149,10 +105,14 @@ class CommodityFragment : Fragment() {
                                     loadItemProgressBar.visibility = View.VISIBLE
                                 }
                                 .doOnSuccess {
+                                    Timber.d("success message " + it.message())
+                                    Timber.d("success message " + it.errorBody()?.string())
                                     getItem()
                                 }
+                                .doOnError {
+                                    Timber.d("error " + it.message)
+                                }
                                 .subscribe()
-
                     })
                     .setNegativeButton(R.string.cancel,
                             { dialog, id ->
@@ -169,10 +129,10 @@ class CommodityFragment : Fragment() {
             customerView!!.let {
                 it.nameField.setText(commodity.name)
                 it.desField.setText(commodity.description)
-                it.stockField.setText(commodity.stock)
-                it.costField.setText(commodity.cost)
-                it.unitPriceField.setText(commodity.unit_price)
-                it.commodityImageView.setImageURI(Uri.parse(commodity.imageUri))
+                it.stockField.setText(commodity.stock.toString())
+                it.costField.setText(commodity.cost.toString())
+                it.unitPriceField.setText(commodity.unit_price.toString())
+                Glide.with(activity!!).load(commodity.imageUri).into(it.commodityImageView)
             }
 
             customerView!!.commodityImageView.setOnClickListener {
@@ -184,11 +144,11 @@ class CommodityFragment : Fragment() {
             builder.setView(customerView)
                     // Add action buttons
                     .setPositiveButton(R.string.ok,
-                            DialogInterface.OnClickListener { dialog, id ->
+                            { dialog, id ->
                                 Timber.d("name " + customerView!!.nameField.text.toString())
                             })
                     .setNegativeButton(R.string.cancel,
-                            DialogInterface.OnClickListener { dialog, id ->
+                            { dialog, id ->
                                 dialog.cancel()
                             })
             builder.create()
@@ -205,5 +165,54 @@ class CommodityFragment : Fragment() {
         @JvmStatic
         fun newInstance() =
                 CommodityFragment()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            CAMERA_RESULT -> {
+                var i = Intent(this.activity, CropActivity::class.java)
+                i.putExtra(CropActivity.CROP_DATA, fileData.fileUri.toString())
+                startActivityForResult(i, CropActivity.CROP_RESULT_CODE)
+
+            }
+            CropActivity.CROP_RESULT_CODE -> {
+                if (resultCode == RESULT_OK) {
+                    customerView?.let {
+                        it.commodityImageView.setImageURI(fileData.fileUri)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getItem() {
+        presenter!!.getUploadItem().subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSuccess {
+                    loadItemProgressBar.visibility = View.GONE
+                    var commodityWrapper = it.body()
+                    it.body()?.let {
+                        Timber.d("+++ " + it.response.size)
+                        if (commodityWrapper!!.result) {
+                            var commodityList = commodityWrapper.response
+                            commodityList?.let {
+                                if (commodityList.size != 0) {
+                                    itemRecyclerView.adapter?.let {
+                                        (it as ListAdapter).dList = commodityList
+                                        it.notifyDataSetChanged()
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                .doOnError {
+                    Timber.d("error  " + it.message)
+                }
+                .doOnSubscribe {
+                    loadItemProgressBar.visibility = View.VISIBLE
+                }
+                .subscribe()
     }
 }
