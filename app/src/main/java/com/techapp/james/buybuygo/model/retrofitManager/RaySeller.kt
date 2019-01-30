@@ -23,9 +23,15 @@ interface RaySeller {
     @Multipart
     fun uploadItem(@Header("Authorization") token: String, @PartMap() partMap: Map<String, @JvmSuppressWildcards RequestBody>, @Part file: MultipartBody.Part): Single<Response<ResponseBody>>
 
+    @Multipart
+    @POST("items/{item_id}")
+    fun updateItem(@Header("Authorization") token: String, @Path("item_id") id:Int, @PartMap() partMap: Map<String, @JvmSuppressWildcards RequestBody>, @Part file: MultipartBody.Part): Single<Response<ResponseBody>>
 
     @Headers("X-Requested-With: XMLHttpRequest")
     @GET("items")
     fun getUploadedItem(@Header("Authorization") token: String): Single<Response<Wrapper<ArrayList<Commodity>>>>
+
+    @DELETE("items/{item_id}")
+    fun deleteItem(@Header("Authorization") token: String, @Path("item_id") item_id: String): Single<Response<Wrapper<String>>>
 
 }

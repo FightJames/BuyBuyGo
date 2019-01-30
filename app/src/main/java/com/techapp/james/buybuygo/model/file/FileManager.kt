@@ -25,7 +25,7 @@ object FileManager {
         }
         Timber.d("file path " + filePath + " filePath " + file.absolutePath)
         //share file to camera
-var fileData=FileData(filePath,FileProvider.getUriForFile(context, "buybuygo.fileProvider", file!!))
+        var fileData = FileData(filePath, FileProvider.getUriForFile(context, "buybuygo.fileProvider", file!!))
         return fileData
     }
 

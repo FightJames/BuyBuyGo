@@ -14,7 +14,8 @@ import timber.log.Timber
 
 class ListAdapter(var dList: ArrayList<Commodity>,
                   val context: Context,
-                  val getDialog: ((c: Commodity) -> Dialog)) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+                  val getDialog: ((c: Commodity) -> Dialog),
+                  val delete: ((c: Commodity) -> Unit)) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         var itemView = LayoutInflater.from(context).inflate(R.layout.seller_fragment_commodity_list_item, parent, false)
         return ItemViewHolder(itemView)
@@ -29,13 +30,13 @@ class ListAdapter(var dList: ArrayList<Commodity>,
         itemViewHolder.itemView.commodityImageView.setOnClickListener {
             getDialog.invoke(dList[position]).show()
         }
-
+        itemViewHolder.itemView.deleteImageView.setOnClickListener {
+            delete.invoke(dList[position])
+        }
     }
 
     class ItemViewHolder : RecyclerView.ViewHolder {
         constructor(view: View) : super(view) {
-            view.setOnClickListener {
-            }
         }
     }
 }

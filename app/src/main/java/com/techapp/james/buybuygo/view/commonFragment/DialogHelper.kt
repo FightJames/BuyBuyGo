@@ -19,6 +19,7 @@ import timber.log.Timber
 class DialogHelper(val activity: Activity) {
     interface OnOkPress {
         fun onOkPress(view: View)
+
     }
 
     fun onCreateRecipientDialog(content: Recipients, okDoing: OnOkPress): Dialog {
@@ -59,7 +60,12 @@ class DialogHelper(val activity: Activity) {
             var customerView = LayoutInflater.from(activity).inflate(R.layout.user_common_dialog_recipient, null, false)
             builder.setView(customerView)
                     // Add action buttons
-                    .setPositiveButton(R.string.ok, null)
+                    .setPositiveButton(R.string.ok, object : DialogInterface.OnClickListener {
+                        override fun onClick(dialog: DialogInterface?, which: Int) {
+                            okDoing.onOkPress(customerView)
+                        }
+
+                    })
                     .setNegativeButton(R.string.cancel,
                             DialogInterface.OnClickListener { dialog, id ->
                                 dialog.cancel()

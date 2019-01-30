@@ -44,4 +44,26 @@ class CommodityPresenter {
         return insertOb
     }
 
+    fun deleteItem(commodity: Commodity): Single<Response<Wrapper<String>>> {
+        return raySeller.deleteItem(Configure.RAY_ACESS_TOKEN, commodity.id)
+    }
+
+    fun updateItem(commodity: Commodity, fileData: FileData): Single<Response<ResponseBody>> {
+        var map = HashMap<String, RequestBody>()
+        map.put("name", RequestBody.create(okhttp3.MultipartBody.FORM, commodity.name))
+        map.put("description", RequestBody.create(okhttp3.MultipartBody.FORM, commodity.description))
+        map.put("stock", RequestBody.create(okhttp3.MultipartBody.FORM, commodity.stock.toString()))
+        map.put("cost", RequestBody.create(okhttp3.MultipartBody.FORM, commodity.cost.toString()))
+        map.put("unit_price", RequestBody.create(okhttp3.MultipartBody.FORM, commodity.unit_price.toString()))
+        map.put("_method", RequestBody.create(okhttp3.MultipartBody.FORM,"PATCH" ))
+
+        var file = File(fileData.path)
+        Timber.d("file path presenter " + file.absolutePath)
+        val requestFile = RequestBody.create(
+                MediaType.get("image/jpg"), file)
+        val body = MultipartBody.Part.createFormData("images", "cacheImage", requestFile)
+        var updateOb = raySeller.updateItem(Configure.RAY_ACESS_TOKEN, commodity.id.toInt(), map, body)
+        return updateOb
+    }
+
 }

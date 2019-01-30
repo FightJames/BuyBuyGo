@@ -7,11 +7,15 @@
 
     <ImageView
         android:id="@+id/commodityImageView"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toTopOf="@+id/nameField"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -22,32 +26,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:hint="@string/name"
         android:inputType="text"
         android:textColor="@android:color/background_dark"
         android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/desField"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/commodityImageView"
         tools:ignore="Autofill" />
 
     <EditText
         android:id="@+id/desField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:autofillHints="@string/description"
         android:hint="@string/description"
         android:inputType="text"
         android:textColor="@android:color/background_dark"
         android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/stockField"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nameField"
         tools:ignore="Autofill" />
 
     <EditText
@@ -55,15 +59,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:hint="@string/stock"
         android:inputType="number"
         android:textColor="@android:color/background_dark"
         android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/costField"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/desField"
         tools:ignore="Autofill" />
 
     <EditText
@@ -71,23 +75,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:hint="@string/cost"
         android:inputType="number"
         android:textColor="@android:color/background_dark"
         android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/unitPriceField"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/stockField"
         tools:ignore="Autofill" />
 
     <EditText
         android:id="@+id/unitPriceField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="9dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:hint="@string/unit_price"
@@ -97,7 +100,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/costField"
-        app:layout_constraintVertical_bias="0.0"
         tools:ignore="Autofill" />
 </android.support.constraint.ConstraintLayout>

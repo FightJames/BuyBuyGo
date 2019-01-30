@@ -9,6 +9,10 @@ import android.view.MenuItem
 import com.techapp.james.buybuygo.R
 import kotlinx.android.synthetic.main.crop_activity_crop.*
 import kotlinx.android.synthetic.main.crop_activity_crop.view.*
+import timber.log.Timber
+import android.provider.MediaStore
+import android.graphics.Bitmap
+
 
 class CropActivity : AppCompatActivity() {
     companion object {
@@ -22,10 +26,19 @@ class CropActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.crop_activity_crop)
         uri = Uri.parse(intent.getStringExtra(CROP_DATA))
+        Timber.d(uri.toString())
+        val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
         cropImageView.setImageUriAsync(uri)
-cropImageView.setOnCropImageCompleteListener { view, result ->
-    cropImageView.saveCroppedImageAsync(uri)
-}
+//        cropImageView.setImageBitmap(bitmap)
+        cropImageView.setOnCropImageCompleteListener { view, result ->
+            cropImageView.saveCroppedImageAsync(uri)
+            cropImageView.setOnCropImageCompleteListener { view, result ->
+                var back = Intent()
+//                back.putExtra(CROP_RESULT_URI, uri);
+                this.setResult(RESULT_OK, back);
+                this.finish();
+            }
+        }
 //        cropImageView.croppedImage
 //        Intent back = new Intent();
 //        back.putExtra("data", target.toString());
@@ -42,10 +55,7 @@ cropImageView.setOnCropImageCompleteListener { view, result ->
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.order) {
             0 -> {
-                var back = Intent()
-//                back.putExtra(CROP_RESULT_URI, uri);
-                this.setResult(RESULT_OK, back);
-                this.finish();
+                cropImageView.getCroppedImageAsync()
             }
         }
         return true
