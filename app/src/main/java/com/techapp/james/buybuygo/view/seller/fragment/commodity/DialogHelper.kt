@@ -1,26 +1,52 @@
 package com.techapp.james.buybuygo.view.seller.fragment.commodity
 
-import android.app.Activity
 import android.app.Dialog
+import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
+import android.view.LayoutInflater
+import android.view.View
+import com.bumptech.glide.Glide
+import com.techapp.james.buybuygo.R
+import com.techapp.james.buybuygo.model.data.Commodity
+import com.techapp.james.buybuygo.model.file.FileData
+import com.techapp.james.buybuygo.model.networkManager.NetworkManager
+import com.techapp.james.buybuygo.presenter.seller.CommodityPresenter
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.fragment_commodity.*
+import kotlinx.android.synthetic.main.seller_fragment_commodity_dialog.view.*
+import timber.log.Timber
 
 class DialogHelper {
+    var fragment: Fragment?
+    var intentCamera: (() -> Unit)?
+    var presenter: CommodityPresenter?
+    var updateData: (() -> Unit)?
+    var fileData: FileData?
+    lateinit var customerView: View
 
+    constructor(fragment: CommodityFragment,
+                intentCamera: () -> Unit,
+                presenter: CommodityPresenter,
+                updateComplete: () -> Unit,
+                fileData: FileData) {
+        this.fragment = fragment
+        this.intentCamera = intentCamera
+        this.presenter = presenter
+        this.updateData = updateComplete
+        this.fileData = fileData
+    }
 
-    private fun onCreateDialog(activity: Activity): Dialog {
-        return activity?.let {
+    fun onCreateDialog(): Dialog {
+        return fragment!!.activity?.let {
             val builder = AlertDialog.Builder(it)
-            customerView = layoutInflater.inflate(R.layout.seller_fragment_commodity_dialog, null)
+            customerView = LayoutInflater.from(it).inflate(R.layout.seller_fragment_commodity_dialog, null)
             customerView!!.commodityImageView.setOnClickListener {
-                ConfigUpdatePhoto.IS_UPDATE_PHOTO = true
-                var i = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                i.putExtra(MediaStore.EXTRA_OUTPUT, fileData.fileUri)
-                startActivityForResult(i, CAMERA_RESULT)
+                intentCamera!!.invoke()
             }
             builder.setView(customerView)
                     // Add action buttons
                     .setPositiveButton(R.string.ok, { dialog, id ->
-                        Timber.d("name " + customerView!!.nameField.text.toString())
                         var pattern = "^[0-9]*\$".toRegex()
                         var stock = customerView!!.stockField.text.toString()
                         var cost = customerView!!.costField.text.toString()
@@ -35,17 +61,17 @@ class DialogHelper {
                                 if (stockFlag) stock.toInt() else 0,
                                 if (costFlag) cost.toInt() else 0,
                                 if (unitPriceFlag) unitPrice.toInt() else 0,
-                                fileData.fileUri.toString())
-                        var insOb = presenter!!.insertItem(commodity, fileData)
+                                fileData!!.fileUri.toString())
+                        var insOb = presenter!!.insertItem(commodity, fileData!!)
                         insOb.subscribeOn(Schedulers.newThread())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .doOnSubscribe {
-                                    loadItemProgressBar.visibility = View.VISIBLE
+                                    fragment!!.loadItemProgressBar.visibility = View.VISIBLE
                                 }
                                 .doOnSuccess {
                                     Timber.d("success message " + it.message())
                                     Timber.d("success message " + it.errorBody()?.string())
-                                    getItem()
+                                    updateData!!.invoke()
                                 }
                                 .doOnError {
                                     Timber.d("error " + it.message)
@@ -60,25 +86,22 @@ class DialogHelper {
         } ?: throw IllegalStateException("Activity cannot be null")
     }
 
-    private fun onCreateDialog(commodity: Commodity): Dialog {
-        return activity?.let {
+    fun onCreateModifyDialog(commodity: Commodity): Dialog {
+        return fragment!!.activity?.let {
             val builder = AlertDialog.Builder(it)
-            customerView = layoutInflater.inflate(R.layout.seller_fragment_commodity_dialog, null)
+            customerView = LayoutInflater.from(it).inflate(R.layout.seller_fragment_commodity_dialog, null)
             customerView!!.let {
                 it.nameField.setText(commodity.name)
                 it.desField.setText(commodity.description)
                 it.stockField.setText(commodity.stock.toString())
                 it.costField.setText(commodity.cost.toString())
                 it.unitPriceField.setText(commodity.unit_price.toString())
-                Glide.with(activity!!).load(commodity.imageUri).into(it.commodityImageView)
+                Glide.with(it).load(commodity.imageUri).into(it.commodityImageView)
             }
 
             ConfigUpdatePhoto.IS_UPDATE_PHOTO = false
             customerView!!.commodityImageView.setOnClickListener {
-                ConfigUpdatePhoto.IS_UPDATE_PHOTO = true
-                var i = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                i.putExtra(MediaStore.EXTRA_OUTPUT, fileData.fileUri)
-                startActivityForResult(i, CAMERA_RESULT)
+                intentCamera!!.invoke()
             }
             builder.setView(customerView)
                     // Add action buttons
@@ -98,23 +121,24 @@ class DialogHelper {
                                 commodity.stock = if (stockFlag) stock.toInt() else 0
                                 commodity.cost = if (costFlag) cost.toInt() else 0
                                 commodity.unit_price = if (unitPriceFlag) unitPrice.toInt() else 0
-                                var updateOB = presenter!!.updateItem(commodity, fileData)
+                                var updateOB = presenter!!.updateItem(commodity, fileData!!)
                                 if (ConfigUpdatePhoto.IS_UPDATE_PHOTO) {
                                     updateOB.subscribeOn(Schedulers.newThread())
                                             .observeOn(AndroidSchedulers.mainThread())
                                             .doOnSuccess {
-                                                getItem()
+                                                updateData!!.invoke()
                                             }.doOnError {
                                             }.subscribe()
                                 } else {
-                                    var singleFile = NetworkManager.downloadImage(commodity.imageUri, fileData.path)
+                                    var singleFile = NetworkManager
+                                            .downloadImage(commodity.imageUri, fileData!!.path)
                                     singleFile.subscribeOn(Schedulers.newThread())
                                             .observeOn(AndroidSchedulers.mainThread())
                                             .doOnSuccess {
                                                 updateOB.subscribeOn(Schedulers.newThread())
                                                         .observeOn(AndroidSchedulers.mainThread())
                                                         .doOnSuccess {
-                                                            getItem()
+                                                            updateData!!.invoke()
                                                         }.doOnError {
                                                         }.subscribe()
                                             }.subscribe()
@@ -126,5 +150,13 @@ class DialogHelper {
                             })
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
+    }
+
+    fun destroy() {
+        fragment = null
+        intentCamera = null
+        presenter = null
+        updateData = null
+        fileData = null
     }
 }
