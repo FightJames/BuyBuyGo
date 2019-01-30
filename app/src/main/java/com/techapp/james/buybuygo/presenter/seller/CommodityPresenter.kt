@@ -9,6 +9,8 @@ import com.techapp.james.buybuygo.model.retrofitManager.RetrofitManager
 import com.techapp.james.buybuygo.presenter.Configure
 import io.reactivex.Single
 import okhttp3.*
+import org.json.JSONArray
+import org.json.JSONObject
 import retrofit2.Response
 import timber.log.Timber
 import java.io.File
@@ -45,7 +47,12 @@ class CommodityPresenter {
     }
 
     fun deleteItem(commodity: Commodity): Single<Response<Wrapper<String>>> {
-        return raySeller.deleteItem(Configure.RAY_ACESS_TOKEN, commodity.id)
+        var jsonObject = JSONObject()
+        var jsonArray = JSONArray()
+        jsonArray.put(commodity.id.toInt())
+        jsonObject.put("items", jsonArray)
+        var requestBody = RequestBody.create(MediaType.parse("application/json"), jsonObject.toString())
+        return raySeller.deleteItem(Configure.RAY_ACESS_TOKEN, requestBody)
     }
 
     fun updateItem(commodity: Commodity, fileData: FileData): Single<Response<ResponseBody>> {
@@ -55,7 +62,7 @@ class CommodityPresenter {
         map.put("stock", RequestBody.create(okhttp3.MultipartBody.FORM, commodity.stock.toString()))
         map.put("cost", RequestBody.create(okhttp3.MultipartBody.FORM, commodity.cost.toString()))
         map.put("unit_price", RequestBody.create(okhttp3.MultipartBody.FORM, commodity.unit_price.toString()))
-        map.put("_method", RequestBody.create(okhttp3.MultipartBody.FORM,"PATCH" ))
+        map.put("_method", RequestBody.create(okhttp3.MultipartBody.FORM, "PATCH"))
 
         var file = File(fileData.path)
         Timber.d("file path presenter " + file.absolutePath)

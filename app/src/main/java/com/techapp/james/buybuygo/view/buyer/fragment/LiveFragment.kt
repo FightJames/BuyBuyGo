@@ -41,7 +41,7 @@ class LiveFragment : Fragment() {
                         input?.let {
                             //                            Toast.makeText(this@BookActivity, p0, Toast.LENGTH_LONG).show()
                             //input is a url which seller live in facebook
-                            //post api/channel to get channel
+                            //post api/Channel to get Channel
 
                             searchView.setQuery("", true)
 

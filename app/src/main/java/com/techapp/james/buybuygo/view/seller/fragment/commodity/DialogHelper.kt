@@ -25,11 +25,13 @@ class DialogHelper {
     var fileData: FileData?
     lateinit var customerView: View
 
-    constructor(fragment: CommodityFragment,
-                intentCamera: () -> Unit,
-                presenter: CommodityPresenter,
-                updateComplete: () -> Unit,
-                fileData: FileData) {
+    constructor(
+        fragment: CommodityFragment,
+        intentCamera: () -> Unit,
+        presenter: CommodityPresenter,
+        updateComplete: () -> Unit,
+        fileData: FileData
+    ) {
         this.fragment = fragment
         this.intentCamera = intentCamera
         this.presenter = presenter
@@ -40,48 +42,52 @@ class DialogHelper {
     fun onCreateDialog(): Dialog {
         return fragment!!.activity?.let {
             val builder = AlertDialog.Builder(it)
-            customerView = LayoutInflater.from(it).inflate(R.layout.seller_fragment_commodity_dialog, null)
+            customerView =
+                    LayoutInflater.from(it).inflate(R.layout.seller_fragment_commodity_dialog, null)
             customerView!!.commodityImageView.setOnClickListener {
                 intentCamera!!.invoke()
             }
             builder.setView(customerView)
-                    // Add action buttons
-                    .setPositiveButton(R.string.ok, { dialog, id ->
-                        var pattern = "^[0-9]*\$".toRegex()
-                        var stock = customerView!!.stockField.text.toString()
-                        var cost = customerView!!.costField.text.toString()
-                        var unitPrice = customerView!!.unitPriceField.text.toString()
-                        var stockFlag = pattern.matches(stock)
-                        var costFlag = pattern.matches(cost)
-                        var unitPriceFlag = pattern.matches(unitPrice)
-                        customerView!!.unitPriceField.text.toString()
-                        var commodity = Commodity("",
-                                customerView!!.nameField.text.toString(),
-                                customerView!!.desField.text.toString(),
-                                if (stockFlag) stock.toInt() else 0,
-                                if (costFlag) cost.toInt() else 0,
-                                if (unitPriceFlag) unitPrice.toInt() else 0,
-                                fileData!!.fileUri.toString())
-                        var insOb = presenter!!.insertItem(commodity, fileData!!)
-                        insOb.subscribeOn(Schedulers.newThread())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .doOnSubscribe {
-                                    fragment!!.loadItemProgressBar.visibility = View.VISIBLE
-                                }
-                                .doOnSuccess {
-                                    Timber.d("success message " + it.message())
-                                    Timber.d("success message " + it.errorBody()?.string())
-                                    updateData!!.invoke()
-                                }
-                                .doOnError {
-                                    Timber.d("error " + it.message)
-                                }
-                                .subscribe()
+                // Add action buttons
+                .setPositiveButton(R.string.ok, { dialog, id ->
+                    var pattern = "^[0-9]*\$".toRegex()
+                    var stock = customerView!!.stockField.text.toString()
+                    var cost = customerView!!.costField.text.toString()
+                    var unitPrice = customerView!!.unitPriceField.text.toString()
+                    Timber.d("stock"+stock.equals("").toString())
+                    var stockFlag = pattern.matches(stock) && !stock.equals("")
+                    var costFlag = pattern.matches(cost) && !cost.equals("")
+                    var unitPriceFlag = pattern.matches(unitPrice) && !unitPrice.equals("")
+                    customerView!!.unitPriceField.text.toString()
+                    var commodity = Commodity(
+                        "",
+                        customerView!!.nameField.text.toString(),
+                        customerView!!.desField.text.toString(),
+                        if (stockFlag) stock.toInt() else 0,
+                        if (costFlag) cost.toInt() else 0,
+                        if (unitPriceFlag) unitPrice.toInt() else 0,
+                        fileData!!.fileUri.toString()
+                    )
+                    var insOb = presenter!!.insertItem(commodity, fileData!!)
+                    insOb.subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnSubscribe {
+                            fragment!!.loadItemProgressBar.visibility = View.VISIBLE
+                        }
+                        .doOnSuccess {
+                            Timber.d("success message " + it.message())
+                            Timber.d("success message " + it.errorBody()?.string())
+                            updateData!!.invoke()
+                        }
+                        .doOnError {
+                            Timber.d("error " + it.message)
+                        }
+                        .subscribe()
+                })
+                .setNegativeButton(R.string.cancel,
+                    { dialog, id ->
+                        dialog.cancel()
                     })
-                    .setNegativeButton(R.string.cancel,
-                            { dialog, id ->
-                                dialog.cancel()
-                            })
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
     }
@@ -89,7 +95,8 @@ class DialogHelper {
     fun onCreateModifyDialog(commodity: Commodity): Dialog {
         return fragment!!.activity?.let {
             val builder = AlertDialog.Builder(it)
-            customerView = LayoutInflater.from(it).inflate(R.layout.seller_fragment_commodity_dialog, null)
+            customerView =
+                    LayoutInflater.from(it).inflate(R.layout.seller_fragment_commodity_dialog, null)
             customerView!!.let {
                 it.nameField.setText(commodity.name)
                 it.desField.setText(commodity.description)
@@ -104,50 +111,50 @@ class DialogHelper {
                 intentCamera!!.invoke()
             }
             builder.setView(customerView)
-                    // Add action buttons
-                    .setPositiveButton(R.string.ok,
-                            { dialog, id ->
-                                Timber.d("name " + customerView!!.nameField.text.toString())
-                                var pattern = "^[0-9]*\$".toRegex()
-                                var stock = customerView!!.stockField.text.toString()
-                                var cost = customerView!!.costField.text.toString()
-                                var unitPrice = customerView!!.unitPriceField.text.toString()
-                                var stockFlag = pattern.matches(stock)
-                                var costFlag = pattern.matches(cost)
-                                var unitPriceFlag = pattern.matches(unitPrice)
-                                customerView!!.unitPriceField.text.toString()
-                                commodity.name = customerView!!.nameField.text.toString()
-                                commodity.description = customerView!!.desField.text.toString()
-                                commodity.stock = if (stockFlag) stock.toInt() else 0
-                                commodity.cost = if (costFlag) cost.toInt() else 0
-                                commodity.unit_price = if (unitPriceFlag) unitPrice.toInt() else 0
-                                var updateOB = presenter!!.updateItem(commodity, fileData!!)
-                                if (ConfigUpdatePhoto.IS_UPDATE_PHOTO) {
+                // Add action buttons
+                .setPositiveButton(R.string.ok,
+                    { dialog, id ->
+                        Timber.d("name " + customerView!!.nameField.text.toString())
+                        var pattern = "^[0-9]*\$".toRegex()
+                        var stock = customerView!!.stockField.text.toString()
+                        var cost = customerView!!.costField.text.toString()
+                        var unitPrice = customerView!!.unitPriceField.text.toString()
+                        var stockFlag = pattern.matches(stock)
+                        var costFlag = pattern.matches(cost)
+                        var unitPriceFlag = pattern.matches(unitPrice)
+                        customerView!!.unitPriceField.text.toString()
+                        commodity.name = customerView!!.nameField.text.toString()
+                        commodity.description = customerView!!.desField.text.toString()
+                        commodity.stock = if (stockFlag) stock.toInt() else 0
+                        commodity.cost = if (costFlag) cost.toInt() else 0
+                        commodity.unit_price = if (unitPriceFlag) unitPrice.toInt() else 0
+                        var updateOB = presenter!!.updateItem(commodity, fileData!!)
+                        if (ConfigUpdatePhoto.IS_UPDATE_PHOTO) {
+                            updateOB.subscribeOn(Schedulers.newThread())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .doOnSuccess {
+                                    updateData!!.invoke()
+                                }.doOnError {
+                                }.subscribe()
+                        } else {
+                            var singleFile = NetworkManager
+                                .downloadImage(commodity.imageUri, fileData!!.path)
+                            singleFile.subscribeOn(Schedulers.newThread())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .doOnSuccess {
                                     updateOB.subscribeOn(Schedulers.newThread())
-                                            .observeOn(AndroidSchedulers.mainThread())
-                                            .doOnSuccess {
-                                                updateData!!.invoke()
-                                            }.doOnError {
-                                            }.subscribe()
-                                } else {
-                                    var singleFile = NetworkManager
-                                            .downloadImage(commodity.imageUri, fileData!!.path)
-                                    singleFile.subscribeOn(Schedulers.newThread())
-                                            .observeOn(AndroidSchedulers.mainThread())
-                                            .doOnSuccess {
-                                                updateOB.subscribeOn(Schedulers.newThread())
-                                                        .observeOn(AndroidSchedulers.mainThread())
-                                                        .doOnSuccess {
-                                                            updateData!!.invoke()
-                                                        }.doOnError {
-                                                        }.subscribe()
-                                            }.subscribe()
-                                }
-                            })
-                    .setNegativeButton(R.string.cancel,
-                            { dialog, id ->
-                                dialog.cancel()
-                            })
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .doOnSuccess {
+                                            updateData!!.invoke()
+                                        }.doOnError {
+                                        }.subscribe()
+                                }.subscribe()
+                        }
+                    })
+                .setNegativeButton(R.string.cancel,
+                    { dialog, id ->
+                        dialog.cancel()
+                    })
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
     }

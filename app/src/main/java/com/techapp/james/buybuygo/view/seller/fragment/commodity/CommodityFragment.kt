@@ -28,7 +28,6 @@ import timber.log.Timber
 class CommodityFragment : Fragment() {
     private var dialog: Dialog? = null
     private lateinit var dialogHelper: DialogHelper
-    private var customerView: View? = null
     var dataList = ArrayList<Commodity>()
     var presenter: CommodityPresenter? = null
     private lateinit var fileData: FileData
@@ -126,14 +125,13 @@ class CommodityFragment : Fragment() {
             }
             CropActivity.CROP_RESULT_CODE -> {
                 if (resultCode == RESULT_OK) {
-                    customerView?.let {
+                    dialogHelper.customerView.let {
                         it.commodityImageView.setImageURI(fileData.fileUri)
                     }
                 }
             }
         }
     }
-
     private fun getItem() {
         presenter!!.getUploadItem().subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())

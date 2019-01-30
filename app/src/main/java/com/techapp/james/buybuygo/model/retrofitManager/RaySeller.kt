@@ -3,6 +3,7 @@ package com.techapp.james.buybuygo.model.retrofitManager
 import com.techapp.james.buybuygo.presenter.Configure
 import io.reactivex.Single
 import bolts.Task
+import com.techapp.james.buybuygo.model.data.Channel
 import com.techapp.james.buybuygo.model.data.Commodity
 import com.techapp.james.buybuygo.model.data.Wrapper
 import io.reactivex.SingleObserver
@@ -25,13 +26,21 @@ interface RaySeller {
 
     @Multipart
     @POST("items/{item_id}")
-    fun updateItem(@Header("Authorization") token: String, @Path("item_id") id:Int, @PartMap() partMap: Map<String, @JvmSuppressWildcards RequestBody>, @Part file: MultipartBody.Part): Single<Response<ResponseBody>>
+    fun updateItem(@Header("Authorization") token: String, @Path("item_id") id: Int, @PartMap() partMap: Map<String, @JvmSuppressWildcards RequestBody>, @Part file: MultipartBody.Part): Single<Response<ResponseBody>>
 
     @Headers("X-Requested-With: XMLHttpRequest")
     @GET("items")
     fun getUploadedItem(@Header("Authorization") token: String): Single<Response<Wrapper<ArrayList<Commodity>>>>
 
-    @DELETE("items/{item_id}")
-    fun deleteItem(@Header("Authorization") token: String, @Path("item_id") item_id: String): Single<Response<Wrapper<String>>>
+    @Headers("Content-Type: application/json")
+    @HTTP(method = "DELETE", path = "items", hasBody = true)
+    fun deleteItem(@Header("Authorization") token: String, @Body itemIds: RequestBody): Single<Response<Wrapper<String>>>
 
+    @Headers("Content-Type: application/json")
+    @POST("channel")
+    fun startChannel(@Header("Authorization") token: String, @Body iFrame: RequestBody): Single<Response<Wrapper<Channel>>>
+
+    @Headers("Content-Type: application/json")
+    @PUT("users-channel-id")
+    fun endChannel(@Header("Authorization") token: String): Single<Response<Wrapper<String>>>
 }
