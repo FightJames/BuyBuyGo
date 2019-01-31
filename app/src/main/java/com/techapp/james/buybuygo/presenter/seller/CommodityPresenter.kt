@@ -25,6 +25,16 @@ class CommodityPresenter {
         raySeller = RetrofitManager.getInstance().getRaySeller()
     }
 
+    fun deleteItem(commodity: Commodity): Single<Response<Wrapper<String>>> {
+        var jsonObject = JSONObject()
+        var jsonArray = JSONArray()
+        jsonArray.put(commodity.id.toInt())
+        jsonObject.put("items", jsonArray)
+        var requestBody =
+            RequestBody.create(MediaType.parse("application/json"), jsonObject.toString())
+        return raySeller.deleteItem(Configure.RAY_ACESS_TOKEN, requestBody)
+    }
+
     fun getUploadItem(): Single<Response<Wrapper<ArrayList<Commodity>>>> {
         return raySeller.getUploadedItem(Configure.RAY_ACESS_TOKEN)
     }
@@ -32,45 +42,56 @@ class CommodityPresenter {
     fun insertItem(commodity: Commodity, fileData: FileData): Single<Response<ResponseBody>> {
         var map = HashMap<String, RequestBody>()
         map.put("name", RequestBody.create(okhttp3.MultipartBody.FORM, commodity.name))
-        map.put("description", RequestBody.create(okhttp3.MultipartBody.FORM, commodity.description))
+        map.put(
+            "description",
+            RequestBody.create(okhttp3.MultipartBody.FORM, commodity.description)
+        )
         map.put("stock", RequestBody.create(okhttp3.MultipartBody.FORM, commodity.stock.toString()))
         map.put("cost", RequestBody.create(okhttp3.MultipartBody.FORM, commodity.cost.toString()))
-        map.put("unit_price", RequestBody.create(okhttp3.MultipartBody.FORM, commodity.unit_price.toString()))
+        map.put(
+            "unit_price",
+            RequestBody.create(okhttp3.MultipartBody.FORM, commodity.unit_price.toString())
+        )
 
         var file = File(fileData.path)
         Timber.d("file path presenter " + file.absolutePath)
         val requestFile = RequestBody.create(
-                MediaType.get("image/jpg"), file)
+            MediaType.get("image/jpg"), file
+        )
         val body = MultipartBody.Part.createFormData("images", "cacheImage", requestFile)
         var insertOb = raySeller.uploadItem(Configure.RAY_ACESS_TOKEN, map, body)
         return insertOb
     }
 
-    fun deleteItem(commodity: Commodity): Single<Response<Wrapper<String>>> {
-        var jsonObject = JSONObject()
-        var jsonArray = JSONArray()
-        jsonArray.put(commodity.id.toInt())
-        jsonObject.put("items", jsonArray)
-        var requestBody = RequestBody.create(MediaType.parse("application/json"), jsonObject.toString())
-        return raySeller.deleteItem(Configure.RAY_ACESS_TOKEN, requestBody)
-    }
 
     fun updateItem(commodity: Commodity, fileData: FileData): Single<Response<ResponseBody>> {
         var map = HashMap<String, RequestBody>()
         map.put("name", RequestBody.create(okhttp3.MultipartBody.FORM, commodity.name))
-        map.put("description", RequestBody.create(okhttp3.MultipartBody.FORM, commodity.description))
+        map.put(
+            "description",
+            RequestBody.create(okhttp3.MultipartBody.FORM, commodity.description)
+        )
         map.put("stock", RequestBody.create(okhttp3.MultipartBody.FORM, commodity.stock.toString()))
         map.put("cost", RequestBody.create(okhttp3.MultipartBody.FORM, commodity.cost.toString()))
-        map.put("unit_price", RequestBody.create(okhttp3.MultipartBody.FORM, commodity.unit_price.toString()))
+        map.put(
+            "unit_price",
+            RequestBody.create(okhttp3.MultipartBody.FORM, commodity.unit_price.toString())
+        )
         map.put("_method", RequestBody.create(okhttp3.MultipartBody.FORM, "PATCH"))
 
         var file = File(fileData.path)
         Timber.d("file path presenter " + file.absolutePath)
         val requestFile = RequestBody.create(
-                MediaType.get("image/jpg"), file)
+            MediaType.get("image/jpg"), file
+        )
         val body = MultipartBody.Part.createFormData("images", "cacheImage", requestFile)
-        var updateOb = raySeller.updateItem(Configure.RAY_ACESS_TOKEN, commodity.id.toInt(), map, body)
+        var updateOb =
+            raySeller.updateItem(Configure.RAY_ACESS_TOKEN, commodity.id.toInt(), map, body)
         return updateOb
+    }
+
+    fun pushItem(commodity: Commodity): Single<Response<Wrapper<String>>> {
+        return raySeller.pushItem(Configure.RAY_ACESS_TOKEN, commodity.id)
     }
 
 }

@@ -40,9 +40,9 @@ class BuyFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-//        if (context is OnFragmentInteractionListener) { listener = context
+//        if (commodityFragment is OnFragmentInteractionListener) { listener = commodityFragment
 //        } else {
-//            throw RuntimeException(context.toString() + " must implement OnFragmentInteractionListener")
+//            throw RuntimeException(commodityFragment.toString() + " must implement OnFragmentInteractionListener")
 //        }
     }
 

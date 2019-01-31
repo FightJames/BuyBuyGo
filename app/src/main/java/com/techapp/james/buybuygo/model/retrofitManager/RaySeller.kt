@@ -40,6 +40,11 @@ interface RaySeller {
     @POST("channel")
     fun startChannel(@Header("Authorization") token: String, @Body iFrame: RequestBody): Single<Response<Wrapper<Channel>>>
 
+
+    @Headers("Content-Type: application/json")
+    @POST("streaming-items/{item_id}")
+    fun pushItem(@Header("Authorization") token: String, @Path("item_id") itemId: String): Single<Response<Wrapper<String>>>
+
     @Headers("Content-Type: application/json")
     @PUT("users-channel-id")
     fun endChannel(@Header("Authorization") token: String): Single<Response<Wrapper<String>>>

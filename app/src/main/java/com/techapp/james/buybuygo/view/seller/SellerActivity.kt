@@ -12,7 +12,7 @@ import com.techapp.james.buybuygo.view.commonFragment.UserInfoFragment
 import com.techapp.james.buybuygo.view.seller.fragment.commodity.CommodityFragment
 import com.techapp.james.buybuygo.view.seller.fragment.live.LiveFragment
 import com.techapp.james.buybuygo.view.seller.fragment.OrderFragment
-import com.techapp.james.buybuygo.view.seller.fragment.UploadFragment
+import com.techapp.james.buybuygo.view.seller.fragment.uploaded.UploadFragment
 import kotlinx.android.synthetic.main.activity_seller.*
 
 class SellerActivity : AppCompatActivity() {

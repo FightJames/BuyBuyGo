@@ -57,7 +57,9 @@ class LiveFragment : Fragment() {
             singleEnd.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSuccess {
-                    Toast.makeText(this.context, it.body()!!.response, Toast.LENGTH_LONG).show()
+                    it.body()?.let {
+                        Toast.makeText(this.context, it.response, Toast.LENGTH_LONG).show()
+                    }
                 }.subscribe()
         }
     }
@@ -72,6 +74,7 @@ class LiveFragment : Fragment() {
             id = sArray[sArray.size - 1]
         }
         Timber.d("filter ${id.toRegex().matches("^[0-9]*\$")}")
+        var url = "https://www.facebook.com/video/embed?video_id=$id\""
         streamUrl = "<html><body>" +
                 "<iframe" + " src=\"https://www.facebook.com/video/embed?video_id=$id\"" +
                 " width=\"100%\"" +
@@ -82,7 +85,7 @@ class LiveFragment : Fragment() {
                 " allowTransparency=\"true\"" +
                 " allowFullScreen=\"true\">" +
                 "</iframe></ body></html >"
-        var singleChannel = livePresenter.startChannel(streamUrl)
+        var singleChannel = livePresenter.startChannel(url)
         singleChannel.subscribeOn(Schedulers.newThread())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSuccess {

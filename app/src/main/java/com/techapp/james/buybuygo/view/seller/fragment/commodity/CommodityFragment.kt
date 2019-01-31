@@ -36,11 +36,14 @@ class CommodityFragment : Fragment() {
         setHasOptionsMenu(true)
         fileData = FileManager.createImageFileUri("cacheImage", this.activity!!.applicationContext)
         presenter = CommodityPresenter(this)
-        dialogHelper = DialogHelper(this, this::intentToCamera, presenter!!, this::getItem, fileData)
+        dialogHelper =
+                DialogHelper(this, this::intentToCamera, presenter!!, this::getItem, fileData)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_commodity, container, false)
     }
 
@@ -72,30 +75,46 @@ class CommodityFragment : Fragment() {
     }
 
     private fun init() {
-        itemRecyclerView.layoutManager = GridLayoutManager(this.activity, 3, GridLayoutManager.VERTICAL, false)
-        itemRecyclerView.adapter = ListAdapter(dataList, this.activity!!, dialogHelper::onCreateModifyDialog, this::deleteItem)
+        itemRecyclerView.layoutManager =
+                GridLayoutManager(this.activity, 3, GridLayoutManager.VERTICAL, false)
+        itemRecyclerView.adapter = ListAdapter(
+            dataList,
+            this,
+            dialogHelper::onCreateModifyDialog
+        )
         getItem()
     }
 
-    private fun intentToCamera() {
+    fun intentToCamera() {
         ConfigUpdatePhoto.IS_UPDATE_PHOTO = true
         var i = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         i.putExtra(MediaStore.EXTRA_OUTPUT, fileData.fileUri)
         startActivityForResult(i, CAMERA_RESULT)
     }
 
-    private fun deleteItem(c: Commodity) {
+    fun deleteItem(c: Commodity) {
         var deleteObserver = presenter!!.deleteItem(c)
         deleteObserver.subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSuccess {
-                    it.body()?.let {
-                        Toast.makeText(this.activity, it.response, Toast.LENGTH_LONG).show()
-                    }
-                    getItem()
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSuccess {
+                it.body()?.let {
+                    Toast.makeText(this.activity, it.response, Toast.LENGTH_LONG).show()
                 }
-                .doOnError {
-                }.subscribe()
+                getItem()
+            }
+            .doOnError {
+            }.subscribe()
+    }
+
+    fun pushItem(c: Commodity) {
+        var singlePush = presenter!!.pushItem(c)
+        singlePush.subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSuccess {
+                it.body()?.let {
+                    Toast.makeText(this.activity, it.response, Toast.LENGTH_LONG).show()
+                }
+            }.subscribe()
     }
 
     override fun onDestroy() {
@@ -108,7 +127,7 @@ class CommodityFragment : Fragment() {
         val CAMERA_RESULT = 0
         @JvmStatic
         fun newInstance() =
-                CommodityFragment()
+            CommodityFragment()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -132,31 +151,32 @@ class CommodityFragment : Fragment() {
             }
         }
     }
+
     private fun getItem() {
         presenter!!.getUploadItem().subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSuccess {
-                    loadItemProgressBar.visibility = View.GONE
-                    var commodityWrapper = it.body()
-                    it.body()?.let {
-                        Timber.d("+++ " + it.response.size)
-                        if (commodityWrapper!!.result) {
-                            var commodityList = commodityWrapper.response
-                            commodityList?.let {
-                                itemRecyclerView.adapter?.let {
-                                    (it as ListAdapter).dList = commodityList
-                                    it.notifyDataSetChanged()
-                                }
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSuccess {
+                loadItemProgressBar.visibility = View.GONE
+                var commodityWrapper = it.body()
+                it.body()?.let {
+                    Timber.d("+++ " + it.response.size)
+                    if (commodityWrapper!!.result) {
+                        var commodityList = commodityWrapper.response
+                        commodityList?.let {
+                            itemRecyclerView.adapter?.let {
+                                (it as ListAdapter).dList = commodityList
+                                it.notifyDataSetChanged()
                             }
                         }
                     }
                 }
-                .doOnError {
-                    Timber.d("error  " + it.message)
-                }
-                .doOnSubscribe {
-                    loadItemProgressBar.visibility = View.VISIBLE
-                }
-                .subscribe()
+            }
+            .doOnError {
+                Timber.d("error  " + it.message)
+            }
+            .doOnSubscribe {
+                loadItemProgressBar.visibility = View.VISIBLE
+            }
+            .subscribe()
     }
 }

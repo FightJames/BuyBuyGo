@@ -54,7 +54,7 @@ class Test {
 
         var f = saveBitmapToFile(context, Bitmap.CompressFormat.PNG, 100)
         Timber.d(context.packageName)
-//        val fileUri = Uri.parse("android.resource://" + context.packageName + "/" + R.raw.test)
+//        val fileUri = Uri.parse("android.resource://" + commodityFragment.packageName + "/" + R.raw.test)
 //        fileUri
 //        var f = File(fileUri.path)
 
