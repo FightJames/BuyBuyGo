@@ -1,6 +1,8 @@
 package com.techapp.james.buybuygo.view.commonFragment
 
 import android.app.Activity
+import android.app.Dialog
+import android.app.ProgressDialog
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
@@ -34,6 +36,7 @@ class UserInfoFragment : Fragment() {
     private var mode: Int = ExpandableAdapter.BUYER_MODE
     lateinit var dialogHelper: DialogHelper
     var userInfoPresenter: UserInfoPresenter? = null
+    var expandableAdapter: ExpandableAdapter? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         dialogHelper = DialogHelper(this.activity!!)
@@ -47,7 +50,13 @@ class UserInfoFragment : Fragment() {
         super.onStart()
         userInfoList.layoutManager = LinearLayoutManager(this.activity)
 //        var u = User("sdlfj", "sdlfj", "sdlfj", "sdlfj", arrayListOf(Recipients("sdlfj", "sdlfj"), Recipients("sdlfj", "sdlfj")))
-        userInfoList.adapter = ExpandableAdapter(this.activity as Activity, mode, Configure.user,this::onCreateRecipient)
+        expandableAdapter = ExpandableAdapter(
+            this.activity as Activity,
+            mode,
+            Configure.user,
+            this::onCreateRecipient
+        )
+        userInfoList.adapter = expandableAdapter
 //        userInfoList.adapter = ExpandableAdapter(this.activity as Activity, u)
         var itemDecoration = DividerItemDecoration(this.activity, DividerItemDecoration.VERTICAL)
         itemDecoration.setDrawable(
@@ -109,6 +118,7 @@ class UserInfoFragment : Fragment() {
                         .doOnSuccess {
                             Toast.makeText(this.context, it.body()?.string(), Toast.LENGTH_LONG)
                                 .show()
+                            getUserData()
                         }
                         .doOnError {
 
@@ -117,6 +127,31 @@ class UserInfoFragment : Fragment() {
                 }
             }
         }
+    }
+
+    fun getUserData() {
+        var singleUser = userInfoPresenter!!.getBuyerUser()
+        var dialog: Dialog? = null
+        singleUser.subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                dialog =
+                        ProgressDialog.show(
+                            this@UserInfoFragment.context,
+                            "Loading",
+                            "Waiting...",
+                            true
+                        )
+            }
+            .doOnSuccess {
+                Configure.user = it
+                expandableAdapter?.let {
+                    it.data = Configure.user
+                    it.notifyDataSetChanged()
+                }
+                dialog?.dismiss()
+            }
+            .subscribe()
     }
 
     override fun onDetach() {
