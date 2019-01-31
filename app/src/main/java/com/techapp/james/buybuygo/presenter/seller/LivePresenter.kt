@@ -19,10 +19,10 @@ class LivePresenter {
         this.fragment = fragment
     }
 
-    fun startChannel(iframe: String): Single<Response<Wrapper<Channel>>> {
+    fun startChannel(liveUrl: String, description: String): Single<Response<Wrapper<Channel>>> {
         var jsonObject = JSONObject()
-        jsonObject.put("iFrame", iframe)
-        jsonObject.put("channel_description", "hello")
+        jsonObject.put("iFrame", liveUrl)
+        jsonObject.put("channel_description", description)
         var body = RequestBody.create(
             MediaType.parse("application/json"),
             jsonObject.toString()

@@ -3,9 +3,11 @@ package com.techapp.james.buybuygo.view.seller.fragment.live
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.SearchView
 import android.view.*
 import android.webkit.WebViewClient
+import android.widget.EditText
 import android.widget.Toast
 
 import com.techapp.james.buybuygo.R
@@ -13,14 +15,17 @@ import com.techapp.james.buybuygo.presenter.seller.LivePresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.seller_fragment_live.*
+import kotlinx.android.synthetic.main.seller_live_description_dialog.view.*
 import timber.log.Timber
 
 class LiveFragment : Fragment() {
     var streamUrl: String = ""
     private lateinit var livePresenter: LivePresenter
+    lateinit var dialogHelper: DialogHelper
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        dialogHelper = DialogHelper(this)
         livePresenter = LivePresenter(this)
     }
 
@@ -64,19 +69,10 @@ class LiveFragment : Fragment() {
         }
     }
 
-    private fun loadWebView(fbStreamUrl: String) {
-        var pattern = "^[0-9]*\$".toRegex()
-        var sArray = fbStreamUrl.split("/")
-        Timber.d("Video id ${sArray[sArray.size - 2]}")
-        var id = sArray[sArray.size - 2]
-        if (!pattern.matches(id)) {
-            sArray = fbStreamUrl.split("=")
-            id = sArray[sArray.size - 1]
-        }
-        Timber.d("filter ${id.toRegex().matches("^[0-9]*\$")}")
-        var url = "https://www.facebook.com/video/embed?video_id=$id\""
+    private fun loadWebView(fbLiveUrl: String) {
+        var url = fbLiveUrl
         streamUrl = "<html><body>" +
-                "<iframe" + " src=\"https://www.facebook.com/video/embed?video_id=$id\"" +
+                "<iframe" + " src=\"$fbLiveUrl\"" +
                 " width=\"100%\"" +
                 " height=\"${root.height}\"" +
                 " style=\"border:0;overflow:hidden\"top:0px; left:0px; bottom:0px; right:0px; margin:0; padding=0; " +
@@ -85,19 +81,6 @@ class LiveFragment : Fragment() {
                 " allowTransparency=\"true\"" +
                 " allowFullScreen=\"true\">" +
                 "</iframe></ body></html >"
-        var singleChannel = livePresenter.startChannel(url)
-        singleChannel.subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnSuccess {
-                Timber.d(it.isSuccessful.toString() + " channel data ")
-                Timber.d(
-                    "message ${it.message()} + ${it.errorBody()?.string()}"
-                )
-
-                if (it.isSuccessful) {
-                    ChannelData.channel = it.body()!!.response
-                }
-            }.doOnError {}.subscribe()
         liveWebView.loadData(streamUrl, "text/html", null)
     }
 
@@ -117,9 +100,36 @@ class LiveFragment : Fragment() {
                     input?.let {
                         //input is a url which seller live in facebook
                         //post api/Channel to get Channel
-                        loadWebView(input)
-                        searchView.setQuery("", true)
-
+                        var url = getFBLiveUrl(input)
+                        var dialog = dialogHelper.onCreateDialog()
+                        dialog.show()
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                            .setOnClickListener {
+                                var descriptonField =
+                                    dialog.findViewById<EditText>(R.id.descriptionField)
+                                var description = descriptonField!!.text.toString()
+                                if (!description.equals("")) {
+                                    var singleChannel =
+                                        livePresenter.startChannel(
+                                            url,
+                                            description
+                                        )
+                                    singleChannel.subscribeOn(Schedulers.newThread())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .doOnSuccess {
+                                            Timber.d(it.isSuccessful.toString() + " channel data ")
+                                            Timber.d("message ${it.message()} + ${it.errorBody()?.string()}")
+                                            if (it.isSuccessful) {
+                                                ChannelData.channel = it.body()!!.response
+                                                loadWebView(url)
+                                                searchView.setQuery("", true)
+                                                dialog.cancel()
+                                            }
+                                        }.doOnError {
+                                            Timber.d("message" + it.message)
+                                        }.subscribe()
+                                }
+                            }
                     }
                     return true
                 }
@@ -130,6 +140,17 @@ class LiveFragment : Fragment() {
             })
     }
 
+    fun getFBLiveUrl(fbStreamUrl: String): String {
+        var pattern = "^[0-9]*\$".toRegex()
+        var sArray = fbStreamUrl.split("/")
+        Timber.d("Video id ${sArray[sArray.size - 2]}")
+        var id = sArray[sArray.size - 2]
+        if (!pattern.matches(id)) {
+            sArray = fbStreamUrl.split("=")
+            id = sArray[sArray.size - 1]
+        }
+        return "https://www.facebook.com/video/embed?video_id=$id\""
+    }
 
     companion object {
         @JvmStatic
