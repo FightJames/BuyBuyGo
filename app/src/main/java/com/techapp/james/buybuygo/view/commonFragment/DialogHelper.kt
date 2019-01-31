@@ -28,7 +28,7 @@ class DialogHelper(val activity: Activity) {
                 .inflate(R.layout.user_common_dialog_recipient, null, false)
             customerView!!.let {
                 it.codeField.setText(phone.code)
-                it.numberField.setText(phone.number)
+                it.phoneNumberField.setText(phone.number)
                 it.countryCodeField.setText(address.countryCode)
                 it.postCodeField.setText(address.postCode)
                 it.cityField.setText(address.city)
@@ -52,32 +52,19 @@ class DialogHelper(val activity: Activity) {
         } ?: throw IllegalStateException("Activity cannot be null")
     }
 
-    fun onCreateRecipientDialog(okDoing: OnOkPress): Dialog {
+    fun onCreateRecipientDialog(): Dialog {
         return activity.let {
             val builder = AlertDialog.Builder(it)
             var customerView = LayoutInflater.from(activity)
                 .inflate(R.layout.user_common_dialog_recipient, null, false)
             builder.setView(customerView)
                 // Add action buttons
-                .setPositiveButton(R.string.ok, object : DialogInterface.OnClickListener {
-                    override fun onClick(dialog: DialogInterface?, which: Int) {
-                        okDoing.onOkPress(customerView)
-                    }
-
-                })
+                .setPositiveButton(R.string.ok, null)
                 .setNegativeButton(R.string.cancel,
                     DialogInterface.OnClickListener { dialog, id ->
-                        dialog.cancel()
+                        dialog.dismiss()
                     })
             var dialog = builder.create()
-            dialog.setOnShowListener { dialogInterface ->
-                var positiveBtn = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                positiveBtn.setOnClickListener { v ->
-                    var namefield = dialog.findViewById<EditText>(R.id.nameField)
-//                    namefield?.setText("Activity cannot be null")
-//                    dialog.dismiss()
-                }
-            }
             dialog
 
         } ?: throw IllegalStateException("Activity cannot be null")

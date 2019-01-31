@@ -16,7 +16,7 @@ class ExpandableAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
     var context: Activity
     var mode = BUYER_MODE
     var data: User
-    var dialogHelper: DialogHelper
+    var create: (() -> Unit)? = null
 
     companion object {
         val BUYER_MODE = 0
@@ -25,13 +25,13 @@ class ExpandableAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
         val COLLAPSE = 1
     }
 
-    constructor(context: Activity, user: User) : this(context, 0, user)
-    constructor(context: Activity, mode: Int, user: User) {
+    constructor(context: Activity, user: User) : this(context, 0, user, null)
+    constructor(context: Activity, mode: Int, user: User, create: (() -> Unit)?) {
+        this.create = create
         this.context = context
         this.layoutInflater = LayoutInflater.from(context)
         this.data = user
         this.mode = mode
-        dialogHelper = DialogHelper(context)
     }
 
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, index: Int) {
@@ -42,10 +42,7 @@ class ExpandableAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
             is CollapseItemViewHolder -> {
 
                 viewHolder.itemView.addRecipientImageView.setOnClickListener {
-                    dialogHelper.onCreateRecipientDialog(object:DialogHelper.OnOkPress{
-                        override fun onOkPress(view: View) {
-                        }
-                    }).show()
+                    create?.invoke()
                 }
                 data.recipients?.let {
                     viewHolder.enableCollapse(true)
@@ -53,8 +50,9 @@ class ExpandableAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     it.forEach { r ->
                         //                        Timber.d("1")
                         var recipientView = layoutInflater.inflate(
-                                R.layout.common_user_info_collapse_recipient_item,
-                                viewHolder.itemView.itemContainer, false)
+                            R.layout.common_user_info_collapse_recipient_item,
+                            viewHolder.itemView.itemContainer, false
+                        )
                         var phone = r.phone
                         var address = r.address
 
@@ -62,24 +60,24 @@ class ExpandableAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         recipientView.nameLabel.text = r.name
 
                         recipientView.idLabel.setOnClickListener {
-                            dialogHelper.onCreateRecipientDialog(r,
-                                    object : DialogHelper.OnOkPress {
-                                        override fun onOkPress(view: View) {
-                                            var phone = r.phone
-                                            var address = r.address
-                                            r.name = view.nameField.text
-                                                    .toString()
-                                            phone.code = view.codeField.text
-                                                    .toString()
-                                            phone.number = view.numberField
-                                                    .text.toString()
-                                            address.countryCode = view.countryCodeField.text.toString()
-                                            address.postCode = view.postCodeField.text.toString()
-                                            address.city = view.cityField.text.toString()
-                                            address.district = view.districtField.text.toString()
-                                            address.others = view.othersField.text.toString()
-                                        }
-                                    }).show()
+//                            dialogHelper.onCreateRecipientDialog(r,
+//                                object : DialogHelper.OnOkPress {
+//                                    override fun onOkPress(view: View) {
+//                                        var phone = r.phone
+//                                        var address = r.address
+//                                        r.name = view.nameField.text
+//                                            .toString()
+//                                        phone.code = view.codeField.text
+//                                            .toString()
+//                                        phone.number = view.phoneNumberField
+//                                            .text.toString()
+//                                        address.countryCode = view.countryCodeField.text.toString()
+//                                        address.postCode = view.postCodeField.text.toString()
+//                                        address.city = view.cityField.text.toString()
+//                                        address.district = view.districtField.text.toString()
+//                                        address.others = view.othersField.text.toString()
+//                                    }
+//                                }).show()
                         }
 
                         viewHolder.itemView.itemContainer.addView(recipientView)
@@ -95,7 +93,8 @@ class ExpandableAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         when (viewType) {
             NOT_COLLAPSE -> {
-                var view = layoutInflater.inflate(R.layout.common_user_info_no_collapse, parent, false)
+                var view =
+                    layoutInflater.inflate(R.layout.common_user_info_no_collapse, parent, false)
                 return ItemViewHolder(view)
             }
             else -> {

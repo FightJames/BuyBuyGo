@@ -22,13 +22,13 @@ class SellerActivity : AppCompatActivity() {
         setContentView(R.layout.activity_seller)
 
         var commodityFragment = CommodityFragment.newInstance()
-        var LiveFragment = LiveFragment.newInstance()
+        var liveFragment = LiveFragment.newInstance()
         var orderFragment = OrderFragment.newInstance()
         var uploadFragment = UploadFragment.newInstance()
         var userInfoFragment = UserInfoFragment.newInstance(ExpandableAdapter.SELLER_MODE)
         fList = arrayListOf<Fragment>(
             commodityFragment,
-            LiveFragment,
+            liveFragment as Fragment,
             orderFragment,
             uploadFragment,
             userInfoFragment

@@ -9,13 +9,11 @@ import android.view.*
 import android.webkit.WebViewClient
 import android.widget.EditText
 import android.widget.Toast
-
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.presenter.seller.LivePresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.seller_fragment_live.*
-import kotlinx.android.synthetic.main.seller_live_description_dialog.view.*
 import timber.log.Timber
 
 class LiveFragment : Fragment() {
@@ -33,7 +31,6 @@ class LiveFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.seller_fragment_live, container, false)
     }
 
@@ -67,10 +64,14 @@ class LiveFragment : Fragment() {
                     }
                 }.subscribe()
         }
+        tokenBtn.setOnClickListener {
+            ChannelData.channel?.let {
+                dialogHelper.onCreateTokenDialog(this.activity!!, it.channelToken).show()
+            }
+        }
     }
 
     private fun loadWebView(fbLiveUrl: String) {
-        var url = fbLiveUrl
         streamUrl = "<html><body>" +
                 "<iframe" + " src=\"$fbLiveUrl\"" +
                 " width=\"100%\"" +
@@ -123,6 +124,8 @@ class LiveFragment : Fragment() {
                                                 ChannelData.channel = it.body()!!.response
                                                 loadWebView(url)
                                                 searchView.setQuery("", true)
+                                                searchView.clearFocus()
+                                                searchView.isIconified = true
                                                 dialog.cancel()
                                             }
                                         }.doOnError {
@@ -143,6 +146,9 @@ class LiveFragment : Fragment() {
     fun getFBLiveUrl(fbStreamUrl: String): String {
         var pattern = "^[0-9]*\$".toRegex()
         var sArray = fbStreamUrl.split("/")
+        if(sArray.size<1){
+            return "Not Thing"
+        }
         Timber.d("Video id ${sArray[sArray.size - 2]}")
         var id = sArray[sArray.size - 2]
         if (!pattern.matches(id)) {

@@ -11,15 +11,26 @@ import retrofit2.http.*
 
 interface RayCommon {
 
-    @Headers("Content-Type:application/json",
-            "X-Requested-With:XMLHttpRequest")
+    @Headers(
+        "Content-Type:application/json",
+        "X-Requested-With:XMLHttpRequest"
+    )
     @POST("token")
     fun recordUser(@Header("Authorization") token: String, @Body requestBody: RequestBody): Single<Response<ResponseBody>>
 
 
-    @Headers("Content-Type:application/json",
-            "X-Requested-With:XMLHttpRequest")
+    @Headers(
+        "Content-Type:application/json",
+        "X-Requested-With:XMLHttpRequest"
+    )
     @GET("users")
     fun getUser(@Header("Authorization") token: String): Single<Response<Wrapper<User>>>
+
+    @Headers(
+        "Content-Type:application/json",
+        "X-Requested-With:XMLHttpRequest"
+    )
+    @POST("recipients")
+    fun createRecipients(@Header("Authorization") token: String, @Body body: RequestBody): Single<Response<ResponseBody>>
 
 }

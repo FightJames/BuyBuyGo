@@ -75,7 +75,7 @@
         android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/numberField" />
+        app:layout_constraintTop_toBottomOf="@+id/phoneNumberField" />
 
     <EditText
         android:id="@+id/codeField"
@@ -92,7 +92,7 @@
         app:layout_constraintTop_toBottomOf="@+id/nameField" />
 
     <EditText
-        android:id="@+id/numberField"
+        android:id="@+id/phoneNumberField"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
