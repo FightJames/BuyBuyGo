@@ -15,6 +15,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
 
 import com.techapp.james.buybuygo.R
@@ -98,33 +99,18 @@ class UserInfoFragment : Fragment() {
     fun onCreateRecipient() {
         var dialog = dialogHelper.onCreateRecipientDialog() as AlertDialog
         dialog.show()
-        var countryField = dialog.findViewById<EditText>(R.id.countryField)
-        countryField?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-            }
+        var countryBtn = dialog.findViewById<Button>(R.id.countryBtn)
+        countryBtn!!.setOnClickListener {
+            var pickerDialog =
+                dialogHelper.onCreateCountryPickerDialog(AreaParameter.countryWrapperList)
+            pickerDialog.show()
+        }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                s?.let {
-                    var country = it.toString()
-                    AreaParameter.findCountryWrapper(country)?.let {
-                        var phoneCodeField = dialog.findViewById<EditText>(R.id.codeField)!!
-                        phoneCodeField.setText(it.phoneCode)
-                        var countryCodeField =
-                            dialog.findViewById<EditText>(R.id.countryCodeField)!!
-                        countryCodeField.setText(it.countryCode)
-                    }
-                }
-            }
-        })
         var positiveBtn = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
         positiveBtn.setOnClickListener {
             dialog.let {
                 var namefield = it.findViewById<EditText>(R.id.nameField)!!.text.toString()
                 var phoneField = it.findViewById<EditText>(R.id.phoneNumberField)!!.text.toString()
-
                 var phoneCodeField = it.findViewById<EditText>(R.id.codeField)!!.text.toString()
                 var countryCodeField =
                     it.findViewById<EditText>(R.id.countryCodeField)!!.text.toString()
@@ -139,7 +125,6 @@ class UserInfoFragment : Fragment() {
                     districtField.equals("") || othersField.equals("")
                     || countryCodeField.equals("")
                 ) {
-
                 } else {
                     var recipients = Recipient("", namefield)
                     recipients.phone.code = phoneCodeField
@@ -158,7 +143,6 @@ class UserInfoFragment : Fragment() {
                             getUserData()
                         }
                         .doOnError {
-
                         }.subscribe()
                     it.dismiss()
                 }
@@ -184,7 +168,6 @@ class UserInfoFragment : Fragment() {
                     || countryCode.equals("") || postCode.equals("")
                     || city.equals("") || district.equals("") || others.equals("")
                 ) {
-
                 } else {
                     dialog.cancel()
                 }
@@ -215,10 +198,6 @@ class UserInfoFragment : Fragment() {
                 dialog?.dismiss()
             }
             .subscribe()
-    }
-
-    override fun onDetach() {
-        super.onDetach()
     }
 
     companion object {
