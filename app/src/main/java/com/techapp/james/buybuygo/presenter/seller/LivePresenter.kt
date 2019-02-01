@@ -28,10 +28,10 @@ class LivePresenter {
             jsonObject.toString()
         )
 
-        return raySeller.startChannel(Configure.RAY_ACESS_TOKEN, body)
+        return raySeller.startChannel(Configure.RAY_ACCESS_TOKEN, body)
     }
 
     fun endChannel(): Single<Response<Wrapper<String>>> {
-        return raySeller.endChannel(Configure.RAY_ACESS_TOKEN)
+        return raySeller.endChannel(Configure.RAY_ACCESS_TOKEN)
     }
 }

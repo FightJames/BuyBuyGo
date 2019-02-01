@@ -3,13 +3,12 @@ package com.techapp.james.buybuygo.view.commonFragment
 import android.app.Activity
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import com.techapp.james.buybuygo.R
+import com.techapp.james.buybuygo.model.data.Recipient
 import com.techapp.james.buybuygo.model.data.User
 import kotlinx.android.synthetic.main.common_user_info_collapse.view.*
 import kotlinx.android.synthetic.main.common_user_info_collapse_recipient_item.view.*
-import kotlinx.android.synthetic.main.user_common_dialog_recipient.view.*
 
 class ExpandableAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
     var layoutInflater: LayoutInflater
@@ -17,6 +16,7 @@ class ExpandableAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
     var mode = BUYER_MODE
     var data: User
     var create: (() -> Unit)? = null
+    var modify: ((recipient: Recipient) -> Unit)? = null
 
     companion object {
         val BUYER_MODE = 0
@@ -25,13 +25,20 @@ class ExpandableAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
         val COLLAPSE = 1
     }
 
-    constructor(context: Activity, user: User) : this(context, 0, user, null)
-    constructor(context: Activity, mode: Int, user: User, create: (() -> Unit)?) {
+    constructor(context: Activity, user: User) : this(context, 0, user, null, null)
+    constructor(
+        context: Activity,
+        mode: Int,
+        user: User,
+        create: (() -> Unit)?,
+        modify: (((recipient: Recipient) -> Unit)?)
+    ) {
         this.create = create
         this.context = context
         this.layoutInflater = LayoutInflater.from(context)
         this.data = user
         this.mode = mode
+        this.modify = modify
     }
 
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, index: Int) {
@@ -53,14 +60,15 @@ class ExpandableAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             R.layout.common_user_info_collapse_recipient_item,
                             viewHolder.itemView.itemContainer, false
                         )
-                        var phone = r.phone
-                        var address = r.address
 
                         recipientView.idLabel.text = r.id
                         recipientView.nameLabel.text = r.name
-
+                        recipientView.nameLabel.setOnClickListener {
+                            modify?.invoke(r)
+                        }
                         recipientView.idLabel.setOnClickListener {
-//                            dialogHelper.onCreateRecipientDialog(r,
+                            modify?.invoke(r)
+                            //                            dialogHelper.onCreateRecipientDialog(r,
 //                                object : DialogHelper.OnOkPress {
 //                                    override fun onOkPress(view: View) {
 //                                        var phone = r.phone
@@ -79,7 +87,6 @@ class ExpandableAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
 //                                    }
 //                                }).show()
                         }
-
                         viewHolder.itemView.itemContainer.addView(recipientView)
                     }
                 }

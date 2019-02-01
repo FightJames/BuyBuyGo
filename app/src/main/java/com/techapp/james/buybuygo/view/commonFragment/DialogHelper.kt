@@ -6,26 +6,24 @@ import android.content.DialogInterface
 import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.EditText
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.data.Phone
-import com.techapp.james.buybuygo.model.data.Recipients
-import kotlinx.android.synthetic.main.user_common_dialog_recipient.view.*
+import com.techapp.james.buybuygo.model.data.Recipient
+import kotlinx.android.synthetic.main.common_user_dialog_recipient.view.*
 
 
 class DialogHelper(val activity: Activity) {
     interface OnOkPress {
         fun onOkPress(view: View)
-
     }
 
-    fun onCreateRecipientDialog(content: Recipients, okDoing: OnOkPress): Dialog {
+    fun onCreateRecipientDialog(content: Recipient): Dialog {
         return activity.let {
             val builder = AlertDialog.Builder(it)
             var address = content.address
             var phone = content.phone
             var customerView = LayoutInflater.from(activity)
-                .inflate(R.layout.user_common_dialog_recipient, null, false)
+                .inflate(R.layout.common_user_dialog_recipient, null, false)
             customerView!!.let {
                 it.codeField.setText(phone.code)
                 it.phoneNumberField.setText(phone.number)
@@ -38,14 +36,9 @@ class DialogHelper(val activity: Activity) {
             }
             builder.setView(customerView)
                 // Add action buttons
-                .setPositiveButton(R.string.ok, object : DialogInterface.OnClickListener {
-                    override fun onClick(dialog: DialogInterface?, which: Int) {
-                        okDoing.onOkPress(customerView)
-                    }
-
-                })
+                .setPositiveButton(R.string.ok, null)
                 .setNegativeButton(R.string.cancel,
-                    DialogInterface.OnClickListener { dialog, id ->
+                    { dialog, id ->
                         dialog.cancel()
                     })
             builder.create()
@@ -56,7 +49,7 @@ class DialogHelper(val activity: Activity) {
         return activity.let {
             val builder = AlertDialog.Builder(it)
             var customerView = LayoutInflater.from(activity)
-                .inflate(R.layout.user_common_dialog_recipient, null, false)
+                .inflate(R.layout.common_user_dialog_recipient, null, false)
             builder.setView(customerView)
                 // Add action buttons
                 .setPositiveButton(R.string.ok, null)
@@ -75,7 +68,7 @@ class DialogHelper(val activity: Activity) {
         return activity.let {
             val builder = AlertDialog.Builder(it)
             var customerView =
-                LayoutInflater.from(activity).inflate(R.layout.user_common_dialog_recipient, null)
+                LayoutInflater.from(activity).inflate(R.layout.common_user_dialog_recipient, null)
             customerView!!.let {
                 it.codeField.setText(content.code)
                 it.codeField.setText(content.number)

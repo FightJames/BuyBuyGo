@@ -6,7 +6,6 @@ import kotlinx.android.synthetic.main.common_user_info_collapse.view.*
 
 class CollapseItemViewHolder : RecyclerView.ViewHolder {
     constructor(itemView: View) : super(itemView) {
-
     }
 
     fun enableCollapse(input: Boolean) {

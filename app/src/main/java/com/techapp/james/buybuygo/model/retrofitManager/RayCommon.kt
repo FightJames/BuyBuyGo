@@ -1,5 +1,6 @@
 package com.techapp.james.buybuygo.model.retrofitManager
 
+import com.techapp.james.buybuygo.model.data.CountryWrapper
 import com.techapp.james.buybuygo.model.data.User
 import com.techapp.james.buybuygo.model.data.Wrapper
 import io.reactivex.Single
@@ -19,6 +20,9 @@ interface RayCommon {
     fun recordUser(@Header("Authorization") token: String, @Body requestBody: RequestBody): Single<Response<ResponseBody>>
 
 
+    @GET("country-code")
+    fun getCountryWrapper(@Header("Authorization") token: String): Single<Response<Wrapper<ArrayList<CountryWrapper>>>>
+
     @Headers(
         "Content-Type:application/json",
         "X-Requested-With:XMLHttpRequest"
@@ -32,5 +36,6 @@ interface RayCommon {
     )
     @POST("recipients")
     fun createRecipients(@Header("Authorization") token: String, @Body body: RequestBody): Single<Response<ResponseBody>>
+
 
 }

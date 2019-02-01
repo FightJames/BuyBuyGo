@@ -1,6 +1,6 @@
 package com.techapp.james.buybuygo.model.retrofitManager
 
-import com.techapp.james.buybuygo.model.data.Recipients
+import com.techapp.james.buybuygo.model.data.Recipient
 import com.techapp.james.buybuygo.model.data.Wrapper
 import io.reactivex.Single
 import okhttp3.RequestBody
@@ -13,7 +13,7 @@ interface RayBuyer {
         "X-Requested-With: XMLHttpRequest"
     )
     @GET("recipients")
-    fun getRecipients(@Header("Authorization") token: String): Single<Response<Wrapper<ArrayList<Recipients>>>>
+    fun getRecipients(@Header("Authorization") token: String): Single<Response<Wrapper<ArrayList<Recipient>>>>
 
     @Headers(
         "Content-Type: application/json",

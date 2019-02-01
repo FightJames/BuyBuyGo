@@ -32,11 +32,11 @@ class CommodityPresenter {
         jsonObject.put("items", jsonArray)
         var requestBody =
             RequestBody.create(MediaType.parse("application/json"), jsonObject.toString())
-        return raySeller.deleteItem(Configure.RAY_ACESS_TOKEN, requestBody)
+        return raySeller.deleteItem(Configure.RAY_ACCESS_TOKEN, requestBody)
     }
 
     fun getUploadItem(): Single<Response<Wrapper<ArrayList<Commodity>>>> {
-        return raySeller.getUploadedItem(Configure.RAY_ACESS_TOKEN)
+        return raySeller.getUploadedItem(Configure.RAY_ACCESS_TOKEN)
     }
 
     fun insertItem(commodity: Commodity, fileData: FileData): Single<Response<ResponseBody>> {
@@ -59,7 +59,7 @@ class CommodityPresenter {
             MediaType.get("image/jpg"), file
         )
         val body = MultipartBody.Part.createFormData("images", "cacheImage", requestFile)
-        var insertOb = raySeller.uploadItem(Configure.RAY_ACESS_TOKEN, map, body)
+        var insertOb = raySeller.uploadItem(Configure.RAY_ACCESS_TOKEN, map, body)
         return insertOb
     }
 
@@ -86,12 +86,12 @@ class CommodityPresenter {
         )
         val body = MultipartBody.Part.createFormData("images", "cacheImage", requestFile)
         var updateOb =
-            raySeller.updateItem(Configure.RAY_ACESS_TOKEN, commodity.id.toInt(), map, body)
+            raySeller.updateItem(Configure.RAY_ACCESS_TOKEN, commodity.id.toInt(), map, body)
         return updateOb
     }
 
     fun pushItem(commodity: Commodity): Single<Response<Wrapper<String>>> {
-        return raySeller.pushItem(Configure.RAY_ACESS_TOKEN, commodity.id)
+        return raySeller.pushItem(Configure.RAY_ACCESS_TOKEN, commodity.id)
     }
 
 }

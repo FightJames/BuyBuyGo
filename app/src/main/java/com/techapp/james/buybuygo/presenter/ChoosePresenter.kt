@@ -3,7 +3,7 @@ package com.techapp.james.buybuygo.presenter
 import android.app.Activity
 import android.content.Intent
 import android.view.View
-import com.techapp.james.buybuygo.model.data.Recipients
+import com.techapp.james.buybuygo.model.data.Recipient
 import com.techapp.james.buybuygo.model.data.User
 import com.techapp.james.buybuygo.model.data.Wrapper
 import com.techapp.james.buybuygo.model.retrofitManager.RetrofitManager
@@ -14,7 +14,6 @@ import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_choose.*
 import retrofit2.Response
-import timber.log.Timber
 
 class ChoosePresenter {
     val activity: Activity
@@ -26,9 +25,9 @@ class ChoosePresenter {
     fun chooseBuyer() {
         var common = RetrofitManager.getInstance().getRayCommon()
         var buyer = RetrofitManager.getInstance().getRayBuyer()
-        common.getUser(Configure.RAY_ACESS_TOKEN)
-                .zipWith(buyer.getRecipients(Configure.RAY_ACESS_TOKEN), object : BiFunction<Response<Wrapper<User>>, Response<Wrapper<ArrayList<Recipients>>>, User> {
-                    override fun apply(t1: Response<Wrapper<User>>, t2: Response<Wrapper<ArrayList<Recipients>>>): User {
+        common.getUser(Configure.RAY_ACCESS_TOKEN)
+                .zipWith(buyer.getRecipients(Configure.RAY_ACCESS_TOKEN), object : BiFunction<Response<Wrapper<User>>, Response<Wrapper<ArrayList<Recipient>>>, User> {
+                    override fun apply(t1: Response<Wrapper<User>>, t2: Response<Wrapper<ArrayList<Recipient>>>): User {
                         var user = t1.body()!!.response
                         var recipients = if (t2.body() == null) null else t2.body()!!.response
                         user.recipients = recipients
@@ -51,7 +50,7 @@ class ChoosePresenter {
 
     fun chooseSeller() {
         var common = RetrofitManager.getInstance().getRayCommon()
-        common.getUser(Configure.RAY_ACESS_TOKEN)
+        common.getUser(Configure.RAY_ACCESS_TOKEN)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe {

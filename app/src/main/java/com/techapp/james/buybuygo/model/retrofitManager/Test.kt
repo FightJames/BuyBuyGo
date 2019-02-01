@@ -16,7 +16,7 @@ import java.io.File
 import java.io.FileOutputStream
 import android.graphics.BitmapFactory
 import android.graphics.Bitmap
-import com.techapp.james.buybuygo.model.data.Recipients
+import com.techapp.james.buybuygo.model.data.Recipient
 import com.techapp.james.buybuygo.model.data.User
 import com.techapp.james.buybuygo.model.data.Wrapper
 import io.reactivex.Single
@@ -34,7 +34,7 @@ class Test {
         root.put("expirationDate", Configure.FB_EXPIRATIONDATE)
         var requestBody = RequestBody.create(MediaType.parse("application/json"), root.toString())
         var rayCommon = RetrofitManager.getInstance().getRayCommon()
-        var result = rayCommon.recordUser("Bearer " + Configure.FB_ACESS_TOKEN, requestBody)
+        var result = rayCommon.recordUser("Bearer " + Configure.FB_ACCESS_TOKEN, requestBody)
         result.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSuccess {
@@ -91,10 +91,10 @@ class Test {
 
 
         var raySeller = RetrofitManager.getInstance().getRaySeller()
-        Timber.d(Configure.FB_ACESS_TOKEN)
-//        var s = raySeller.uploadItem("Bearer " + Configure.FB_ACESS_TOKEN, map, body)
+        Timber.d(Configure.FB_ACCESS_TOKEN)
+//        var s = raySeller.uploadItem("Bearer " + Configure.FB_ACCESS_TOKEN, map, body)
 
-        var s = raySeller.uploadItem( Configure.RAY_ACESS_TOKEN, map, body)
+        var s = raySeller.uploadItem( Configure.RAY_ACCESS_TOKEN, map, body)
 
 //        Timber.d("*** " + s.request().body()?.contentType()?.type())
         s.subscribeOn(Schedulers.newThread())
@@ -127,7 +127,7 @@ class Test {
 //                .addFormDataPart("unit_pirce", unit_pirce.toString())
 //                .addFormDataPart("imageUri", "Ray", requestFile)
 //                .build()
-//        var ob = raySeller.uploadItem("Bearer " + Configure.FB_ACESS_TOKEN, requestBody)
+//        var ob = raySeller.uploadItem("Bearer " + Configure.FB_ACCESS_TOKEN, requestBody)
 //        ob.subscribeOn(Schedulers.newThread())
 //                .observeOn(AndroidSchedulers.mainThread())
 //
@@ -143,7 +143,7 @@ class Test {
 //                .doOnError { }
 //                .subscribe()
 //
-//        var obPart = raySeller.uploadItem("Bearer " + Configure.FB_ACESS_TOKEN, c.name, c.description, c.stock, c.cost, c.unit_price)
+//        var obPart = raySeller.uploadItem("Bearer " + Configure.FB_ACCESS_TOKEN, c.name, c.description, c.stock, c.cost, c.unit_price)
 //
 //        obPart.subscribeOn(Schedulers.newThread())
 //                .observeOn(AndroidSchedulers.mainThread())
@@ -163,8 +163,8 @@ class Test {
 
     fun testGetItems(context: Context) {
         var raySeller = retrofit.getRaySeller()
-        Timber.d(Configure.FB_ACESS_TOKEN)
-        var sW = raySeller.getUploadedItem(Configure.RAY_ACESS_TOKEN)
+        Timber.d(Configure.FB_ACCESS_TOKEN)
+        var sW = raySeller.getUploadedItem(Configure.RAY_ACCESS_TOKEN)
         sW.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSuccess {
@@ -187,8 +187,8 @@ class Test {
     fun testGetUser() {
         var rCommon = retrofit.getRayCommon()
         var rBuyer = retrofit.getRayBuyer()
-        Timber.d(Configure.RAY_ACESS_TOKEN)
-        var uSingle = rCommon.getUser(Configure.RAY_ACESS_TOKEN)
+        Timber.d(Configure.RAY_ACCESS_TOKEN)
+        var uSingle = rCommon.getUser(Configure.RAY_ACCESS_TOKEN)
 //        uSingle.
 // subscribeOn(Schedulers.newThread())
 //                .observeOn(AndroidSchedulers.mainThread())
@@ -200,8 +200,8 @@ class Test {
 //                }.subscribe()
 
 //                .subscribe()
-        uSingle.zipWith(rBuyer.getRecipients(Configure.RAY_ACESS_TOKEN), object : BiFunction<Response<Wrapper<User>>, Response<Wrapper<ArrayList<Recipients>>>, User> {
-            override fun apply(t1: Response<Wrapper<User>>, t2: Response<Wrapper<ArrayList<Recipients>>>): User {
+        uSingle.zipWith(rBuyer.getRecipients(Configure.RAY_ACCESS_TOKEN), object : BiFunction<Response<Wrapper<User>>, Response<Wrapper<ArrayList<Recipient>>>, User> {
+            override fun apply(t1: Response<Wrapper<User>>, t2: Response<Wrapper<ArrayList<Recipient>>>): User {
                 var userWrapper = t1.body()!!
                 if (t2.isSuccessful) {
                     var recipientsWrapper = t2.body()!!
