@@ -63,34 +63,6 @@ class DialogHelper(val activity: Activity) {
         }
     }
 
-    fun onCreateRecipientDialog(content: Recipient): Dialog {
-        return activity.let {
-            val builder = AlertDialog.Builder(it)
-            var address = content.address
-            var phone = content.phone
-            var customerView = LayoutInflater.from(it)
-                .inflate(R.layout.common_user_dialog_recipient, null, false)
-            customerView!!.let {
-                it.phoneCodeLabel.setText(phone.code)
-                it.phoneNumberField.setText(phone.number)
-                it.countryCodeLabel.setText(address.countryCode)
-                it.postCodeField.setText(address.postCode)
-                it.cityField.setText(address.city)
-                it.districtField.setText(address.district)
-                it.othersField.setText(address.others)
-                it.nameField.setText(content.name)
-            }
-            builder.setView(customerView)
-                // Add action buttons
-                .setPositiveButton(R.string.ok, null)
-                .setNegativeButton(R.string.cancel,
-                    { dialog, id ->
-                        dialog.cancel()
-                    })
-            builder.create()
-        } ?: throw IllegalStateException("Activity cannot be null")
-    }
-
     fun onCreateRecipientDialog(s: String): Dialog {
         return activity.let {
             val builder = AlertDialog.Builder(it)
