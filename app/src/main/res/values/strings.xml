@@ -11,12 +11,14 @@
     <string name="id">ID</string>
     <string name="address">Address</string>
     <string name="recipient">Recipient</string>
+    <string name="limit">Limit : %1$s Current : %2$s</string>
+    <string name="limitCount">5</string>
 
     //seller
     //bottom navigation
     <string name="commodity">Commodity</string>
-    <string name="Live">Live</string>
-    <string name="Order">Order</string>
+    <string name="live">Live</string>
+    <string name="order">Order</string>
     <string name="uploadCommodity">UploadCommodity</string>
     // Commodity Fragment
     //title icon
@@ -44,5 +46,5 @@
     //buyer
 
     //crop
-    <string name="Crop">CROP</string>
+    <string name="crop">CROP</string>
 </resources>

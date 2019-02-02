@@ -25,7 +25,8 @@ import kotlinx.android.synthetic.main.seller_fragment_commodity_dialog.view.*
 import timber.log.Timber
 
 
-class CommodityFragment : Fragment() {
+class CommodityFragment : Fragment(), com.techapp.james.buybuygo.view.View {
+
     private var dialog: Dialog? = null
     private lateinit var dialogHelper: DialogHelper
     var dataList = ArrayList<Commodity>()

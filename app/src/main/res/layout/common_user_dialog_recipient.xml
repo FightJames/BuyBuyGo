@@ -58,14 +58,14 @@
         android:layout_marginEnd="8dp"
         android:ems="10"
         android:hint="Post Code"
-        android:inputType="textPersonName"
+        android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/phoneNumberField" />
 
     <TextView
-        android:id="@+id/countryCodeField"
+        android:id="@+id/countryCodeLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -83,7 +83,7 @@
         app:layout_constraintTop_toBottomOf="@+id/nameField" />
 
     <TextView
-        android:id="@+id/codeField"
+        android:id="@+id/phoneCodeLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -143,7 +143,7 @@
         android:layout_marginEnd="8dp"
         android:text="Country"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/countryCodeField"
+        app:layout_constraintStart_toEndOf="@+id/countryCodeLabel"
         app:layout_constraintTop_toBottomOf="@+id/nameField" />
 
 </android.support.constraint.ConstraintLayout>

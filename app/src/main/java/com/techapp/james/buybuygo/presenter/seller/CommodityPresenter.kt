@@ -7,6 +7,7 @@ import com.techapp.james.buybuygo.model.file.FileData
 import com.techapp.james.buybuygo.model.retrofitManager.RaySeller
 import com.techapp.james.buybuygo.model.retrofitManager.RetrofitManager
 import com.techapp.james.buybuygo.presenter.Configure
+import com.techapp.james.buybuygo.view.View
 import io.reactivex.Single
 import okhttp3.*
 import org.json.JSONArray
@@ -17,11 +18,11 @@ import java.io.File
 
 
 class CommodityPresenter {
-    private var fragment: Fragment
     private var raySeller: RaySeller
+    var view: View
 
-    constructor(fragment: Fragment) {
-        this.fragment = fragment
+    constructor(view: View) {
+        this.view = view
         raySeller = RetrofitManager.getInstance().getRaySeller()
     }
 

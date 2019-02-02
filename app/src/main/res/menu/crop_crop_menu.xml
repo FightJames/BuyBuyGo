@@ -5,6 +5,6 @@
     <item
         android:id="@+id/action_commodity"
         android:orderInCategory="0"
-        android:title="@string/Crop"
+        android:title="@string/crop"
         app:showAsAction="always" />
 </menu>

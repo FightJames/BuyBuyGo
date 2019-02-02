@@ -8,6 +8,7 @@ import com.techapp.james.buybuygo.model.retrofitManager.RayBuyer
 import com.techapp.james.buybuygo.model.retrofitManager.RayCommon
 import com.techapp.james.buybuygo.model.retrofitManager.RetrofitManager
 import com.techapp.james.buybuygo.presenter.Configure
+import com.techapp.james.buybuygo.view.View
 import com.techapp.james.buybuygo.view.commonFragment.UserInfoFragment
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -22,35 +23,21 @@ import retrofit2.Response
 import timber.log.Timber
 
 class UserInfoPresenter {
-    var fragment: UserInfoFragment
     var rayCommon: RayCommon
     var rayBuyer: RayBuyer
+    var view: View
 
-    constructor(fragment: UserInfoFragment) {
-        this.fragment = fragment
+    constructor(view: View) {
+        this.view = view
         rayCommon = RetrofitManager.getInstance().getRayCommon()
         rayBuyer = RetrofitManager.getInstance().getRayBuyer()
     }
 
     fun createRecipients(recipients: Recipient): Single<Response<ResponseBody>> {
-        var jsonObject = JSONObject()
-        jsonObject.put("name", recipients.name)
-        var phoneObject = JSONObject()
-        var phone = recipients.phone
-        phoneObject.put("phone_code", phone.code)
-        phoneObject.put("phone_number", phone.number)
-        jsonObject.put("phone", phoneObject)
-        var address = recipients.address
-        var addressObject = JSONObject()
-        addressObject.put("country_code", address.countryCode)
-        addressObject.put("post_code", address.postCode)
-        addressObject.put("city", address.city)
-        addressObject.put("district", address.district)
-        addressObject.put("others", address.others)
-        jsonObject.put("address", addressObject)
+        var jsonObject = convertRecipientToJSON(recipients)
         var requestBody =
             RequestBody.create(MediaType.parse("application/json"), jsonObject.toString())
-        return rayCommon.createRecipients(Configure.RAY_ACCESS_TOKEN, requestBody)
+        return rayBuyer.createRecipients(Configure.RAY_ACCESS_TOKEN, requestBody)
     }
 
     fun deleteRecipients(recipients: Recipient): Single<Response<Wrapper<String>>> {
@@ -61,7 +48,7 @@ class UserInfoPresenter {
         jsonObject.put("recipients", recipientsArray)
         var requestBody =
             RequestBody.create(MediaType.parse("application/json"), jsonObject.toString())
-        return rayBuyer.deleteRecipients(Configure.RAY_ACCESS_TOKEN, requestBody)
+        return rayBuyer.deleteRecipient(Configure.RAY_ACCESS_TOKEN, requestBody)
     }
 
     fun getBuyerUser(): Single<User> {
@@ -92,8 +79,11 @@ class UserInfoPresenter {
             })
     }
 
-    fun updateRecipient(recipient: Recipient) {
-
+    fun modifyRecipient(recipient: Recipient): Single<Response<Wrapper<String>>> {
+        var jsonObject = convertRecipientToJSON(recipient)
+        var requestBody =
+            RequestBody.create(MediaType.parse("application/json"), jsonObject.toString())
+        return rayBuyer.updateRecipient(Configure.RAY_ACCESS_TOKEN, recipient.id, requestBody)
     }
 
     fun getCountryWrappers(): Single<Response<Wrapper<ArrayList<CountryWrapper>>>> {
@@ -112,5 +102,24 @@ class UserInfoPresenter {
 //                Timber.d("error ${it.message}")
 //            }.subscribe()
         return contryWrapper
+    }
+
+    fun convertRecipientToJSON(recipients: Recipient): JSONObject {
+        var jsonObject = JSONObject()
+        jsonObject.put("name", recipients.name)
+        var phoneObject = JSONObject()
+        var phone = recipients.phone
+        phoneObject.put("phone_code", phone.code)
+        phoneObject.put("phone_number", phone.number)
+        jsonObject.put("phone", phoneObject)
+        var address = recipients.address
+        var addressObject = JSONObject()
+        addressObject.put("country_code", address.countryCode)
+        addressObject.put("post_code", address.postCode)
+        addressObject.put("city", address.city)
+        addressObject.put("district", address.district)
+        addressObject.put("others", address.others)
+        jsonObject.put("address", addressObject)
+        return jsonObject
     }
 }

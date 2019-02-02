@@ -5,13 +5,13 @@
         android:id="@+id/action_Live"
         android:icon="@drawable/ic_live_black_24dp"
         android:orderInCategory="0"
-        android:title="@string/Live" />
+        android:title="@string/live" />
 
     <item
         android:id="@+id/action_Order"
         android:icon="@drawable/ic_order_color_black_24dp"
         android:orderInCategory="1"
-        android:title="@string/Order" />
+        android:title="@string/order" />
 
     <item
         android:id="@+id/action_Info"

@@ -16,7 +16,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.seller_fragment_live.*
 import timber.log.Timber
 
-class LiveFragment : Fragment() {
+class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
     var streamUrl: String = ""
     private lateinit var livePresenter: LivePresenter
     lateinit var dialogHelper: DialogHelper
@@ -146,7 +146,7 @@ class LiveFragment : Fragment() {
     fun getFBLiveUrl(fbStreamUrl: String): String {
         var pattern = "^[0-9]*\$".toRegex()
         var sArray = fbStreamUrl.split("/")
-        if(sArray.size<1){
+        if (sArray.size < 1) {
             return "Not Thing"
         }
         Timber.d("Video id ${sArray[sArray.size - 2]}")

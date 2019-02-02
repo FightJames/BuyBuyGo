@@ -5,6 +5,7 @@ import com.techapp.james.buybuygo.model.data.Channel
 import com.techapp.james.buybuygo.model.data.Wrapper
 import com.techapp.james.buybuygo.model.retrofitManager.RetrofitManager
 import com.techapp.james.buybuygo.presenter.Configure
+import com.techapp.james.buybuygo.view.View
 import io.reactivex.Single
 import okhttp3.MediaType
 import okhttp3.RequestBody
@@ -12,11 +13,11 @@ import org.json.JSONObject
 import retrofit2.Response
 
 class LivePresenter {
-    var fragment: Fragment
     var raySeller = RetrofitManager.getInstance().getRaySeller()
+    var view: View
 
-    constructor(fragment: Fragment) {
-        this.fragment = fragment
+    constructor(view: View) {
+        this.view = view
     }
 
     fun startChannel(liveUrl: String, description: String): Single<Response<Wrapper<Channel>>> {

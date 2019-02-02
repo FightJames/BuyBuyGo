@@ -10,15 +10,16 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
 
 import com.techapp.james.buybuygo.R
+import com.techapp.james.buybuygo.model.data.CountryWrapper
 import com.techapp.james.buybuygo.model.data.Recipient
 import com.techapp.james.buybuygo.presenter.Configure
 import com.techapp.james.buybuygo.presenter.common.UserInfoPresenter
@@ -29,7 +30,8 @@ import timber.log.Timber
 
 const val MODE = "Mode"
 
-class UserInfoFragment : Fragment() {
+class UserInfoFragment : Fragment(), ExpandableAdapter.ItemClick,
+    com.techapp.james.buybuygo.view.View {
     private var mode: Int = ExpandableAdapter.BUYER_MODE
     lateinit var dialogHelper: DialogHelper
     var userInfoPresenter: UserInfoPresenter? = null
@@ -50,8 +52,7 @@ class UserInfoFragment : Fragment() {
             this.activity as Activity,
             mode,
             Configure.user,
-            this::onCreateRecipient,
-            this::onModifyRecipient
+            this
         )
         userInfoList.adapter = expandableAdapter
         var itemDecoration = DividerItemDecoration(this.activity, DividerItemDecoration.VERTICAL)
@@ -66,20 +67,14 @@ class UserInfoFragment : Fragment() {
         //ToDo store to SQLite
 
         if (AreaParameter.countryWrapperList.size == 0) {
-            var dialog: Dialog? = null
             var singleCountryWrapper = userInfoPresenter!!.getCountryWrappers()
             singleCountryWrapper.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe {
-                    dialog = ProgressDialog.show(
-                        this@UserInfoFragment.context,
-                        "Loading",
-                        "Waiting...",
-                        true
-                    )
+                    showLoad()
                 }
                 .doOnSuccess {
-                    dialog?.cancel()
+                    loadDialog?.cancel()
                     it.body()?.let {
                         AreaParameter.countryWrapperList = it.response
                     }
@@ -96,98 +91,176 @@ class UserInfoFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_user_info, container, false)
     }
 
-    fun onCreateRecipient() {
-        var dialog = dialogHelper.onCreateRecipientDialog() as AlertDialog
+    override fun createRecipient() {
+        stateDialogCreateModify(true)
+    }
+
+    fun createShellDialog(postiveBtn: String): Dialog {
+        return dialogHelper.onCreateRecipientDialog(postiveBtn) as AlertDialog
+    }
+
+    fun stateDialogCreateModify(
+        isCreate: Boolean,
+        recipient: Recipient? = null
+    ) {// true is create dialog ,false is modify dialog
+        var dialog: Dialog
+        if (isCreate)
+            dialog = createShellDialog(resources.getString(R.string.ok)) as AlertDialog
+        else
+            dialog = createShellDialog("modify") as AlertDialog
         dialog.show()
+        var countryWrapper = AreaParameter.findCountryWrapper("Taiwan")
         var countryBtn = dialog.findViewById<Button>(R.id.countryBtn)
         countryBtn!!.setOnClickListener {
             var pickerDialog =
-                dialogHelper.onCreateCountryPickerDialog(AreaParameter.countryWrapperList)
-            pickerDialog.show()
-        }
-
-        var positiveBtn = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-        positiveBtn.setOnClickListener {
-            dialog.let {
-                var namefield = it.findViewById<EditText>(R.id.nameField)!!.text.toString()
-                var phoneField = it.findViewById<EditText>(R.id.phoneNumberField)!!.text.toString()
-                var phoneCodeField = it.findViewById<EditText>(R.id.codeField)!!.text.toString()
-                var countryCodeField =
-                    it.findViewById<EditText>(R.id.countryCodeField)!!.text.toString()
-                var postCodeField =
-                    it.findViewById<EditText>(R.id.postCodeField)!!.text.toString()
-                var cityField = it.findViewById<EditText>(R.id.cityField)!!.text.toString()
-                var districtField = it.findViewById<EditText>(R.id.districtField)!!.text.toString()
-                var othersField = it.findViewById<EditText>(R.id.othersField)!!.text.toString()
-                if (namefield.equals("") || phoneCodeField.equals("") ||
-                    phoneField.equals("") || countryCodeField.equals("") ||
-                    postCodeField.equals("") || cityField.equals("") ||
-                    districtField.equals("") || othersField.equals("")
-                    || countryCodeField.equals("")
-                ) {
-                } else {
-                    var recipients = Recipient("", namefield)
-                    recipients.phone.code = phoneCodeField
-                    recipients.phone.number = phoneField
-                    recipients.address.countryCode = countryCodeField
-                    recipients.address.postCode = postCodeField
-                    recipients.address.city = cityField
-                    recipients.address.district = districtField
-                    recipients.address.others = othersField
-                    var singleRecipient = userInfoPresenter!!.createRecipients(recipients)
-                    singleRecipient.subscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .doOnSuccess {
-                            //                            Toast.makeText(this.context, it.body()?.string(), Toast.LENGTH_LONG)
-//                                .show()
-                            getUserData()
+                dialogHelper.onCreateCountryPickerDialog(AreaParameter.countryWrapperList,
+                    object : DialogHelper.OnPickValue {
+                        override fun pickValue(countryName: String) {
+                            Timber.d("pickCountryName $countryName")
+                            countryWrapper = AreaParameter.findCountryWrapper(countryName)
                         }
-                        .doOnError {
-                        }.subscribe()
-                    it.dismiss()
+                    })
+            pickerDialog!!.show()
+            (pickerDialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
+                .setOnClickListener {
+                    dialog.findViewById<TextView>(R.id.phoneCodeLabel)!!.text =
+                            countryWrapper?.phoneCode
+                    dialog.findViewById<TextView>(R.id.countryCodeLabel)!!.text =
+                            countryWrapper?.countryCode
+                    pickerDialog.cancel()
                 }
-            }
         }
-    }
-
-    fun onModifyRecipient(recipient: Recipient) {
-        var dialog = dialogHelper.onCreateRecipientDialog(recipient) as AlertDialog
-        dialog.show()
-        var postBtn = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-        postBtn.setOnClickListener {
+        if (isCreate) {
+            var positiveBtn = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            positiveBtn.setOnClickListener {
+                createDialogOkPress(dialog, countryWrapper)
+            }
+        } else {
             dialog.let {
-                var name = it.findViewById<EditText>(R.id.nameField)!!.text.toString()
-                var phoneCode = it.findViewById<EditText>(R.id.codeField)!!.text.toString()
-                var phoneNumber = it.findViewById<EditText>(R.id.phoneNumberField)!!.text.toString()
-                var countryCode = it.findViewById<EditText>(R.id.countryCodeField)!!.text.toString()
-                var postCode = it.findViewById<EditText>(R.id.postCodeField)!!.text.toString()
-                var city = it.findViewById<EditText>(R.id.cityField)!!.text.toString()
-                var district = it.findViewById<EditText>(R.id.districtField)!!.text.toString()
-                var others = it.findViewById<EditText>(R.id.othersField)!!.text.toString()
-                if (name.equals("") || phoneCode.equals("") || phoneNumber.equals("")
-                    || countryCode.equals("") || postCode.equals("")
-                    || city.equals("") || district.equals("") || others.equals("")
-                ) {
-                } else {
-                    dialog.cancel()
-                }
+                it.findViewById<EditText>(R.id.nameField)!!.setText(recipient!!.name)
+                it.findViewById<EditText>(R.id.phoneNumberField)!!.setText(recipient!!.phone.number)
+                it.findViewById<TextView>(R.id.phoneCodeLabel)!!.setText(recipient!!.phone.code)
+                var address = recipient.address
+                it.findViewById<EditText>(R.id.postCodeField)!!.setText(address.postCode)
+                it.findViewById<TextView>(R.id.countryCodeLabel)!!.setText(address.countryCode)
+                it.findViewById<EditText>(R.id.cityField)!!.setText(address.city)
+                it.findViewById<EditText>(R.id.districtField)!!.setText(address.district)
+                it.findViewById<EditText>(R.id.othersField)!!.setText(address.others)
+            }
+            var positiveBtn = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            positiveBtn.setOnClickListener {
+                modifyDialogOkPress(dialog, countryWrapper, recipient!!)
             }
         }
     }
 
-    fun getUserData() {
+    override fun deleteRecipient(recipient: Recipient) {
+        var singleDelete = userInfoPresenter!!.deleteRecipients(recipient)
+        singleDelete.subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                showLoad()
+            }
+            .doOnSuccess {
+                getUserData(false)
+                Toast.makeText(this.context, it.body()?.response, Toast.LENGTH_LONG).show()
+                Timber.d("error body ${it.errorBody()?.string()}")
+            }
+            .doOnError {
+                Timber.d("error delete " + it.message)
+            }
+            .subscribe()
+    }
+
+    override fun modifyRecipient(recipient: Recipient) {
+        stateDialogCreateModify(false, recipient)
+    }
+
+    fun createDialogOkPress(it: Dialog, countryWrapper: CountryWrapper) {
+        var namefield = it.findViewById<EditText>(R.id.nameField)!!.text.toString()
+        var phoneField = it.findViewById<EditText>(R.id.phoneNumberField)!!.text.toString()
+        var postCodeField =
+            it.findViewById<EditText>(R.id.postCodeField)!!.text.toString()
+        var cityField = it.findViewById<EditText>(R.id.cityField)!!.text.toString()
+        var districtField = it.findViewById<EditText>(R.id.districtField)!!.text.toString()
+        var othersField = it.findViewById<EditText>(R.id.othersField)!!.text.toString()
+        if (namefield.equals("") || phoneField.equals("") ||
+            postCodeField.equals("") || cityField.equals("") ||
+            districtField.equals("") || othersField.equals("")
+        ) {
+        } else {
+            var recipients = Recipient("", namefield)
+            recipients.phone.code = countryWrapper!!.phoneCode
+            recipients.phone.number = phoneField
+            recipients.address.countryCode = countryWrapper!!.countryCode
+            recipients.address.postCode = postCodeField
+            recipients.address.city = cityField
+            recipients.address.district = districtField
+            recipients.address.others = othersField
+            var singleRecipient = userInfoPresenter!!.createRecipients(recipients)
+            singleRecipient.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe {
+                    showLoad()
+                }
+                .doOnSuccess {
+                    //                    Toast.makeText(this.context, it.body()?.string(), Toast.LENGTH_LONG)
+//                        .show()
+                    getUserData(false)
+                }
+                .doOnError {
+                }.subscribe()
+            it.dismiss()
+        }
+    }
+
+    fun modifyDialogOkPress(it: Dialog, countryWrapper: CountryWrapper, recipient: Recipient) {
+        var namefield = it.findViewById<EditText>(R.id.nameField)!!.text.toString()
+        var phoneField = it.findViewById<EditText>(R.id.phoneNumberField)!!.text.toString()
+        var postCodeField =
+            it.findViewById<EditText>(R.id.postCodeField)!!.text.toString()
+        var cityField = it.findViewById<EditText>(R.id.cityField)!!.text.toString()
+        var districtField = it.findViewById<EditText>(R.id.districtField)!!.text.toString()
+        var othersField = it.findViewById<EditText>(R.id.othersField)!!.text.toString()
+        if (namefield.equals("") || phoneField.equals("") ||
+            postCodeField.equals("") || cityField.equals("") ||
+            districtField.equals("") || othersField.equals("")
+        ) {
+        } else {
+            recipient.name = namefield
+            recipient.phone.code = countryWrapper!!.phoneCode
+            recipient.phone.number = phoneField
+            recipient.address.countryCode = countryWrapper!!.countryCode
+            recipient.address.postCode = postCodeField
+            recipient.address.city = cityField
+            recipient.address.district = districtField
+            recipient.address.others = othersField
+
+            var singleRecipient = userInfoPresenter!!.modifyRecipient(recipient)
+            singleRecipient.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe {
+                    showLoad()
+                }
+                .doOnSuccess {
+                    Toast.makeText(this.context, "${it.body()?.response}", Toast.LENGTH_LONG).show()
+//                    Toast.makeText(this.context, "${it.errorBody()?.string()}", Toast.LENGTH_LONG)
+//                        .show()
+                    getUserData(false)
+                }
+                .doOnError {
+                }.subscribe()
+            it.cancel()
+        }
+    }
+
+    fun getUserData(isShowLoad: Boolean) {
         var singleUser = userInfoPresenter!!.getBuyerUser()
-        var dialog: Dialog? = null
         singleUser.subscribeOn(Schedulers.newThread())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe {
-                dialog =
-                        ProgressDialog.show(
-                            this@UserInfoFragment.context,
-                            "Loading",
-                            "Waiting...",
-                            true
-                        )
+                if (isShowLoad)
+                    showLoad()
             }
             .doOnSuccess {
                 Configure.user = it
@@ -195,9 +268,20 @@ class UserInfoFragment : Fragment() {
                     it.data = Configure.user
                     it.notifyDataSetChanged()
                 }
-                dialog?.dismiss()
+                loadDialog?.cancel()
             }
             .subscribe()
+    }
+
+    var loadDialog: Dialog? = null
+    fun showLoad() {
+        loadDialog =
+                ProgressDialog.show(
+                    this@UserInfoFragment.context,
+                    "Loading",
+                    "Waiting...",
+                    true
+                )
     }
 
     companion object {

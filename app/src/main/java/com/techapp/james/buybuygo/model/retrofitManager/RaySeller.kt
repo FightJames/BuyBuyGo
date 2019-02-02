@@ -36,6 +36,7 @@ interface RaySeller {
     @HTTP(method = "DELETE", path = "items", hasBody = true)
     fun deleteItem(@Header("Authorization") token: String, @Body itemIds: RequestBody): Single<Response<Wrapper<String>>>
 
+
     @Headers("Content-Type: application/json")
     @POST("channel")
     fun startChannel(@Header("Authorization") token: String, @Body iFrame: RequestBody): Single<Response<Wrapper<Channel>>>

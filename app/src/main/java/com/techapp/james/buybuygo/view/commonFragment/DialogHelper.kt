@@ -6,7 +6,6 @@ import android.content.DialogInterface
 import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.EditText
 import android.widget.NumberPicker
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.data.CountryWrapper
@@ -49,7 +48,7 @@ class DialogHelper(val activity: Activity) {
                 it.countryPicker.wrapSelectorWheel = true
                 it.countryPicker.descendantFocusability = NumberPicker.FOCUS_BLOCK_DESCENDANTS
                 it.countryPicker.setOnValueChangedListener { picker, oldVal, newVal ->
-
+                    valueListener.pickValue(countryArray[newVal]!!)
                 }
             }
             val builder = AlertDialog.Builder(it)
@@ -72,9 +71,9 @@ class DialogHelper(val activity: Activity) {
             var customerView = LayoutInflater.from(it)
                 .inflate(R.layout.common_user_dialog_recipient, null, false)
             customerView!!.let {
-                it.codeField.setText(phone.code)
+                it.phoneCodeLabel.setText(phone.code)
                 it.phoneNumberField.setText(phone.number)
-                it.countryCodeField.setText(address.countryCode)
+                it.countryCodeLabel.setText(address.countryCode)
                 it.postCodeField.setText(address.postCode)
                 it.cityField.setText(address.city)
                 it.districtField.setText(address.district)
@@ -92,14 +91,14 @@ class DialogHelper(val activity: Activity) {
         } ?: throw IllegalStateException("Activity cannot be null")
     }
 
-    fun onCreateRecipientDialog(): Dialog {
+    fun onCreateRecipientDialog(s: String): Dialog {
         return activity.let {
             val builder = AlertDialog.Builder(it)
             var customerView = LayoutInflater.from(activity)
                 .inflate(R.layout.common_user_dialog_recipient, null, false)
             builder.setView(customerView)
                 // Add action buttons
-                .setPositiveButton(R.string.ok, null)
+                .setPositiveButton(s, null)
                 .setNegativeButton(R.string.cancel,
                     DialogInterface.OnClickListener { dialog, id ->
                         dialog.dismiss()
@@ -116,8 +115,8 @@ class DialogHelper(val activity: Activity) {
             var customerView =
                 LayoutInflater.from(activity).inflate(R.layout.common_user_dialog_recipient, null)
             customerView!!.let {
-                it.codeField.setText(content.code)
-                it.codeField.setText(content.number)
+                it.phoneCodeLabel.setText(content.code)
+                it.phoneCodeLabel.setText(content.number)
             }
             builder.setView(customerView)
                 // Add action buttons
