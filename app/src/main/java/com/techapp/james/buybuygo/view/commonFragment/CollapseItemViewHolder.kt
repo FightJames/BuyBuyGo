@@ -3,7 +3,6 @@ package com.techapp.james.buybuygo.view.commonFragment
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.techapp.james.buybuygo.R
-import com.techapp.james.buybuygo.model.data.Recipient
 import kotlinx.android.synthetic.main.common_user_info_collapse.view.*
 
 class CollapseItemViewHolder : RecyclerView.ViewHolder {

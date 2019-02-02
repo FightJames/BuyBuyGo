@@ -1,12 +1,11 @@
 package com.techapp.james.buybuygo.model.retrofitManager
 
-import com.techapp.james.buybuygo.model.data.CountryWrapper
+import com.techapp.james.buybuygo.model.data.buyer.CountryWrapper
 import com.techapp.james.buybuygo.model.data.User
 import com.techapp.james.buybuygo.model.data.Wrapper
 import io.reactivex.Single
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
-import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.*
 

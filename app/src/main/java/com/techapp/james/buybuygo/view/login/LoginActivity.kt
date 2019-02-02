@@ -3,6 +3,7 @@ package com.techapp.james.buybuygo.view.login
 import android.app.Activity
 import android.app.ActivityManager
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import com.facebook.login.LoginResult
@@ -34,6 +35,7 @@ class LoginActivity : BaseActivity() {
     }
 
     fun init() {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
         loginPresenter = LoginPresenter(this)
         Glide.with(this)
                 .load(R.drawable.buy_for_me)

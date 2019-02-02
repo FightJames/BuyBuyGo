@@ -13,6 +13,8 @@ import android.widget.Toast
 import android.content.Context.CLIPBOARD_SERVICE
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat.getSystemService
+import android.view.ViewGroup
+import kotlinx.android.synthetic.main.seller_live_dialog_token.view.*
 
 
 class DialogHelper {
@@ -40,7 +42,11 @@ class DialogHelper {
 
     fun onCreateTokenDialog(activity: Activity, token: String): Dialog {
         val builder = AlertDialog.Builder(activity)
-        val showText = TextView(activity)
+        var tokenView =
+            LayoutInflater.from(activity).inflate(R.layout.seller_live_dialog_token, null)
+        builder.setView(tokenView)
+        builder.setTitle("Your Token")
+        val showText = tokenView.tokenLabel
         showText.text = token
 
 //        showText.textSize =
@@ -48,29 +54,16 @@ class DialogHelper {
             val manager =
                 activity!!.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager?
 
-
             var clipData = ClipData.newPlainText(null, showText.text)
             Toast.makeText(
                 activity, "Text in clipboard",
                 Toast.LENGTH_SHORT
             ).show()
-            showText.isScrollbarFadingEnabled
             manager!!.primaryClip = clipData
         }
 //        showText.setPadding()
         showText.setTextIsSelectable(true)
-        builder.setView(showText)
-            .setTitle("Your Token")
-            .setPositiveButton(R.string.ok, null)
-
         return builder.create()
     }
 
-    fun destroy() {
-        fragment = null
-    }
-
-    interface OnPressOK {
-        fun onPressOK(view: View)
-    }
 }

@@ -1,6 +1,6 @@
 package com.techapp.james.buybuygo.model.retrofitManager
 
-import com.techapp.james.buybuygo.model.data.Recipient
+import com.techapp.james.buybuygo.model.data.buyer.Recipient
 import com.techapp.james.buybuygo.model.data.Wrapper
 import io.reactivex.Single
 import okhttp3.RequestBody
@@ -31,10 +31,16 @@ interface RayBuyer {
     @HTTP(method = "DELETE", path = "recipients", hasBody = true)
     fun deleteRecipient(@Header("Authorization") token: String, @Body itemIds: RequestBody): Single<Response<Wrapper<String>>>
 
+    @PUT("user-channel-id")
+    fun leaveChannel(@Header("Authorization") token: String): Single<Response<Wrapper<String>>>
+
+    @HTTP(method = "PATCH", path = "user-channel-id", hasBody = true)
+    fun joinChannel(@Header("Authorization") token: String, @Body body: RequestBody): Single<Response<Wrapper<String>>> //return a seller's live url
+
     @Headers(
         "Content-Type: application/json",
         "X-Requested-With: XMLHttpRequest"
     )
     @HTTP(method = "PATCH", path = "recipients/{recipient_id}", hasBody = true)
-    fun updateRecipient(@Header("Authorization") token: String, @Path("recipient_id") id:String, @Body itemIds: RequestBody): Single<Response<Wrapper<String>>>
+    fun updateRecipient(@Header("Authorization") token: String, @Path("recipient_id") id: String, @Body itemIds: RequestBody): Single<Response<Wrapper<String>>>
 }

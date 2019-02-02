@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.techapp.james.buybuygo.R
-import com.techapp.james.buybuygo.model.data.Commodity
+import com.techapp.james.buybuygo.model.data.seller.Commodity
 import kotlinx.android.synthetic.main.seller_fragment_commodity_list_item.view.*
 import timber.log.Timber
 

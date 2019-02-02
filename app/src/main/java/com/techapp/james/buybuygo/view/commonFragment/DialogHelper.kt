@@ -8,9 +8,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.NumberPicker
 import com.techapp.james.buybuygo.R
-import com.techapp.james.buybuygo.model.data.CountryWrapper
-import com.techapp.james.buybuygo.model.data.Phone
-import com.techapp.james.buybuygo.model.data.Recipient
+import com.techapp.james.buybuygo.model.data.buyer.CountryWrapper
+import com.techapp.james.buybuygo.model.data.buyer.Phone
+import com.techapp.james.buybuygo.model.data.buyer.Recipient
 import kotlinx.android.synthetic.main.common_user_dialog_recipient.view.*
 import kotlinx.android.synthetic.main.common_user_picker_dialog.view.*
 

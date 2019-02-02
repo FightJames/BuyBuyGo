@@ -6,16 +6,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v4.app.Fragment
-import android.support.v7.app.AlertDialog
 import android.support.v7.widget.GridLayoutManager
 import android.view.*
 import android.widget.Toast
-import com.bumptech.glide.Glide
 import com.techapp.james.buybuygo.R
-import com.techapp.james.buybuygo.model.data.Commodity
+import com.techapp.james.buybuygo.model.data.seller.Commodity
 import com.techapp.james.buybuygo.model.file.FileData
 import com.techapp.james.buybuygo.model.file.FileManager
-import com.techapp.james.buybuygo.model.networkManager.NetworkManager
 import com.techapp.james.buybuygo.presenter.seller.CommodityPresenter
 import com.techapp.james.buybuygo.view.crop.CropActivity
 import io.reactivex.android.schedulers.AndroidSchedulers

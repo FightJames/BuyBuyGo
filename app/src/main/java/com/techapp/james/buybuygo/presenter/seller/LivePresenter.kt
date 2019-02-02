@@ -1,7 +1,6 @@
 package com.techapp.james.buybuygo.presenter.seller
 
-import android.support.v4.app.Fragment
-import com.techapp.james.buybuygo.model.data.Channel
+import com.techapp.james.buybuygo.model.data.seller.Channel
 import com.techapp.james.buybuygo.model.data.Wrapper
 import com.techapp.james.buybuygo.model.retrofitManager.RetrofitManager
 import com.techapp.james.buybuygo.presenter.Configure

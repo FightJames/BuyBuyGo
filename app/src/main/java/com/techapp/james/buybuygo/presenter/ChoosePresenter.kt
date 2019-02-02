@@ -3,7 +3,7 @@ package com.techapp.james.buybuygo.presenter
 import android.app.Activity
 import android.content.Intent
 import android.view.View
-import com.techapp.james.buybuygo.model.data.Recipient
+import com.techapp.james.buybuygo.model.data.buyer.Recipient
 import com.techapp.james.buybuygo.model.data.User
 import com.techapp.james.buybuygo.model.data.Wrapper
 import com.techapp.james.buybuygo.model.retrofitManager.RetrofitManager

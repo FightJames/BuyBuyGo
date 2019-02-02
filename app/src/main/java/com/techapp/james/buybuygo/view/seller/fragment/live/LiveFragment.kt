@@ -88,7 +88,7 @@ class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.seller_live, menu)
+        inflater.inflate(R.menu.common_live, menu)
         var searchItem = menu!!.findItem(R.id.search)
         var searchView: SearchView = searchItem.actionView as SearchView
         searchView.isSubmitButtonEnabled = true
@@ -102,6 +102,9 @@ class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
                         //input is a url which seller live in facebook
                         //post api/Channel to get Channel
                         var url = getFBLiveUrl(input)
+                        if (url.equals("Not Thing")) {
+                            return true
+                        }
                         var dialog = dialogHelper.onCreateDialog()
                         dialog.show()
                         dialog.getButton(AlertDialog.BUTTON_POSITIVE)
@@ -146,10 +149,10 @@ class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
     fun getFBLiveUrl(fbStreamUrl: String): String {
         var pattern = "^[0-9]*\$".toRegex()
         var sArray = fbStreamUrl.split("/")
-        if (sArray.size < 1) {
+        if (sArray.size < 2) {
             return "Not Thing"
         }
-        Timber.d("Video id ${sArray[sArray.size - 2]}")
+//        Timber.d("Video id ${sArray[sArray.size - 2]}")
         var id = sArray[sArray.size - 2]
         if (!pattern.matches(id)) {
             sArray = fbStreamUrl.split("=")

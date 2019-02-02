@@ -1,6 +1,6 @@
 package com.techapp.james.buybuygo.view.commonFragment
 
-import com.techapp.james.buybuygo.model.data.CountryWrapper
+import com.techapp.james.buybuygo.model.data.buyer.CountryWrapper
 
 object AreaParameter {
     var countryWrapperList = ArrayList<CountryWrapper>()

@@ -19,8 +19,8 @@ import android.widget.TextView
 import android.widget.Toast
 
 import com.techapp.james.buybuygo.R
-import com.techapp.james.buybuygo.model.data.CountryWrapper
-import com.techapp.james.buybuygo.model.data.Recipient
+import com.techapp.james.buybuygo.model.data.buyer.CountryWrapper
+import com.techapp.james.buybuygo.model.data.buyer.Recipient
 import com.techapp.james.buybuygo.presenter.Configure
 import com.techapp.james.buybuygo.presenter.common.UserInfoPresenter
 import io.reactivex.android.schedulers.AndroidSchedulers

@@ -1,4 +1,4 @@
-package com.techapp.james.buybuygo.model.data
+package com.techapp.james.buybuygo.model.data.buyer
 
 import com.google.gson.annotations.SerializedName
 

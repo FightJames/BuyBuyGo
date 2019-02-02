@@ -3,7 +3,7 @@ package com.techapp.james.buybuygo.model.retrofitManager
 import android.content.Context
 import android.net.Uri
 import com.techapp.james.buybuygo.R
-import com.techapp.james.buybuygo.model.data.Commodity
+import com.techapp.james.buybuygo.model.data.seller.Commodity
 import com.techapp.james.buybuygo.presenter.Configure
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -16,7 +16,7 @@ import java.io.File
 import java.io.FileOutputStream
 import android.graphics.BitmapFactory
 import android.graphics.Bitmap
-import com.techapp.james.buybuygo.model.data.Recipient
+import com.techapp.james.buybuygo.model.data.buyer.Recipient
 import com.techapp.james.buybuygo.model.data.User
 import com.techapp.james.buybuygo.model.data.Wrapper
 import io.reactivex.Single
@@ -62,7 +62,15 @@ class Test {
                 MediaType.get("image/png"), f)
         val body = MultipartBody.Part.createFormData("images", "James", requestFile)
 
-        var c = Commodity("sdkjf", "hello", "des", 123, 100, 2, Uri.fromFile(f).toString())
+        var c = Commodity(
+            "sdkjf",
+            "hello",
+            "des",
+            123,
+            100,
+            2,
+            Uri.fromFile(f).toString()
+        )
 
         val name = createPartFromString(c.name)
         val description = createPartFromString(c.description)

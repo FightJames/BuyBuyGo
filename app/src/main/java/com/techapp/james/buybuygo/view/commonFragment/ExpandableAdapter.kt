@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.techapp.james.buybuygo.R
-import com.techapp.james.buybuygo.model.data.Recipient
+import com.techapp.james.buybuygo.model.data.buyer.Recipient
 import com.techapp.james.buybuygo.model.data.User
 import kotlinx.android.synthetic.main.common_user_info_collapse.view.*
 import kotlinx.android.synthetic.main.common_user_info_collapse_recipient_item.view.*

@@ -1,7 +1,7 @@
 package com.techapp.james.buybuygo.presenter.common
 
-import com.techapp.james.buybuygo.model.data.CountryWrapper
-import com.techapp.james.buybuygo.model.data.Recipient
+import com.techapp.james.buybuygo.model.data.buyer.CountryWrapper
+import com.techapp.james.buybuygo.model.data.buyer.Recipient
 import com.techapp.james.buybuygo.model.data.User
 import com.techapp.james.buybuygo.model.data.Wrapper
 import com.techapp.james.buybuygo.model.retrofitManager.RayBuyer
@@ -9,11 +9,8 @@ import com.techapp.james.buybuygo.model.retrofitManager.RayCommon
 import com.techapp.james.buybuygo.model.retrofitManager.RetrofitManager
 import com.techapp.james.buybuygo.presenter.Configure
 import com.techapp.james.buybuygo.view.View
-import com.techapp.james.buybuygo.view.commonFragment.UserInfoFragment
 import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
-import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import okhttp3.ResponseBody

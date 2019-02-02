@@ -1,4 +1,4 @@
-package com.techapp.james.buybuygo.view.seller.fragment
+package com.techapp.james.buybuygo.view.buyer.fragment
 
 import android.content.Context
 import android.net.Uri
@@ -16,6 +16,7 @@ class OrderFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Timber.d("Why you loding")
         arguments?.let {
             //            param1 = it.getString(ARG_PARAM1)
 //            param2 = it.getString(ARG_PARAM2)

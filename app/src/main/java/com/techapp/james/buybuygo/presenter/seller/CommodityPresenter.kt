@@ -1,7 +1,6 @@
 package com.techapp.james.buybuygo.presenter.seller
 
-import android.support.v4.app.Fragment
-import com.techapp.james.buybuygo.model.data.Commodity
+import com.techapp.james.buybuygo.model.data.seller.Commodity
 import com.techapp.james.buybuygo.model.data.Wrapper
 import com.techapp.james.buybuygo.model.file.FileData
 import com.techapp.james.buybuygo.model.retrofitManager.RaySeller

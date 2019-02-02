@@ -1,18 +1,16 @@
 package com.techapp.james.buybuygo.view.buyer
 
-import android.support.v7.app.AppCompatActivity
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
-import android.webkit.WebView
-import android.webkit.WebViewClient
-import android.widget.Toast
+import android.support.v7.app.AppCompatActivity
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.view.buyer.fragment.ContentPagerAdapter
-import com.techapp.james.buybuygo.view.buyer.fragment.LiveFragment
+import com.techapp.james.buybuygo.view.buyer.fragment.live.LiveFragment
+import com.techapp.james.buybuygo.view.buyer.fragment.OrderFragment
 import com.techapp.james.buybuygo.view.commonFragment.ExpandableAdapter
 import com.techapp.james.buybuygo.view.commonFragment.UserInfoFragment
-import com.techapp.james.buybuygo.view.seller.fragment.OrderFragment
 import kotlinx.android.synthetic.main.activity_buyer.*
 
 class BuyerActivity : AppCompatActivity() {
@@ -21,6 +19,7 @@ class BuyerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_buyer)
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
         var liveFragment = LiveFragment.newInstance()
         var orderFragment = OrderFragment.newInstance()
         var userInfoFragment = UserInfoFragment.newInstance(ExpandableAdapter.BUYER_MODE)

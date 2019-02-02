@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import com.bumptech.glide.Glide
 import com.techapp.james.buybuygo.R
-import com.techapp.james.buybuygo.model.data.Commodity
+import com.techapp.james.buybuygo.model.data.seller.Commodity
 import com.techapp.james.buybuygo.model.file.FileData
 import com.techapp.james.buybuygo.model.networkManager.NetworkManager
 import com.techapp.james.buybuygo.presenter.seller.CommodityPresenter
