@@ -76,15 +76,15 @@ class Test {
         val description = createPartFromString(c.description)
         val stock = createPartFromString(c.stock.toString())
         val cost = createPartFromString(c.cost.toString())
-        Timber.d(c.unit_price.toString())
-        val unit_pirce = createPartFromString(c.unit_price.toString())
+        Timber.d(c.unitPrice.toString())
+        val unit_pirce = createPartFromString(c.unitPrice.toString())
         var map = HashMap<String, RequestBody>()
 
         map.put("name", name)
         map.put("description", description)
         map.put("stock", stock)
         map.put("cost", cost)
-        map.put("unit_price", unit_pirce)
+        map.put("unitPrice", unit_pirce)
 
 
         //test json
@@ -133,7 +133,7 @@ class Test {
 //                .addFormDataPart("stock", stock.toString())
 //                .addFormDataPart("cost", cost.toString())
 //                .addFormDataPart("unit_pirce", unit_pirce.toString())
-//                .addFormDataPart("imageUri", "Ray", requestFile)
+//                .addFormDataPart("imageUrl", "Ray", requestFile)
 //                .build()
 //        var ob = raySeller.uploadItem("Bearer " + Configure.FB_ACCESS_TOKEN, requestBody)
 //        ob.subscribeOn(Schedulers.newThread())
@@ -151,7 +151,7 @@ class Test {
 //                .doOnError { }
 //                .subscribe()
 //
-//        var obPart = raySeller.uploadItem("Bearer " + Configure.FB_ACCESS_TOKEN, c.name, c.description, c.stock, c.cost, c.unit_price)
+//        var obPart = raySeller.uploadItem("Bearer " + Configure.FB_ACCESS_TOKEN, c.name, c.description, c.stock, c.cost, c.unitPrice)
 //
 //        obPart.subscribeOn(Schedulers.newThread())
 //                .observeOn(AndroidSchedulers.mainThread())
@@ -183,7 +183,7 @@ class Test {
                         var data = it.response
                         for (e: Commodity in data) {
                             Timber.d(e.name)
-                            Timber.d(e.imageUri)
+                            Timber.d(e.imageUrl)
                         }
                     }
                 }

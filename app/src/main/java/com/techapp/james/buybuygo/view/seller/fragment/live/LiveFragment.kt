@@ -66,7 +66,7 @@ class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
         }
         tokenBtn.setOnClickListener {
             ChannelData.channel?.let {
-                dialogHelper.onCreateTokenDialog(this.activity!!, it.channelToken).show()
+                dialogHelper.createTokenDialog(this.activity!!, it.channelToken).show()
             }
         }
     }
@@ -105,7 +105,7 @@ class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
                         if (url.equals("Not Thing")) {
                             return true
                         }
-                        var dialog = dialogHelper.onCreateDialog()
+                        var dialog = dialogHelper.createDialog()
                         dialog.show()
                         dialog.getButton(AlertDialog.BUTTON_POSITIVE)
                             .setOnClickListener {

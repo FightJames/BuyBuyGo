@@ -44,7 +44,9 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     //buyer
-
+    // buy dialog
+    <string name="remain">Remain : %1$s</string>
+    <string name="sold">Sold : %1$s</string>
     //crop
     <string name="crop">CROP</string>
 </resources>

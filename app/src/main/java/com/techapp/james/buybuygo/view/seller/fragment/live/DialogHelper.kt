@@ -24,7 +24,7 @@ class DialogHelper {
         this.fragment = fragment
     }
 
-    fun onCreateDialog(): AlertDialog {
+    fun createDialog(): AlertDialog {
         return fragment!!.activity?.let {
             val builder = AlertDialog.Builder(it)
             var customerView =
@@ -40,7 +40,7 @@ class DialogHelper {
         } ?: throw IllegalStateException("Activity cannot be null")
     }
 
-    fun onCreateTokenDialog(activity: Activity, token: String): Dialog {
+    fun createTokenDialog(activity: Activity, token: String): Dialog {
         val builder = AlertDialog.Builder(activity)
         var tokenView =
             LayoutInflater.from(activity).inflate(R.layout.seller_live_dialog_token, null)

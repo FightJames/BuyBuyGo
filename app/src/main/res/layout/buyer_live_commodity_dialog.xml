@@ -15,7 +15,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:scaleType="fitCenter"
-        app:layout_constraintBottom_toTopOf="@+id/nameField"
+        app:layout_constraintBottom_toTopOf="@+id/nameLabel"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,78 +23,78 @@
         app:srcCompat="@drawable/ic_add_a_commodity_black_24dp" />
 
     <TextView
-        android:id="@+id/nameField"
+        android:id="@+id/nameLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:hint="@string/name"
         android:inputType="text"
+        android:text="@string/name"
         android:textColor="@android:color/background_dark"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/desField"
+        app:layout_constraintBottom_toTopOf="@+id/descriptionLabel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline" />
 
     <TextView
-        android:id="@+id/desField"
+        android:id="@+id/descriptionLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:autofillHints="@string/description"
-        android:hint="@string/description"
         android:inputType="text"
+        android:text="@string/description"
         android:textColor="@android:color/background_dark"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/stockField"
+        app:layout_constraintBottom_toTopOf="@+id/remainingLabel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/nameField" />
+        app:layout_constraintStart_toStartOf="@+id/nameLabel" />
 
     <TextView
-        android:id="@+id/stockField"
+        android:id="@+id/remainingLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:hint="@string/stock"
+        android:layout_marginBottom="8dp"
         android:inputType="number"
+        android:text="@string/remain"
         android:textColor="@android:color/background_dark"
         android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/soldLabel"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/desField"
-        tools:layout_editor_absoluteY="343dp" />
+        app:layout_constraintHorizontal_bias="0.01"
+        app:layout_constraintStart_toStartOf="@+id/descriptionLabel" />
 
     <TextView
-        android:id="@+id/unitPriceField"
+        android:id="@+id/unitPriceLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:hint="@string/unit_price"
+        android:layout_marginBottom="8dp"
         android:inputType="number"
+        android:text="@string/unit_price"
         android:textColor="@android:color/background_dark"
         android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/addBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/stockField"
-        app:layout_constraintTop_toBottomOf="@+id/stockField" />
+        app:layout_constraintStart_toStartOf="@+id/remainingLabel" />
 
     <TextView
         android:id="@+id/countLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
         android:text="0"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/addBtn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.518"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/addBtn"
+        app:layout_constraintStart_toEndOf="@+id/removeBtn"
         app:layout_constraintTop_toTopOf="@+id/addBtn" />
 
     <android.support.constraint.Guideline
@@ -108,15 +108,10 @@
         android:id="@+id/removeBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/countLabel"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/unitPriceField"
+        android:layout_marginEnd="32dp"
+        app:layout_constraintBottom_toBottomOf="@+id/addBtn"
+        app:layout_constraintEnd_toStartOf="@+id/centerGuideline"
+        app:layout_constraintTop_toTopOf="@+id/addBtn"
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/ic_remove_black_24dp" />
 
@@ -124,16 +119,39 @@
         android:id="@+id/addBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="14dp"
+        android:layout_marginStart="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/centerGuideline"
+        app:srcCompat="@drawable/ic_add_black_24dp" />
+
+    <TextView
+        android:id="@+id/soldLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="@string/sold"
+        android:textColor="@android:color/background_dark"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/pickBtn"
+        app:layout_constraintStart_toStartOf="@+id/remainingLabel" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/centerGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <Button
+        android:id="@+id/pickBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="Recipient"
+        app:layout_constraintBottom_toTopOf="@+id/unitPriceLabel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/countLabel"
-        app:layout_constraintTop_toBottomOf="@+id/unitPriceField"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/ic_add_black_24dp" />
+        app:layout_constraintStart_toStartOf="@+id/soldLabel" />
 
 </android.support.constraint.ConstraintLayout>

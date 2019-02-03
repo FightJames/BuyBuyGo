@@ -49,8 +49,8 @@ class CommodityPresenter {
         map.put("stock", RequestBody.create(okhttp3.MultipartBody.FORM, commodity.stock.toString()))
         map.put("cost", RequestBody.create(okhttp3.MultipartBody.FORM, commodity.cost.toString()))
         map.put(
-            "unit_price",
-            RequestBody.create(okhttp3.MultipartBody.FORM, commodity.unit_price.toString())
+            "unitPrice",
+            RequestBody.create(okhttp3.MultipartBody.FORM, commodity.unitPrice.toString())
         )
 
         var file = File(fileData.path)
@@ -74,8 +74,8 @@ class CommodityPresenter {
         map.put("stock", RequestBody.create(okhttp3.MultipartBody.FORM, commodity.stock.toString()))
         map.put("cost", RequestBody.create(okhttp3.MultipartBody.FORM, commodity.cost.toString()))
         map.put(
-            "unit_price",
-            RequestBody.create(okhttp3.MultipartBody.FORM, commodity.unit_price.toString())
+            "unitPrice",
+            RequestBody.create(okhttp3.MultipartBody.FORM, commodity.unitPrice.toString())
         )
         map.put("_method", RequestBody.create(okhttp3.MultipartBody.FORM, "PATCH"))
 

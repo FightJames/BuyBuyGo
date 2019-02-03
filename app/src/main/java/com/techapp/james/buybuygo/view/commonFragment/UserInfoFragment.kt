@@ -96,7 +96,7 @@ class UserInfoFragment : Fragment(), ExpandableAdapter.ItemClick,
     }
 
     fun createShellDialog(postiveBtn: String): Dialog {
-        return dialogHelper.onCreateRecipientDialog(postiveBtn) as AlertDialog
+        return dialogHelper.createRecipientDialog(postiveBtn) as AlertDialog
     }
 
     fun stateDialogCreateModify(
@@ -113,7 +113,7 @@ class UserInfoFragment : Fragment(), ExpandableAdapter.ItemClick,
         var countryBtn = dialog.findViewById<Button>(R.id.countryBtn)
         countryBtn!!.setOnClickListener {
             var pickerDialog =
-                dialogHelper.onCreateCountryPickerDialog(AreaParameter.countryWrapperList,
+                dialogHelper.createCountryPickerDialog(AreaParameter.countryWrapperList,
                     object : DialogHelper.OnPickValue {
                         override fun pickValue(countryName: String) {
                             Timber.d("pickCountryName $countryName")
@@ -137,7 +137,7 @@ class UserInfoFragment : Fragment(), ExpandableAdapter.ItemClick,
             }
         } else {
             dialog.let {
-                it.findViewById<EditText>(R.id.nameField)!!.setText(recipient!!.name)
+                it.findViewById<EditText>(R.id.nameLabel)!!.setText(recipient!!.name)
                 it.findViewById<EditText>(R.id.phoneNumberField)!!.setText(recipient!!.phone.number)
                 it.findViewById<TextView>(R.id.phoneCodeLabel)!!.setText(recipient!!.phone.code)
                 var address = recipient.address
@@ -177,7 +177,7 @@ class UserInfoFragment : Fragment(), ExpandableAdapter.ItemClick,
     }
 
     fun createDialogOkPress(it: Dialog, countryWrapper: CountryWrapper) {
-        var namefield = it.findViewById<EditText>(R.id.nameField)!!.text.toString()
+        var namefield = it.findViewById<EditText>(R.id.nameLabel)!!.text.toString()
         var phoneField = it.findViewById<EditText>(R.id.phoneNumberField)!!.text.toString()
         var postCodeField =
             it.findViewById<EditText>(R.id.postCodeField)!!.text.toString()
@@ -215,7 +215,7 @@ class UserInfoFragment : Fragment(), ExpandableAdapter.ItemClick,
     }
 
     fun modifyDialogOkPress(it: Dialog, countryWrapper: CountryWrapper, recipient: Recipient) {
-        var namefield = it.findViewById<EditText>(R.id.nameField)!!.text.toString()
+        var namefield = it.findViewById<EditText>(R.id.nameLabel)!!.text.toString()
         var phoneField = it.findViewById<EditText>(R.id.phoneNumberField)!!.text.toString()
         var postCodeField =
             it.findViewById<EditText>(R.id.postCodeField)!!.text.toString()

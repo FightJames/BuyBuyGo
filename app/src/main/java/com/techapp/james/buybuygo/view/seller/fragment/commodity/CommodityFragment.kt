@@ -55,7 +55,7 @@ class CommodityFragment : Fragment(), com.techapp.james.buybuygo.view.View {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.order) {
             0 -> {
-                dialog = dialogHelper.onCreateDialog()
+                dialog = dialogHelper.createDialog()
                 dialog!!.show()
             }
         }
@@ -78,7 +78,7 @@ class CommodityFragment : Fragment(), com.techapp.james.buybuygo.view.View {
         itemRecyclerView.adapter = ListAdapter(
             dataList,
             this,
-            dialogHelper::onCreateModifyDialog
+            dialogHelper::createModifyDialog
         )
         getItem()
     }
@@ -113,12 +113,6 @@ class CommodityFragment : Fragment(), com.techapp.james.buybuygo.view.View {
                     Toast.makeText(this.activity, it.response, Toast.LENGTH_LONG).show()
                 }
             }.subscribe()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        presenter = null
-        dialogHelper.destroy()
     }
 
     companion object {

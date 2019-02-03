@@ -10,9 +10,8 @@ import android.widget.NumberPicker
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.data.buyer.CountryWrapper
 import com.techapp.james.buybuygo.model.data.buyer.Phone
-import com.techapp.james.buybuygo.model.data.buyer.Recipient
 import kotlinx.android.synthetic.main.common_user_dialog_recipient.view.*
-import kotlinx.android.synthetic.main.common_user_picker_dialog.view.*
+import kotlinx.android.synthetic.main.picker_dialog.view.*
 
 
 class DialogHelper(val activity: Activity) {
@@ -24,7 +23,7 @@ class DialogHelper(val activity: Activity) {
         fun pickValue(countryName: String)
     }
 
-    fun onCreateCountryPickerDialog(
+    fun createCountryPickerDialog(
         countryWrappers: ArrayList<CountryWrapper>,
         valueListener: OnPickValue
     ): Dialog {
@@ -39,15 +38,15 @@ class DialogHelper(val activity: Activity) {
             }
 
             var pickerView = LayoutInflater.from(it)
-                .inflate(R.layout.common_user_picker_dialog, null, false)
+                .inflate(R.layout.picker_dialog, null, false)
             pickerView.let {
-                it.countryPicker.displayedValues = countryArray
-                it.countryPicker.minValue = 0
-                it.countryPicker.maxValue = countryArray.size - 1
-                it.countryPicker.value = defaultIndex
-                it.countryPicker.wrapSelectorWheel = true
-                it.countryPicker.descendantFocusability = NumberPicker.FOCUS_BLOCK_DESCENDANTS
-                it.countryPicker.setOnValueChangedListener { picker, oldVal, newVal ->
+                it.picker.displayedValues = countryArray
+                it.picker.minValue = 0
+                it.picker.maxValue = countryArray.size - 1
+                it.picker.value = defaultIndex
+                it.picker.wrapSelectorWheel = true
+                it.picker.descendantFocusability = NumberPicker.FOCUS_BLOCK_DESCENDANTS
+                it.picker.setOnValueChangedListener { picker, oldVal, newVal ->
                     valueListener.pickValue(countryArray[newVal]!!)
                 }
             }
@@ -63,7 +62,7 @@ class DialogHelper(val activity: Activity) {
         }
     }
 
-    fun onCreateRecipientDialog(s: String): Dialog {
+    fun createRecipientDialog(s: String): Dialog {
         return activity.let {
             val builder = AlertDialog.Builder(it)
             var customerView = LayoutInflater.from(activity)
@@ -81,7 +80,7 @@ class DialogHelper(val activity: Activity) {
         } ?: throw IllegalStateException("Activity cannot be null")
     }
 
-    fun onCreatePhoneFieldDialog(content: Phone, okDoing: OnOkPress): Dialog {
+    fun createPhoneFieldDialog(content: Phone, okDoing: OnOkPress): Dialog {
         return activity.let {
             val builder = AlertDialog.Builder(it)
             var customerView =

@@ -13,7 +13,7 @@ class ItemViewHolder : RecyclerView.ViewHolder {
     }
 
     fun setData(data: User, activity: Activity) {
-        itemView.nameField.text = data.name
+        itemView.nameLabel.text = data.name
         Timber.d(data.avatarUrl)
 //.replace("large","small")
         Glide.with(activity)

@@ -16,10 +16,12 @@ import kotlinx.android.synthetic.main.buyer_fragment_live.*
 
 class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
     lateinit var livePresenter: LivePresenter
+    lateinit var dialogHelper: DialogHelper
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         livePresenter = LivePresenter(this)
+        dialogHelper = DialogHelper(this.activity!!)
     }
 
     override fun onStart() {
@@ -67,6 +69,9 @@ class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
                             .show()
                     }
                 }.subscribe()
+        }
+        buyBtn.setOnClickListener {
+
         }
     }
 

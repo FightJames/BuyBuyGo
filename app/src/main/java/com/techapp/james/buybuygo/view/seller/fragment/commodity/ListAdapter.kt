@@ -26,8 +26,8 @@ class ListAdapter(
 
     override fun onBindViewHolder(itemViewHolder: RecyclerView.ViewHolder, position: Int) {
         itemViewHolder.itemView.nameTextView.text = dList[position].name
-        Timber.d("image url " + dList[position].imageUri)
-        Glide.with(commodityFragment).load(dList[position].imageUri)
+        Timber.d("image url " + dList[position].imageUrl)
+        Glide.with(commodityFragment).load(dList[position].imageUrl)
             .into(itemViewHolder.itemView.commodityImageView)
         itemViewHolder.itemView.commodityImageView.setOnClickListener {
             getDialog.invoke(dList[position]).show()

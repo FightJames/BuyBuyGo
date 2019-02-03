@@ -39,7 +39,7 @@ class DialogHelper {
         this.fileData = fileData
     }
 
-    fun onCreateDialog(): Dialog {
+    fun createDialog(): Dialog {
         return fragment!!.activity?.let {
             val builder = AlertDialog.Builder(it)
             customerView =
@@ -51,18 +51,18 @@ class DialogHelper {
                 // Add action buttons
                 .setPositiveButton(R.string.ok, { dialog, id ->
                     var pattern = "^[0-9]*\$".toRegex()
-                    var stock = customerView!!.stockField.text.toString()
+                    var stock = customerView!!.remainingLabel.text.toString()
                     var cost = customerView!!.costField.text.toString()
-                    var unitPrice = customerView!!.unitPriceField.text.toString()
+                    var unitPrice = customerView!!.unitPriceLabel.text.toString()
                     Timber.d("stock"+stock.equals("").toString())
                     var stockFlag = pattern.matches(stock) && !stock.equals("")
                     var costFlag = pattern.matches(cost) && !cost.equals("")
                     var unitPriceFlag = pattern.matches(unitPrice) && !unitPrice.equals("")
-                    customerView!!.unitPriceField.text.toString()
+                    customerView!!.unitPriceLabel.text.toString()
                     var commodity = Commodity(
                         "",
-                        customerView!!.nameField.text.toString(),
-                        customerView!!.desField.text.toString(),
+                        customerView!!.nameLabel.text.toString(),
+                        customerView!!.descriptionLabel.text.toString(),
                         if (stockFlag) stock.toInt() else 0,
                         if (costFlag) cost.toInt() else 0,
                         if (unitPriceFlag) unitPrice.toInt() else 0,
@@ -92,18 +92,18 @@ class DialogHelper {
         } ?: throw IllegalStateException("Activity cannot be null")
     }
 
-    fun onCreateModifyDialog(commodity: Commodity): Dialog {
+    fun createModifyDialog(commodity: Commodity): Dialog {
         return fragment!!.activity?.let {
             val builder = AlertDialog.Builder(it)
             customerView =
                     LayoutInflater.from(it).inflate(R.layout.seller_fragment_commodity_dialog, null)
             customerView!!.let {
-                it.nameField.setText(commodity.name)
-                it.desField.setText(commodity.description)
-                it.stockField.setText(commodity.stock.toString())
+                it.nameLabel.setText(commodity.name)
+                it.descriptionLabel.setText(commodity.description)
+                it.remainingLabel.setText(commodity.stock.toString())
                 it.costField.setText(commodity.cost.toString())
-                it.unitPriceField.setText(commodity.unit_price.toString())
-                Glide.with(it).load(commodity.imageUri).into(it.commodityImageView)
+                it.unitPriceLabel.setText(commodity.unitPrice.toString())
+                Glide.with(it).load(commodity.imageUrl).into(it.commodityImageView)
             }
 
             ConfigUpdatePhoto.IS_UPDATE_PHOTO = false
@@ -114,20 +114,20 @@ class DialogHelper {
                 // Add action buttons
                 .setPositiveButton(R.string.ok,
                     { dialog, id ->
-                        Timber.d("name " + customerView!!.nameField.text.toString())
+                        Timber.d("name " + customerView!!.nameLabel.text.toString())
                         var pattern = "^[0-9]*\$".toRegex()
-                        var stock = customerView!!.stockField.text.toString()
+                        var stock = customerView!!.remainingLabel.text.toString()
                         var cost = customerView!!.costField.text.toString()
-                        var unitPrice = customerView!!.unitPriceField.text.toString()
+                        var unitPrice = customerView!!.unitPriceLabel.text.toString()
                         var stockFlag = pattern.matches(stock)
                         var costFlag = pattern.matches(cost)
                         var unitPriceFlag = pattern.matches(unitPrice)
-                        customerView!!.unitPriceField.text.toString()
-                        commodity.name = customerView!!.nameField.text.toString()
-                        commodity.description = customerView!!.desField.text.toString()
+                        customerView!!.unitPriceLabel.text.toString()
+                        commodity.name = customerView!!.nameLabel.text.toString()
+                        commodity.description = customerView!!.descriptionLabel.text.toString()
                         commodity.stock = if (stockFlag) stock.toInt() else 0
                         commodity.cost = if (costFlag) cost.toInt() else 0
-                        commodity.unit_price = if (unitPriceFlag) unitPrice.toInt() else 0
+                        commodity.unitPrice = if (unitPriceFlag) unitPrice.toInt() else 0
                         var updateOB = presenter!!.updateItem(commodity, fileData!!)
                         if (ConfigUpdatePhoto.IS_UPDATE_PHOTO) {
                             updateOB.subscribeOn(Schedulers.newThread())
@@ -138,7 +138,7 @@ class DialogHelper {
                                 }.subscribe()
                         } else {
                             var singleFile = NetworkManager
-                                .downloadImage(commodity.imageUri, fileData!!.path)
+                                .downloadImage(commodity.imageUrl, fileData!!.path)
                             singleFile.subscribeOn(Schedulers.newThread())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .doOnSuccess {
@@ -157,13 +157,5 @@ class DialogHelper {
                     })
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
-    }
-
-    fun destroy() {
-        fragment = null
-        intentCamera = null
-        presenter = null
-        updateData = null
-        fileData = null
     }
 }
