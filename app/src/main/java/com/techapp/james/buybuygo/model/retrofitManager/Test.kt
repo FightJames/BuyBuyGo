@@ -245,6 +245,9 @@ class Test {
             }
         })
                 .doOnSuccess { Timber.d(it) } // James hello
+            .doOnSuccess {
+                Timber.d("I'm twice")
+            }
                 .subscribe()
     }
 
