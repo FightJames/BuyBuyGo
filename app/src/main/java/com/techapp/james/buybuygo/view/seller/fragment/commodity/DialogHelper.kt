@@ -51,18 +51,18 @@ class DialogHelper {
                 // Add action buttons
                 .setPositiveButton(R.string.ok, { dialog, id ->
                     var pattern = "^[0-9]*\$".toRegex()
-                    var stock = customerView!!.remainingLabel.text.toString()
+                    var stock = customerView!!.remainingField.text.toString()
                     var cost = customerView!!.costField.text.toString()
-                    var unitPrice = customerView!!.unitPriceLabel.text.toString()
-                    Timber.d("stock"+stock.equals("").toString())
+                    var unitPrice = customerView!!.unitPriceField.text.toString()
+                    Timber.d("stock" + stock.equals("").toString())
                     var stockFlag = pattern.matches(stock) && !stock.equals("")
                     var costFlag = pattern.matches(cost) && !cost.equals("")
                     var unitPriceFlag = pattern.matches(unitPrice) && !unitPrice.equals("")
-                    customerView!!.unitPriceLabel.text.toString()
+                    customerView!!.unitPriceField.text.toString()
                     var commodity = Commodity(
                         "",
-                        customerView!!.nameLabel.text.toString(),
-                        customerView!!.descriptionLabel.text.toString(),
+                        customerView!!.nameField.text.toString(),
+                        customerView!!.descriptionField.text.toString(),
                         if (stockFlag) stock.toInt() else 0,
                         if (costFlag) cost.toInt() else 0,
                         if (unitPriceFlag) unitPrice.toInt() else 0,
@@ -98,11 +98,11 @@ class DialogHelper {
             customerView =
                     LayoutInflater.from(it).inflate(R.layout.seller_fragment_commodity_dialog, null)
             customerView!!.let {
-                it.nameLabel.setText(commodity.name)
-                it.descriptionLabel.setText(commodity.description)
-                it.remainingLabel.setText(commodity.stock.toString())
+                it.nameField.setText(commodity.name)
+                it.descriptionField.setText(commodity.description)
+                it.remainingField.setText(commodity.stock.toString())
                 it.costField.setText(commodity.cost.toString())
-                it.unitPriceLabel.setText(commodity.unitPrice.toString())
+                it.unitPriceField.setText(commodity.unitPrice.toString())
                 Glide.with(it).load(commodity.imageUrl).into(it.commodityImageView)
             }
 
@@ -114,17 +114,17 @@ class DialogHelper {
                 // Add action buttons
                 .setPositiveButton(R.string.ok,
                     { dialog, id ->
-                        Timber.d("name " + customerView!!.nameLabel.text.toString())
+                        Timber.d("name " + customerView!!.nameField.text.toString())
                         var pattern = "^[0-9]*\$".toRegex()
-                        var stock = customerView!!.remainingLabel.text.toString()
+                        var stock = customerView!!.remainingField.text.toString()
                         var cost = customerView!!.costField.text.toString()
-                        var unitPrice = customerView!!.unitPriceLabel.text.toString()
+                        var unitPrice = customerView!!.unitPriceField.text.toString()
                         var stockFlag = pattern.matches(stock)
                         var costFlag = pattern.matches(cost)
                         var unitPriceFlag = pattern.matches(unitPrice)
-                        customerView!!.unitPriceLabel.text.toString()
-                        commodity.name = customerView!!.nameLabel.text.toString()
-                        commodity.description = customerView!!.descriptionLabel.text.toString()
+                        customerView!!.unitPriceField.text.toString()
+                        commodity.name = customerView!!.nameField.text.toString()
+                        commodity.description = customerView!!.descriptionField.text.toString()
                         commodity.stock = if (stockFlag) stock.toInt() else 0
                         commodity.cost = if (costFlag) cost.toInt() else 0
                         commodity.unitPrice = if (unitPriceFlag) unitPrice.toInt() else 0

@@ -137,7 +137,7 @@ class UserInfoFragment : Fragment(), ExpandableAdapter.ItemClick,
             }
         } else {
             dialog.let {
-                it.findViewById<EditText>(R.id.nameLabel)!!.setText(recipient!!.name)
+                it.findViewById<EditText>(R.id.nameField)!!.setText(recipient!!.name)
                 it.findViewById<EditText>(R.id.phoneNumberField)!!.setText(recipient!!.phone.number)
                 it.findViewById<TextView>(R.id.phoneCodeLabel)!!.setText(recipient!!.phone.code)
                 var address = recipient.address
@@ -177,7 +177,7 @@ class UserInfoFragment : Fragment(), ExpandableAdapter.ItemClick,
     }
 
     fun createDialogOkPress(it: Dialog, countryWrapper: CountryWrapper) {
-        var namefield = it.findViewById<EditText>(R.id.nameLabel)!!.text.toString()
+        var namefield = it.findViewById<EditText>(R.id.nameField)!!.text.toString()
         var phoneField = it.findViewById<EditText>(R.id.phoneNumberField)!!.text.toString()
         var postCodeField =
             it.findViewById<EditText>(R.id.postCodeField)!!.text.toString()
@@ -215,7 +215,7 @@ class UserInfoFragment : Fragment(), ExpandableAdapter.ItemClick,
     }
 
     fun modifyDialogOkPress(it: Dialog, countryWrapper: CountryWrapper, recipient: Recipient) {
-        var namefield = it.findViewById<EditText>(R.id.nameLabel)!!.text.toString()
+        var namefield = it.findViewById<EditText>(R.id.nameField)!!.text.toString()
         var phoneField = it.findViewById<EditText>(R.id.phoneNumberField)!!.text.toString()
         var postCodeField =
             it.findViewById<EditText>(R.id.postCodeField)!!.text.toString()

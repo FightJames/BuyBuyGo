@@ -49,7 +49,7 @@ class CommodityPresenter {
         map.put("stock", RequestBody.create(okhttp3.MultipartBody.FORM, commodity.stock.toString()))
         map.put("cost", RequestBody.create(okhttp3.MultipartBody.FORM, commodity.cost.toString()))
         map.put(
-            "unitPrice",
+            "unit_price",
             RequestBody.create(okhttp3.MultipartBody.FORM, commodity.unitPrice.toString())
         )
 

@@ -20,7 +20,7 @@
         app:layout_constraintTop_toBottomOf="@+id/rootHorizontalLine" />
 
     <TextView
-        android:id="@+id/nameLabel"
+        android:id="@+id/nameField"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"

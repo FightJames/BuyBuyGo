@@ -71,8 +71,8 @@ class ExpandableAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             itemClick?.deleteRecipient(r)
                         }
                         recipientView.idLabel.text = r.id
-                        recipientView.nameLabel.text = r.name
-                        recipientView.nameLabel.setOnClickListener {
+                        recipientView.nameField.text = r.name
+                        recipientView.nameField.setOnClickListener {
                             itemClick?.modifyRecipient(r)
                         }
                         recipientView.idLabel.setOnClickListener {

@@ -48,15 +48,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/nameLabel"
+        android:id="@+id/nameField"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_height="0dp"
         android:layout_marginTop="8dp"
         android:text="@string/name"
         android:textColor="@android:color/background_dark"
         android:textSize="18sp"
-        app:layout_constraintStart_toEndOf="@+id/avatarImageView"
+        app:layout_constraintStart_toStartOf="@+id/nameLabel"
         app:layout_constraintTop_toBottomOf="@+id/nameLabel" />
 
     <TextView
