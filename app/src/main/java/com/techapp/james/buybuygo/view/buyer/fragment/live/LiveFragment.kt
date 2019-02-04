@@ -20,6 +20,7 @@ import com.techapp.james.buybuygo.presenter.buyer.LivePresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.buyer_fragment_live.*
+import timber.log.Timber
 
 
 class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
@@ -110,10 +111,12 @@ class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
                                         orderItem: OrderItem,
                                         dialog: Dialog
                                     ) {
+                                        Timber.d("***place an order")
                                         if (!(orderItem.itemId.equals("") ||
                                                     orderItem.number == 0 ||
                                                     orderItem.recipientId.equals(""))
                                         ) {
+
                                             // place an order
                                             var singleString = livePresenter.placeOrder(orderItem)
                                             singleString.subscribeOn(Schedulers.newThread())

@@ -13,6 +13,7 @@ import com.techapp.james.buybuygo.presenter.Configure
 import com.techapp.james.buybuygo.view.commonFragment.DialogHelper
 import kotlinx.android.synthetic.main.buyer_live_commodity_dialog.view.*
 import kotlinx.android.synthetic.main.picker_dialog.view.*
+import timber.log.Timber
 
 class DialogHelper(val activity: Activity) {
     interface OnPickValue {
@@ -71,6 +72,7 @@ class DialogHelper(val activity: Activity) {
     fun createPlaceOrderDialog(commodity: Commodity, okPress: OnPlaceOrderOkPress): Dialog {
         return activity.let {
             var orderItem = OrderItem()
+            orderItem.itemId = commodity.id
             var orderView =
                 LayoutInflater.from(it).inflate(R.layout.buyer_live_commodity_dialog, null)
             orderView.nameLabel.text = commodity.name
@@ -81,6 +83,7 @@ class DialogHelper(val activity: Activity) {
             var soldString = orderView.soldLabel.text.toString()
             orderView.soldLabel.text =
                     String.format(soldString, commodity.soldQuantity)
+            orderView.unitPriceLabel.text = commodity.unitPrice
             orderView.addBtn.setOnClickListener {
                 orderItem.number++
                 orderView.countLabel.text = orderItem.number.toString()
@@ -96,10 +99,10 @@ class DialogHelper(val activity: Activity) {
                     Configure.user.recipients,
                     object : OnPickValue {
                         override fun pickValue(index: Int) {
-                            orderItem.itemId = index.toString()
+                            orderItem.recipientId = index.toString()
                         }
                     }
-                )
+                ).show()
             }
             var builder = AlertDialog.Builder(it)
             var dialog = builder.setView(orderView)
@@ -107,9 +110,12 @@ class DialogHelper(val activity: Activity) {
                 .setNegativeButton(R.string.cancel, { dialog, which ->
                     dialog.cancel()
                 }).create()
-            var postiveBtn = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-            postiveBtn.setOnClickListener {
-                okPress.onOkPress(orderItem, dialog)
+            dialog.setOnShowListener {
+                Timber.d("***show listener")
+                var postiveBtn = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                postiveBtn.setOnClickListener {
+                    okPress.onOkPress(orderItem, dialog)
+                }
             }
             return dialog
         }
