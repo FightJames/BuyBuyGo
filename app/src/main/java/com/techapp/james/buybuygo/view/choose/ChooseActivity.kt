@@ -14,6 +14,8 @@ import android.os.Build
 import android.view.View
 import com.techapp.james.buybuygo.view.buyer.BuyerActivity
 import com.techapp.james.buybuygo.view.seller.SellerActivity
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import java.util.ArrayList
 
 
@@ -51,11 +53,13 @@ class ChooseActivity : BaseActivity(), com.techapp.james.buybuygo.view.View {
         choosePresenter = ChoosePresenter(this)
         buyerTextView.setOnClickListener {
             var singleUser = choosePresenter!!.chooseBuyer()
-            singleUser.doOnSubscribe {
-                sellerTextView.visibility = View.INVISIBLE
-                buyerTextView.visibility = View.INVISIBLE
-                loadUserDataprogressBar.visibility = View.VISIBLE
-            }
+            singleUser.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe {
+                    sellerTextView.visibility = View.INVISIBLE
+                    buyerTextView.visibility = View.INVISIBLE
+                    loadUserDataprogressBar.visibility = View.VISIBLE
+                }
                 .doOnSuccess {
                     var i = Intent(this, BuyerActivity::class.java)
                     startActivity(i)
@@ -63,14 +67,17 @@ class ChooseActivity : BaseActivity(), com.techapp.james.buybuygo.view.View {
         }
         sellerTextView.setOnClickListener {
             var singleUser = choosePresenter!!.chooseSeller()
-            singleUser.doOnSubscribe {
-                sellerTextView.visibility = View.INVISIBLE
-                buyerTextView.visibility = View.INVISIBLE
-                loadUserDataprogressBar.visibility = View.VISIBLE
-            }.doOnSuccess {
-                var i = Intent(this, SellerActivity::class.java)
-                startActivity(i)
-            }.subscribe()
+            singleUser
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe {
+                    sellerTextView.visibility = View.INVISIBLE
+                    buyerTextView.visibility = View.INVISIBLE
+                    loadUserDataprogressBar.visibility = View.VISIBLE
+                }.doOnSuccess {
+                    var i = Intent(this, SellerActivity::class.java)
+                    startActivity(i)
+                }.subscribe()
         }
         applyRight()
     }

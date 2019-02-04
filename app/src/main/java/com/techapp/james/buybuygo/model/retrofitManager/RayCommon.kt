@@ -3,6 +3,7 @@ package com.techapp.james.buybuygo.model.retrofitManager
 import com.techapp.james.buybuygo.model.data.buyer.CountryWrapper
 import com.techapp.james.buybuygo.model.data.User
 import com.techapp.james.buybuygo.model.data.Wrapper
+import com.techapp.james.buybuygo.model.data.buyer.Commodity
 import io.reactivex.Single
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -30,5 +31,10 @@ interface RayCommon {
     fun getUser(@Header("Authorization") token: String): Single<Response<Wrapper<User>>>
 
 
-
+    @Headers(
+        "Content-Type:application/json",
+        "X-Requested-With:XMLHttpRequest"
+    )
+    @GET("streaming-items")
+    fun getLiveSoldItem(@Header("Authorization") token: String): Single<Response<Wrapper<Commodity>>>
 }

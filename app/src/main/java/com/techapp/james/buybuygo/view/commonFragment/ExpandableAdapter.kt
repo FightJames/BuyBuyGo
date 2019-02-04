@@ -55,11 +55,11 @@ class ExpandableAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     itemClick?.createRecipient()
                 }
                 viewHolder.setData()
-                data.recipients?.let {
+                data.recipients.let {
                     viewHolder.setData(it.size.toString())
                 }
                 viewHolder.itemView.itemContainer.removeAllViews()
-                data.recipients?.let {
+                data.recipients.let {
                     viewHolder.enableCollapse(true)
                     it.forEach { r ->
                         //                        Timber.d("1")

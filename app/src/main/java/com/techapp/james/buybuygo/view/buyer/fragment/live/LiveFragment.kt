@@ -1,13 +1,21 @@
 package com.techapp.james.buybuygo.view.buyer.fragment.live
 
+import android.app.Dialog
+import android.app.ProgressDialog
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.SearchView
 import android.view.*
 import android.webkit.WebViewClient
 import android.widget.Toast
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 
 import com.techapp.james.buybuygo.R
+import com.techapp.james.buybuygo.model.converter.GsonConverter
+import com.techapp.james.buybuygo.model.data.Wrapper
+import com.techapp.james.buybuygo.model.data.buyer.OrderItem
 import com.techapp.james.buybuygo.presenter.buyer.LivePresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -65,13 +73,69 @@ class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
                             .show()
                     }
                     it.errorBody()?.let {
-                        Toast.makeText(this@LiveFragment.context, it.string(), Toast.LENGTH_LONG)
+                        var wrapperString = GsonConverter.convertJsonToWrapperString(it.string())
+                        Toast.makeText(
+                            this@LiveFragment.context,
+                            wrapperString.response,
+                            Toast.LENGTH_LONG
+                        )
                             .show()
                     }
                 }.subscribe()
         }
         buyBtn.setOnClickListener {
-
+            var singleSoldItem = livePresenter.getLiveSoldItem()
+            singleSoldItem.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe {
+                    showLoad()
+                }.doOnSuccess {
+                    loadDialog?.cancel()
+                    if (it.body() == null) {
+                        it.errorBody()?.let {
+                            var wrapperString = GsonConverter
+                                .convertJsonToWrapperString(it.string())
+                            Toast.makeText(
+                                this@LiveFragment.context,
+                                wrapperString.response,
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    } else {
+                        it.body()?.let {
+                            var commodity = it.response
+                            var placeOrderDialog = dialogHelper.createPlaceOrderDialog(commodity,
+                                object : DialogHelper.OnPlaceOrderOkPress {
+                                    override fun onOkPress(
+                                        orderItem: OrderItem,
+                                        dialog: Dialog
+                                    ) {
+                                        if (!(orderItem.itemId.equals("") ||
+                                                    orderItem.number == 0 ||
+                                                    orderItem.recipientId.equals(""))
+                                        ) {
+                                            // place an order
+                                            var singleString = livePresenter.placeOrder(orderItem)
+                                            singleString.subscribeOn(Schedulers.newThread())
+                                                .observeOn(AndroidSchedulers.mainThread())
+                                                .doOnSubscribe {
+                                                    showLoad()
+                                                }.doOnSuccess {
+                                                    dialog.cancel()
+                                                    loadDialog?.cancel()
+                                                    Toast.makeText(
+                                                        this@LiveFragment.context,
+                                                        it.body()?.response,
+                                                        Toast.LENGTH_LONG
+                                                    ).show()
+                                                }.subscribe()
+                                        }
+                                    }
+                                })
+                            placeOrderDialog.show()
+                        }
+                    }
+                }.subscribe()
         }
     }
 
@@ -140,6 +204,17 @@ class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
 
     override fun onDetach() {
         super.onDetach()
+    }
+
+    var loadDialog: Dialog? = null
+    fun showLoad() {
+        loadDialog =
+                ProgressDialog.show(
+                    this@LiveFragment.context,
+                    "Loading",
+                    "Waiting...",
+                    true
+                )
     }
 
     companion object {

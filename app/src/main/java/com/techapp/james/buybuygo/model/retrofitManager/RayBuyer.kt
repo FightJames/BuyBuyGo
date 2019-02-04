@@ -37,6 +37,12 @@ interface RayBuyer {
     @HTTP(method = "PATCH", path = "user-channel-id", hasBody = true)
     fun joinChannel(@Header("Authorization") token: String, @Body body: RequestBody): Single<Response<Wrapper<String>>> //return a seller's live url
 
+    @POST("orders/{itemId}/{recipientId}")
+    fun placeOrder(
+        @Header("Authorization") token: String, @Path("itemId") itemId: String,
+        @Path("recipientId") recipientId: String, @Body itemIds: RequestBody
+    ): Single<Response<Wrapper<String>>>
+
     @Headers(
         "Content-Type: application/json",
         "X-Requested-With: XMLHttpRequest"

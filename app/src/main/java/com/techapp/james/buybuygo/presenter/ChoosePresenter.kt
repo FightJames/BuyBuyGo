@@ -36,13 +36,10 @@ class ChoosePresenter {
                         t2: Response<Wrapper<ArrayList<Recipient>>>
                     ): User {
                         var user = t1.body()!!.response
-                        var recipients = if (t2.body() == null) null else t2.body()!!.response
-                        user.recipients = recipients
+                        if (t2.body() == null) null else user.recipients = t2.body()!!.response
                         return user
                     }
                 })
-            .subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
             .doOnSuccess {
                 Configure.user = it
             }
@@ -51,8 +48,6 @@ class ChoosePresenter {
     fun chooseSeller(): Single<Response<Wrapper<User>>> {
         var common = RetrofitManager.getInstance().getRayCommon()
         return common.getUser(Configure.RAY_ACCESS_TOKEN)
-            .subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
             .doOnSuccess {
                 it.body()?.let {
                     Configure.user = it.response
