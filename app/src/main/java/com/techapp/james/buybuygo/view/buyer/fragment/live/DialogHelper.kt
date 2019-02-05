@@ -99,7 +99,9 @@ class DialogHelper(val activity: Activity) {
                     Configure.user.recipients,
                     object : OnPickValue {
                         override fun pickValue(index: Int) {
-                            orderItem.recipientId = index.toString()
+                            var recipient = Configure.user.recipients[index]
+                            orderItem.recipientId = recipient.id
+                            orderView.pickBtn.setText(recipient.name)
                         }
                     }
                 ).show()

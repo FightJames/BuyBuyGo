@@ -8,6 +8,7 @@ class User(
     var email: String = "",
     @SerializedName("avatar") var avatarUrl: String = "",
     @SerializedName("user_id") var id: String = "",
-    var recipients: ArrayList<Recipient> = ArrayList<Recipient>()
+    var recipients: ArrayList<Recipient> = ArrayList<Recipient>(),
+    var isSeller: Boolean = false
 ) {
 }
