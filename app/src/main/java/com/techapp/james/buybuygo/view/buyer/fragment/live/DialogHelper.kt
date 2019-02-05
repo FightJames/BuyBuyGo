@@ -7,10 +7,9 @@ import android.view.LayoutInflater
 import android.widget.NumberPicker
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.data.buyer.Commodity
-import com.techapp.james.buybuygo.model.data.buyer.OrderItem
+import com.techapp.james.buybuygo.model.data.buyer.PlaceOrder
 import com.techapp.james.buybuygo.model.data.buyer.Recipient
 import com.techapp.james.buybuygo.presenter.Configure
-import com.techapp.james.buybuygo.view.commonFragment.DialogHelper
 import kotlinx.android.synthetic.main.buyer_live_commodity_dialog.view.*
 import kotlinx.android.synthetic.main.picker_dialog.view.*
 import timber.log.Timber
@@ -21,7 +20,7 @@ class DialogHelper(val activity: Activity) {
     }
 
     interface OnPlaceOrderOkPress {
-        fun onOkPress(orderItem: OrderItem, dialog: Dialog)
+        fun onOkPress(orderItem: PlaceOrder, dialog: Dialog)
     }
 
     companion object {
@@ -71,7 +70,7 @@ class DialogHelper(val activity: Activity) {
 
     fun createPlaceOrderDialog(commodity: Commodity, okPress: OnPlaceOrderOkPress): Dialog {
         return activity.let {
-            var orderItem = OrderItem()
+            var orderItem = PlaceOrder()
             orderItem.itemId = commodity.id
             var orderView =
                 LayoutInflater.from(it).inflate(R.layout.buyer_live_commodity_dialog, null)

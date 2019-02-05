@@ -8,14 +8,10 @@ import android.support.v7.widget.SearchView
 import android.view.*
 import android.webkit.WebViewClient
 import android.widget.Toast
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.google.gson.reflect.TypeToken
 
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.converter.GsonConverter
-import com.techapp.james.buybuygo.model.data.Wrapper
-import com.techapp.james.buybuygo.model.data.buyer.OrderItem
+import com.techapp.james.buybuygo.model.data.buyer.PlaceOrder
 import com.techapp.james.buybuygo.presenter.buyer.LivePresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -108,7 +104,7 @@ class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
                             var placeOrderDialog = dialogHelper.createPlaceOrderDialog(commodity,
                                 object : DialogHelper.OnPlaceOrderOkPress {
                                     override fun onOkPress(
-                                        orderItem: OrderItem,
+                                        orderItem: PlaceOrder,
                                         dialog: Dialog
                                     ) {
                                         Timber.d("***place an order")

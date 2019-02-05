@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_newest_order"
+        android:orderInCategory="0"
+        android:title="@string/newestOrder"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_all_order"
+        android:orderInCategory="1"
+        android:title="@string/allOrder"
+        app:showAsAction="always" />
+</menu>

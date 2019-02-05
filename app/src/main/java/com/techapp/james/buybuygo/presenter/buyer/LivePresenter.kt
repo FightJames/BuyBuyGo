@@ -2,7 +2,7 @@ package com.techapp.james.buybuygo.presenter.buyer
 
 import com.techapp.james.buybuygo.model.data.Wrapper
 import com.techapp.james.buybuygo.model.data.buyer.Commodity
-import com.techapp.james.buybuygo.model.data.buyer.OrderItem
+import com.techapp.james.buybuygo.model.data.buyer.PlaceOrder
 import com.techapp.james.buybuygo.model.retrofitManager.RayBuyer
 import com.techapp.james.buybuygo.model.retrofitManager.RayCommon
 import com.techapp.james.buybuygo.model.retrofitManager.RetrofitManager
@@ -10,7 +10,6 @@ import com.techapp.james.buybuygo.presenter.Configure
 import com.techapp.james.buybuygo.view.View
 import io.reactivex.Single
 import okhttp3.MediaType
-import okhttp3.Request
 import okhttp3.RequestBody
 import org.json.JSONObject
 import retrofit2.Response
@@ -46,7 +45,7 @@ class LivePresenter {
         return rayCommon.getLiveSoldItem(Configure.RAY_ACCESS_TOKEN)
     }
 
-    fun placeOrder(orderItem: OrderItem):Single<Response<Wrapper<String>>> {
+    fun placeOrder(orderItem: PlaceOrder):Single<Response<Wrapper<String>>> {
         var jsonObject = JSONObject()
         jsonObject.put("number", orderItem.number)
         var body = RequestBody.create(

@@ -47,6 +47,9 @@
     // buy dialog
     <string name="remain">Remain : %1$s</string>
     <string name="sold">Sold : %1$s</string>
+    //buy orders
+    <string name="allOrder">All</string>
+    <string name="newestOrder">Newest</string>
     //crop
     <string name="crop">CROP</string>
 </resources>
