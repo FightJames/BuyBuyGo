@@ -64,12 +64,6 @@ class CommodityFragment : Fragment(), com.techapp.james.buybuygo.view.View {
 
     override fun onStart() {
         super.onStart()
-        init()
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        dialog = null
     }
 
     private fun init() {
@@ -81,6 +75,11 @@ class CommodityFragment : Fragment(), com.techapp.james.buybuygo.view.View {
             dialogHelper::createModifyDialog
         )
         getItem()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        init()
     }
 
     fun intentToCamera() {
@@ -147,15 +146,18 @@ class CommodityFragment : Fragment(), com.techapp.james.buybuygo.view.View {
     private fun getItem() {
         presenter!!.getUploadItem().subscribeOn(Schedulers.newThread())
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                loadItemProgressBar.visibility = View.VISIBLE
+            }
             .doOnSuccess {
-                loadItemProgressBar.visibility = View.GONE
-                var commodityWrapper = it.body()
+                loadItemProgressBar?.visibility = View.GONE
                 it.body()?.let {
                     Timber.d("+++ " + it.response.size)
-                    if (commodityWrapper!!.result) {
-                        var commodityList = commodityWrapper.response
+                    if (it.result) {
+                        //it is commodityWrapper
+                        var commodityList = it.response
                         commodityList?.let {
-                            itemRecyclerView.adapter?.let {
+                            itemRecyclerView?.adapter?.let {
                                 (it as ListAdapter).dList = commodityList
                                 it.notifyDataSetChanged()
                             }
@@ -165,9 +167,6 @@ class CommodityFragment : Fragment(), com.techapp.james.buybuygo.view.View {
             }
             .doOnError {
                 Timber.d("error  " + it.message)
-            }
-            .doOnSubscribe {
-                loadItemProgressBar.visibility = View.VISIBLE
             }
             .subscribe()
     }

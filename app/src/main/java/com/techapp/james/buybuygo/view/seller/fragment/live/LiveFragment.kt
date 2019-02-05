@@ -42,8 +42,8 @@ class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
         super.onDetach()
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
         init()
     }
 
