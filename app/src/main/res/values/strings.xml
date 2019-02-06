@@ -50,6 +50,12 @@
     //buy orders
     <string name="allOrder">All</string>
     <string name="newestOrder">Newest</string>
+    <string name="orderId">Order ID : %1$s</string>
+    <string name="commodityName">Name : %1$s</string>
+    <string name="unitPrice">Unit : %1$s</string>
+    <string name="count">Count : %1$s</string>
+    <string name="allPrice">Total : %1$s</string>
+
     //crop
     <string name="crop">CROP</string>
 </resources>
