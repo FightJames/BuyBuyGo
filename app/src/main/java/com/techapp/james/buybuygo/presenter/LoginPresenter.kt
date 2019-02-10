@@ -3,6 +3,7 @@ package com.techapp.james.buybuygo.presenter
 import android.app.Activity
 import android.content.Intent
 import com.techapp.james.buybuygo.model.retrofitManager.RetrofitManager
+import com.techapp.james.buybuygo.model.sharePreference.SharePreference
 import com.techapp.james.buybuygo.view.View
 import com.techapp.james.buybuygo.view.choose.ChooseActivity
 import io.reactivex.Single
@@ -25,6 +26,7 @@ class LoginPresenter {
     fun onLoginSuccess(fbToken: String, expirationDate: String): Single<Response<ResponseBody>> {
         Configure.FB_ACCESS_TOKEN = fbToken
         Configure.FB_EXPIRATIONDATE = expirationDate
+        SharePreference.getInstance().saveFBToken(fbToken)
         //bug in here when network is slow, It lead other page cant fetch backend item data.
         return loginBackEnd()
 //        var t = Test()

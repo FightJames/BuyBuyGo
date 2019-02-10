@@ -18,6 +18,7 @@ import com.facebook.*
 import com.facebook.login.LoginManager
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.retrofitManager.Test
+import com.techapp.james.buybuygo.model.sharePreference.SharePreference
 import com.techapp.james.buybuygo.presenter.Configure
 import com.techapp.james.buybuygo.presenter.LoginPresenter
 import com.techapp.james.buybuygo.view.BaseActivity
@@ -67,6 +68,7 @@ class LoginActivity : BaseActivity(), View {
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnSubscribe {
                             Configure.RAY_ACCESS_TOKEN = "Bearer ${Configure.FB_ACCESS_TOKEN}"
+                            SharePreference.getInstance().saveRayToken("Bearer ${Configure.FB_ACCESS_TOKEN}")
                             progressBar.visibility = android.view.View.VISIBLE
                         }
                         .doOnSuccess {
