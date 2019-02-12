@@ -21,7 +21,6 @@ class BuyerActivity : AppCompatActivity() {
     lateinit var fList: ArrayList<Fragment>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        var user = intent.extras.getSerializable("test") as User
         setContentView(R.layout.activity_buyer)
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
         var liveFragment = LiveFragment.newInstance()

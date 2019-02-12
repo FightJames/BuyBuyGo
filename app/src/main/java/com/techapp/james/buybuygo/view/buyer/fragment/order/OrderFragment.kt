@@ -1,14 +1,12 @@
 package com.techapp.james.buybuygo.view.buyer.fragment.order
 
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
-
 import com.techapp.james.buybuygo.R
-import com.techapp.james.buybuygo.model.data.buyer.OrderDetail
 import com.techapp.james.buybuygo.presenter.buyer.OrderPresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -19,11 +17,11 @@ import timber.log.Timber
 class OrderFragment : Fragment(), com.techapp.james.buybuygo.view.View {
     lateinit var orderAdapter: OrderAdapter
     lateinit var orderPresenter: OrderPresenter
-lateinit var compositeDisposable:CompositeDisposable
+    lateinit var compositeDisposable: CompositeDisposable
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        compositeDisposable= CompositeDisposable()
+        compositeDisposable = CompositeDisposable()
         orderPresenter = OrderPresenter(this)
     }
 
@@ -43,8 +41,14 @@ lateinit var compositeDisposable:CompositeDisposable
                     orderAdapter.notifyDataSetChanged()
                 }
             }.subscribe()
-compositeDisposable.add(des)
+        compositeDisposable.add(des)
         orderList.layoutManager = LinearLayoutManager(this.activity)
+        orderList.addItemDecoration(
+            DividerItemDecoration(
+                this.activity,
+                DividerItemDecoration.VERTICAL
+            )
+        )
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -54,7 +58,7 @@ compositeDisposable.add(des)
                 compositeDisposable.clear()
                 Timber.d("pass 0")
                 var singleOrderDetail = orderPresenter.getAllOrder()
-                var des= singleOrderDetail.subscribeOn(Schedulers.newThread())
+                var des = singleOrderDetail.subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnSubscribe {
                     }

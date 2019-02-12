@@ -5,6 +5,7 @@ import android.view.View
 import com.bumptech.glide.Glide
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.data.buyer.OrderDetail
+import kotlinx.android.synthetic.main.buyer_fragment_live.view.*
 import kotlinx.android.synthetic.main.buyer_order_fragment_list_item.view.*
 import timber.log.Timber
 
@@ -17,8 +18,16 @@ class ItemViewHolder : RecyclerView.ViewHolder {
                 String.format(itemView.context.getString(R.string.orderId), orderDetail.id)
         if (orderDetail.status == "0") {
             itemView.statusLabel.text = itemView.context.getString(R.string.unPaid)
+            //order is effective
+            if (orderDetail.effective != "0") {
+                itemView.payBtn.visibility = View.VISIBLE
+                itemView.payBtn.setOnClickListener {
+                    Timber.d("James payBtnClick")
+                }
+            }
         } else {
             itemView.statusLabel.text = itemView.context.getString(R.string.payed)
+            itemView.payBtn.visibility = View.GONE
         }
 
         itemView.commodityNameLabel.text =
@@ -46,6 +55,12 @@ class ItemViewHolder : RecyclerView.ViewHolder {
         if (orderDetail.image == "") {
         }
         Glide.with(itemView.context).load(orderDetail.image).into(itemView.imageView)
+        itemView.setOnClickListener {
+            Timber.d("James itemviewClick")
+        }
+    }
+
+    fun detialDialog() {
 
     }
 }
