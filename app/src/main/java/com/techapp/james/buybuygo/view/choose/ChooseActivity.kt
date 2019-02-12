@@ -28,6 +28,7 @@ class ChooseActivity : BaseActivity(), com.techapp.james.buybuygo.view.View {
         Manifest.permission.CAMERA
     )  //權限項目在此新增
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_choose)

@@ -24,25 +24,29 @@ class LoginPresenter {
     }
 
     fun onLoginSuccess(fbToken: String, expirationDate: String): Single<Response<ResponseBody>> {
-        Configure.FB_ACCESS_TOKEN = fbToken
-        Configure.FB_EXPIRATIONDATE = expirationDate
         SharePreference.getInstance().saveFBToken(fbToken)
         //bug in here when network is slow, It lead other page cant fetch backend item data.
-        return loginBackEnd()
+        SharePreference.getInstance().saveExpDate(expirationDate)
+        SharePreference.getInstance().saveRayToken("Bearer " + fbToken)
+
+        return loginBackEnd(fbToken, expirationDate)
 //        var t = Test()
 //        t.testRecordUser(activity.applicationContext, t::testUpCommodity)
 //        t.testUpCommodity(activity.applicationContext)
 //        t.testRecordUser(activity.applicationContext, t::testGetItems)
     }
 
-    private fun loginBackEnd(): Single<Response<ResponseBody>> {
+    private fun loginBackEnd(
+        fbToken: String,
+        expirationDate: String
+    ): Single<Response<ResponseBody>> {
         var root = JSONObject()
-        root.put("expirationDate", Configure.FB_EXPIRATIONDATE)
-        //Todo stroe fb token to sharePreference
+        root.put("expirationDate", expirationDate)
+
         var requestBody = RequestBody.create(MediaType.parse("application/json"), root.toString())
         var rayCommon = RetrofitManager.getInstance().getRayCommon()
 
-        var result = rayCommon.recordUser("Bearer " + Configure.FB_ACCESS_TOKEN, requestBody)
+        var result = rayCommon.recordUser("Bearer " + fbToken, requestBody)
         return result
 //        result.subscribeOn(Schedulers.newThread())
 //            .observeOn(AndroidSchedulers.mainThread())

@@ -7,7 +7,7 @@ import com.techapp.james.buybuygo.model.data.Wrapper
 import com.techapp.james.buybuygo.model.retrofitManager.RayBuyer
 import com.techapp.james.buybuygo.model.retrofitManager.RayCommon
 import com.techapp.james.buybuygo.model.retrofitManager.RetrofitManager
-import com.techapp.james.buybuygo.presenter.Configure
+import com.techapp.james.buybuygo.model.sharePreference.SharePreference
 import com.techapp.james.buybuygo.view.View
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
@@ -23,18 +23,20 @@ class UserInfoPresenter {
     var rayCommon: RayCommon
     var rayBuyer: RayBuyer
     var view: View
+    var rayToken: String
 
     constructor(view: View) {
         this.view = view
         rayCommon = RetrofitManager.getInstance().getRayCommon()
         rayBuyer = RetrofitManager.getInstance().getRayBuyer()
+        rayToken = SharePreference.getInstance().getRayToken()
     }
 
     fun createRecipients(recipients: Recipient): Single<Response<ResponseBody>> {
         var jsonObject = convertRecipientToJSON(recipients)
         var requestBody =
             RequestBody.create(MediaType.parse("application/json"), jsonObject.toString())
-        return rayBuyer.createRecipients(Configure.RAY_ACCESS_TOKEN, requestBody)
+        return rayBuyer.createRecipients(rayToken, requestBody)
     }
 
     fun deleteRecipients(recipients: Recipient): Single<Response<Wrapper<String>>> {
@@ -45,13 +47,13 @@ class UserInfoPresenter {
         jsonObject.put("recipients", recipientsArray)
         var requestBody =
             RequestBody.create(MediaType.parse("application/json"), jsonObject.toString())
-        return rayBuyer.deleteRecipient(Configure.RAY_ACCESS_TOKEN, requestBody)
+        return rayBuyer.deleteRecipient(rayToken, requestBody)
     }
 
     fun getBuyerUser(): Single<User> {
-        var uSingle = rayCommon.getUser(Configure.RAY_ACCESS_TOKEN)
+        var uSingle = rayCommon.getUser(rayToken)
         return uSingle.zipWith(
-            rayBuyer.getRecipients(Configure.RAY_ACCESS_TOKEN),
+            rayBuyer.getRecipients(rayToken),
             object :
                 BiFunction<Response<Wrapper<User>>, Response<Wrapper<ArrayList<Recipient>>>, User> {
                 override fun apply(
@@ -80,11 +82,11 @@ class UserInfoPresenter {
         var jsonObject = convertRecipientToJSON(recipient)
         var requestBody =
             RequestBody.create(MediaType.parse("application/json"), jsonObject.toString())
-        return rayBuyer.updateRecipient(Configure.RAY_ACCESS_TOKEN, recipient.id, requestBody)
+        return rayBuyer.updateRecipient(rayToken, recipient.id, requestBody)
     }
 
     fun getCountryWrappers(): Single<Response<Wrapper<ArrayList<CountryWrapper>>>> {
-        var contryWrapper = rayCommon.getCountryWrapper(Configure.RAY_ACCESS_TOKEN)
+        var contryWrapper = rayCommon.getCountryWrapper(rayToken)
 //        contryWrapper.subscribeOn(Schedulers.newThread())
 //            .observeOn(AndroidSchedulers.mainThread())
 //            .doOnSuccess {

@@ -4,7 +4,6 @@ import android.content.Context
 import android.net.Uri
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.data.seller.Commodity
-import com.techapp.james.buybuygo.presenter.Configure
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType
@@ -19,6 +18,7 @@ import android.graphics.Bitmap
 import com.techapp.james.buybuygo.model.data.buyer.Recipient
 import com.techapp.james.buybuygo.model.data.User
 import com.techapp.james.buybuygo.model.data.Wrapper
+import com.techapp.james.buybuygo.model.sharePreference.SharePreference
 import io.reactivex.Single
 import io.reactivex.SingleEmitter
 import io.reactivex.SingleOnSubscribe
@@ -29,25 +29,26 @@ import retrofit2.Response
 
 class Test {
     var retrofit = RetrofitManager.getInstance()
+    var sharedPreference = SharePreference.getInstance()
     fun testRecordUser(context: Context, testT: ((context: Context) -> Unit)) {
         var root = JSONObject()
-        root.put("expirationDate", Configure.FB_EXPIRATIONDATE)
+        root.put("expirationDate", sharedPreference.getExpDate())
         var requestBody = RequestBody.create(MediaType.parse("application/json"), root.toString())
         var rayCommon = RetrofitManager.getInstance().getRayCommon()
-        var result = rayCommon.recordUser("Bearer " + Configure.FB_ACCESS_TOKEN, requestBody)
+        var result = rayCommon.recordUser(sharedPreference.getRayToken(), requestBody)
         result.subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSuccess {
-                    Timber.d(it.message())
-                    Timber.d(it.isSuccessful.toString())
-                    Timber.d(it.body().toString())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSuccess {
+                Timber.d(it.message())
+                Timber.d(it.isSuccessful.toString())
+                Timber.d(it.body().toString())
 //            Timber.d(r.errorBody()!!.string())
-                    Timber.d(it.headers().toString())
-                    testT.invoke(context)
-                }
-                .doOnError {
-                    Timber.d(it.message)
-                }.subscribe()
+                Timber.d(it.headers().toString())
+                testT.invoke(context)
+            }
+            .doOnError {
+                Timber.d(it.message)
+            }.subscribe()
     }
 
     fun testUpCommodity(context: Context) {
@@ -59,7 +60,8 @@ class Test {
 //        var f = File(fileUri.path)
 
         val requestFile = RequestBody.create(
-                MediaType.get("image/png"), f)
+            MediaType.get("image/png"), f
+        )
         val body = MultipartBody.Part.createFormData("images", "James", requestFile)
 
         var c = Commodity(
@@ -99,25 +101,25 @@ class Test {
 
 
         var raySeller = RetrofitManager.getInstance().getRaySeller()
-        Timber.d(Configure.FB_ACCESS_TOKEN)
+        Timber.d(sharedPreference.getRayToken())
 //        var s = raySeller.uploadItem("Bearer " + Configure.FB_ACCESS_TOKEN, map, body)
 
-        var s = raySeller.uploadItem( Configure.RAY_ACCESS_TOKEN, map, body)
+        var s = raySeller.uploadItem(sharedPreference.getRayToken(), map, body)
 
 //        Timber.d("*** " + s.request().body()?.contentType()?.type())
         s.subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSuccess {
-                    Timber.d(it.message())
-                    Timber.d(it.isSuccessful.toString())
-                    Timber.d(it.body().toString())
-                    it.errorBody()?.let {
-                        Timber.d(it.string())
-                    }
-                    Timber.d(it.headers().toString())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSuccess {
+                Timber.d(it.message())
+                Timber.d(it.isSuccessful.toString())
+                Timber.d(it.body().toString())
+                it.errorBody()?.let {
+                    Timber.d(it.string())
                 }
-                .doOnError { }
-                .subscribe()
+                Timber.d(it.headers().toString())
+            }
+            .doOnError { }
+            .subscribe()
 
 
 //        map.put("name", name)
@@ -171,32 +173,32 @@ class Test {
 
     fun testGetItems(context: Context) {
         var raySeller = retrofit.getRaySeller()
-        Timber.d(Configure.FB_ACCESS_TOKEN)
-        var sW = raySeller.getUploadedItem(Configure.RAY_ACCESS_TOKEN)
+        Timber.d(sharedPreference.getRayToken())
+        var sW = raySeller.getUploadedItem(sharedPreference.getRayToken())
         sW.subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSuccess {
-                    var wrapper = it.body()
-                    wrapper?.let {
-                        Timber.d(it.result.toString())
-                        Timber.d(it.response.size.toString())
-                        var data = it.response
-                        for (e: Commodity in data) {
-                            Timber.d(e.name)
-                            Timber.d(e.imageUrl)
-                        }
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSuccess {
+                var wrapper = it.body()
+                wrapper?.let {
+                    Timber.d(it.result.toString())
+                    Timber.d(it.response.size.toString())
+                    var data = it.response
+                    for (e: Commodity in data) {
+                        Timber.d(e.name)
+                        Timber.d(e.imageUrl)
                     }
                 }
-                .doOnError {
-                    Timber.d(it.message)
-                }.subscribe()
+            }
+            .doOnError {
+                Timber.d(it.message)
+            }.subscribe()
     }
 
     fun testGetUser() {
         var rCommon = retrofit.getRayCommon()
         var rBuyer = retrofit.getRayBuyer()
-        Timber.d(Configure.RAY_ACCESS_TOKEN)
-        var uSingle = rCommon.getUser(Configure.RAY_ACCESS_TOKEN)
+        Timber.d(sharedPreference.getRayToken())
+        var uSingle = rCommon.getUser(sharedPreference.getRayToken())
 //        uSingle.
 // subscribeOn(Schedulers.newThread())
 //                .observeOn(AndroidSchedulers.mainThread())
@@ -208,26 +210,32 @@ class Test {
 //                }.subscribe()
 
 //                .subscribe()
-        uSingle.zipWith(rBuyer.getRecipients(Configure.RAY_ACCESS_TOKEN), object : BiFunction<Response<Wrapper<User>>, Response<Wrapper<ArrayList<Recipient>>>, User> {
-            override fun apply(t1: Response<Wrapper<User>>, t2: Response<Wrapper<ArrayList<Recipient>>>): User {
-                var userWrapper = t1.body()!!
-                if (t2.isSuccessful) {
-                    var recipientsWrapper = t2.body()!!
-                    if (recipientsWrapper.result) {
-                        var user = userWrapper.response
-                        var recipients = recipientsWrapper.response
-                        user.recipients = recipients
-                        Timber.d("ok " + user.name + " " + user.email)
-                        return user
+        uSingle.zipWith(
+            rBuyer.getRecipients(sharedPreference.getRayToken()),
+            object :
+                BiFunction<Response<Wrapper<User>>, Response<Wrapper<ArrayList<Recipient>>>, User> {
+                override fun apply(
+                    t1: Response<Wrapper<User>>,
+                    t2: Response<Wrapper<ArrayList<Recipient>>>
+                ): User {
+                    var userWrapper = t1.body()!!
+                    if (t2.isSuccessful) {
+                        var recipientsWrapper = t2.body()!!
+                        if (recipientsWrapper.result) {
+                            var user = userWrapper.response
+                            var recipients = recipientsWrapper.response
+                            user.recipients = recipients
+                            Timber.d("ok " + user.name + " " + user.email)
+                            return user
+                        }
                     }
+                    userWrapper = t1.body()!!
+                    var user = userWrapper.response
+                    return user
                 }
-                userWrapper = t1.body()!!
-                var user = userWrapper.response
-                return user
-            }
-        }).subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe()
+            }).subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe()
     }
 
     fun testZipWithRxKotlin() {
@@ -244,11 +252,11 @@ class Test {
                 return "$t1 $t2"
             }
         })
-                .doOnSuccess { Timber.d(it) } // James hello
+            .doOnSuccess { Timber.d(it) } // James hello
             .doOnSuccess {
                 Timber.d("I'm twice")
             }
-                .subscribe()
+            .subscribe()
     }
 
     protected fun createPartFromString(des: String): RequestBody {
@@ -256,8 +264,10 @@ class Test {
     }
 
 
-    fun saveBitmapToFile(context: Context,
-                         format: Bitmap.CompressFormat, quality: Int): File {
+    fun saveBitmapToFile(
+        context: Context,
+        format: Bitmap.CompressFormat, quality: Int
+    ): File {
 
         val bm = BitmapFactory.decodeResource(context.getResources(), R.drawable.test)
         val imageFile = File(context.getCacheDir(), "Jjjj.png")
@@ -291,7 +301,10 @@ class Test {
         var pattern = "^[0-9]*\$".toRegex()
         Timber.d("filter ${pattern.matches(id)}")
 
-        sArray = "https://m.facebook.com/story.php?story_fbid=2342076282469919&id=173022516043744".split("=")
+        sArray =
+                "https://m.facebook.com/story.php?story_fbid=2342076282469919&id=173022516043744".split(
+                    "="
+                )
 
         id = sArray[sArray.size - 1]
         Timber.d("Video id $id")

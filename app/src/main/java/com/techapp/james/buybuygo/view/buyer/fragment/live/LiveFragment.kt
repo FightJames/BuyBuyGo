@@ -13,10 +13,16 @@ import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.converter.GsonConverter
 import com.techapp.james.buybuygo.model.data.buyer.PlaceOrder
 import com.techapp.james.buybuygo.presenter.buyer.LivePresenter
+import io.reactivex.Observable
+import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.buyer_fragment_live.*
+import org.reactivestreams.Subscriber
+import org.reactivestreams.Subscription
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 
 class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
@@ -136,6 +142,7 @@ class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
                     }
                 }.subscribe()
         }
+        loadDialog?.cancel()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {
@@ -172,7 +179,6 @@ class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
                                         loadWebView(it.response)
                                     }
                                 }
-
                             }.subscribe()
                         //input is a url which seller live in facebook
                         //post api/Channel to get Channel
@@ -199,6 +205,48 @@ class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
                 " allowFullScreen=\"true\">" +
                 "</iframe></ body></html >"
         fbLiveWebView.loadData(streamUrl, "text/html", null)
+        //update cycle
+        updateCommodity()
+    }
+
+    fun updateCommodity() {
+        Schedulers.start()
+        var timer =
+            Observable.interval(5, TimeUnit.SECONDS)
+        timer.subscribe(object : Observer<Long> {
+            override fun onSubscribe(d: Disposable) {
+            }
+            override fun onNext(t: Long) {
+                var updateCall = livePresenter.getLiveTimerSoldItem()
+                var response = updateCall.execute()
+                var commodity = response.body()?.response
+                Timber.d(123.toString() + " " + commodity?.id)
+                this@LiveFragment.activity?.runOnUiThread {
+                    if (commodity == null) {
+                    } else {
+                        soldQuantity.text = String.format(
+                            resources.getString(R.string.soldQuantity),
+                            commodity.soldQuantity
+                        )
+                        remainingQuantity.text = String.format(
+                            resources.getString(R.string.remainingQuantity),
+                            commodity.remainingQuantity
+                        )
+                    }
+                }
+            }
+
+            override fun onError(e: Throwable) {
+            }
+
+            override fun onComplete() {
+            }
+        })
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Schedulers.shutdown()
     }
 
     override fun onDetach() {

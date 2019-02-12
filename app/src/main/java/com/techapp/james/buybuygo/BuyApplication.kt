@@ -11,4 +11,7 @@ class BuyApplication : Application() {
         SharePreference.init(this)
     }
 
+    override fun onTerminate() {
+        super.onTerminate()
+    }
 }

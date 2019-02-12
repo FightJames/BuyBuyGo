@@ -3,7 +3,7 @@ package com.techapp.james.buybuygo.presenter.seller
 import com.techapp.james.buybuygo.model.data.seller.Channel
 import com.techapp.james.buybuygo.model.data.Wrapper
 import com.techapp.james.buybuygo.model.retrofitManager.RetrofitManager
-import com.techapp.james.buybuygo.presenter.Configure
+import com.techapp.james.buybuygo.model.sharePreference.SharePreference
 import com.techapp.james.buybuygo.view.View
 import io.reactivex.Single
 import okhttp3.MediaType
@@ -14,9 +14,10 @@ import retrofit2.Response
 class LivePresenter {
     var raySeller = RetrofitManager.getInstance().getRaySeller()
     var view: View
-
+var rayToken:String
     constructor(view: View) {
         this.view = view
+        rayToken=SharePreference.getInstance().getRayToken()
     }
 
     fun startChannel(liveUrl: String, description: String): Single<Response<Wrapper<Channel>>> {
@@ -28,10 +29,10 @@ class LivePresenter {
             jsonObject.toString()
         )
 
-        return raySeller.startChannel(Configure.RAY_ACCESS_TOKEN, body)
+        return raySeller.startChannel(rayToken, body)
     }
 
     fun endChannel(): Single<Response<Wrapper<String>>> {
-        return raySeller.endChannel(Configure.RAY_ACCESS_TOKEN)
+        return raySeller.endChannel(rayToken)
     }
 }

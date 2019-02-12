@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_newest_order"
+        android:id="@+id/action_all_order"
         android:orderInCategory="0"
-        android:title="@string/newestOrder"
+        android:title="@string/allOrder"
         app:showAsAction="always" />
     <item
-        android:id="@+id/action_all_order"
+        android:id="@+id/action_newest_order"
         android:orderInCategory="1"
-        android:title="@string/allOrder"
+        android:title="@string/newestOrder"
         app:showAsAction="always" />
 </menu>

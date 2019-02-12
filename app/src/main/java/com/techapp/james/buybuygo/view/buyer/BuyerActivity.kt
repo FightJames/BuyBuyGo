@@ -6,9 +6,11 @@ import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import com.techapp.james.buybuygo.R
+import com.techapp.james.buybuygo.model.data.User
 import com.techapp.james.buybuygo.view.buyer.fragment.ContentPagerAdapter
 import com.techapp.james.buybuygo.view.buyer.fragment.live.LiveFragment
 import com.techapp.james.buybuygo.view.buyer.fragment.order.OrderFragment
+import com.techapp.james.buybuygo.view.choose.ChooseActivity
 import com.techapp.james.buybuygo.view.commonFragment.ExpandableAdapter
 import com.techapp.james.buybuygo.view.commonFragment.UserInfoFragment
 import kotlinx.android.synthetic.main.activity_buyer.*

@@ -1,10 +1,7 @@
 package com.techapp.james.buybuygo.view.login
 
-import android.app.Activity
-import android.app.ActivityManager
 import android.content.Intent
 import android.content.pm.ActivityInfo
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import com.facebook.login.LoginResult
 import kotlinx.android.synthetic.main.activity_main.*
@@ -17,16 +14,12 @@ import com.bumptech.glide.Glide
 import com.facebook.*
 import com.facebook.login.LoginManager
 import com.techapp.james.buybuygo.R
-import com.techapp.james.buybuygo.model.retrofitManager.Test
 import com.techapp.james.buybuygo.model.sharePreference.SharePreference
-import com.techapp.james.buybuygo.presenter.Configure
 import com.techapp.james.buybuygo.presenter.LoginPresenter
 import com.techapp.james.buybuygo.view.BaseActivity
 import com.techapp.james.buybuygo.view.View
 import com.techapp.james.buybuygo.view.choose.ChooseActivity
-import io.reactivex.*
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Function
 import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType
@@ -67,8 +60,6 @@ class LoginActivity : BaseActivity(), View {
                     singleBackEnd.subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnSubscribe {
-                            Configure.RAY_ACCESS_TOKEN = "Bearer ${Configure.FB_ACCESS_TOKEN}"
-                            SharePreference.getInstance().saveRayToken("Bearer ${Configure.FB_ACCESS_TOKEN}")
                             progressBar.visibility = android.view.View.VISIBLE
                         }
                         .doOnSuccess {

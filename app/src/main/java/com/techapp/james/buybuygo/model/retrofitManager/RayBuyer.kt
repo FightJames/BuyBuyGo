@@ -34,6 +34,15 @@ interface RayBuyer {
     fun getAllOrder(@Header("Authorization") token: String):
             Single<Response<Wrapper<ArrayList<OrderDetail>>>>
 
+
+    @Headers(
+        "Content-Type: application/json",
+        "X-Requested-With: XMLHttpRequest"
+    )
+    @GET("latest-channel-orders")
+    fun getLatestChannelOrder(@Header("Authorization") token: String):
+            Single<Response<Wrapper<ArrayList<OrderDetail>>>>
+
     @Headers(
         "Content-Type: application/json",
         "X-Requested-With: XMLHttpRequest"

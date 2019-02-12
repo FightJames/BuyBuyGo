@@ -5,7 +5,7 @@ import com.techapp.james.buybuygo.model.data.Wrapper
 import com.techapp.james.buybuygo.model.file.FileData
 import com.techapp.james.buybuygo.model.retrofitManager.RaySeller
 import com.techapp.james.buybuygo.model.retrofitManager.RetrofitManager
-import com.techapp.james.buybuygo.presenter.Configure
+import com.techapp.james.buybuygo.model.sharePreference.SharePreference
 import com.techapp.james.buybuygo.view.View
 import io.reactivex.Single
 import okhttp3.*
@@ -19,10 +19,12 @@ import java.io.File
 class CommodityPresenter {
     private var raySeller: RaySeller
     var view: View
+    var rayToken: String
 
     constructor(view: View) {
         this.view = view
         raySeller = RetrofitManager.getInstance().getRaySeller()
+        rayToken = SharePreference.getInstance().getRayToken()
     }
 
     fun deleteItem(commodity: Commodity): Single<Response<Wrapper<String>>> {
@@ -32,11 +34,11 @@ class CommodityPresenter {
         jsonObject.put("items", jsonArray)
         var requestBody =
             RequestBody.create(MediaType.parse("application/json"), jsonObject.toString())
-        return raySeller.deleteItem(Configure.RAY_ACCESS_TOKEN, requestBody)
+        return raySeller.deleteItem(rayToken, requestBody)
     }
 
     fun getUploadItem(): Single<Response<Wrapper<ArrayList<Commodity>>>> {
-        return raySeller.getUploadedItem(Configure.RAY_ACCESS_TOKEN)
+        return raySeller.getUploadedItem(rayToken)
     }
 
     fun insertItem(commodity: Commodity, fileData: FileData): Single<Response<ResponseBody>> {
@@ -59,7 +61,7 @@ class CommodityPresenter {
             MediaType.get("image/jpg"), file
         )
         val body = MultipartBody.Part.createFormData("images", "cacheImage", requestFile)
-        var insertOb = raySeller.uploadItem(Configure.RAY_ACCESS_TOKEN, map, body)
+        var insertOb = raySeller.uploadItem(rayToken, map, body)
         return insertOb
     }
 
@@ -86,12 +88,12 @@ class CommodityPresenter {
         )
         val body = MultipartBody.Part.createFormData("images", "cacheImage", requestFile)
         var updateOb =
-            raySeller.updateItem(Configure.RAY_ACCESS_TOKEN, commodity.id.toInt(), map, body)
+            raySeller.updateItem(rayToken, commodity.id.toInt(), map, body)
         return updateOb
     }
 
     fun pushItem(commodity: Commodity): Single<Response<Wrapper<String>>> {
-        return raySeller.pushItem(Configure.RAY_ACCESS_TOKEN, commodity.id)
+        return raySeller.pushItem(rayToken, commodity.id)
     }
 
 }

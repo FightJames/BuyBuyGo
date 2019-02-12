@@ -8,6 +8,8 @@ import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
 import android.view.Menu
 import com.techapp.james.buybuygo.R
+import com.techapp.james.buybuygo.model.data.User
+import com.techapp.james.buybuygo.view.choose.ChooseActivity
 import com.techapp.james.buybuygo.view.commonFragment.ExpandableAdapter
 import com.techapp.james.buybuygo.view.commonFragment.UserInfoFragment
 import com.techapp.james.buybuygo.view.seller.fragment.commodity.CommodityFragment

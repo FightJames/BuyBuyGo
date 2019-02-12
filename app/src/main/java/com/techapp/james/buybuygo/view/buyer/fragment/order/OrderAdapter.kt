@@ -30,6 +30,7 @@ class OrderAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         viewHolder as ItemViewHolder
         //if image is null ,you must set image src is default image
+        viewHolder.setData(dataList[position])
 
     }
 }

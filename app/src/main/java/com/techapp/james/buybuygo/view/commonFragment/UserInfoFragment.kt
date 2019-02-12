@@ -19,6 +19,7 @@ import android.widget.TextView
 import android.widget.Toast
 
 import com.techapp.james.buybuygo.R
+import com.techapp.james.buybuygo.model.data.User
 import com.techapp.james.buybuygo.model.data.buyer.CountryWrapper
 import com.techapp.james.buybuygo.model.data.buyer.Recipient
 import com.techapp.james.buybuygo.presenter.Configure
@@ -265,7 +266,7 @@ class UserInfoFragment : Fragment(), ExpandableAdapter.ItemClick,
             .doOnSuccess {
                 Configure.user = it
                 expandableAdapter?.let {
-                    it.data = Configure.user
+                    it.data =Configure.user
                     it.notifyDataSetChanged()
                 }
                 loadDialog?.cancel()
