@@ -15,7 +15,11 @@ class ItemViewHolder : RecyclerView.ViewHolder {
     fun setData(orderDetail: OrderDetail) {
         itemView.orderIdLabel.text =
                 String.format(itemView.context.getString(R.string.orderId), orderDetail.id)
-        itemView.statusLabel.text = orderDetail.status
+        if (orderDetail.status == "0") {
+            itemView.statusLabel.text = itemView.context.getString(R.string.unPaid)
+        } else {
+            itemView.statusLabel.text = itemView.context.getString(R.string.payed)
+        }
 
         itemView.commodityNameLabel.text =
                 String.format(

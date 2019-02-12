@@ -55,7 +55,8 @@
     <string name="unitPrice">Unit : %1$s</string>
     <string name="count">Count : %1$s</string>
     <string name="allPrice">Total : %1$s</string>
-
+    <string name="payed">Payed</string>
+    <string name="unPaid">Unpaid</string>
     //buy live
     <string name="remainingQuantity">Remain : %1$s</string>
     <string name="soldQuantity">Sold : %1$s</string>

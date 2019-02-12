@@ -11,7 +11,10 @@ import com.techapp.james.buybuygo.view.BaseActivity
 import kotlinx.android.synthetic.main.activity_choose.*
 import android.content.pm.PackageManager
 import android.os.Build
+import android.os.PersistableBundle
 import android.view.View
+import com.techapp.james.buybuygo.model.data.User
+import com.techapp.james.buybuygo.presenter.Configure
 import com.techapp.james.buybuygo.view.buyer.BuyerActivity
 import com.techapp.james.buybuygo.view.seller.SellerActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -83,6 +86,21 @@ class ChooseActivity : BaseActivity(), com.techapp.james.buybuygo.view.View {
         applyRight()
     }
 
+    override fun onStop() {
+        super.onStop()
+
+    }
+
+    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle?) {
+        outState.putSerializable(BACKUP_USER, Configure.user)
+        super.onSaveInstanceState(outState, outPersistentState)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        Configure.user = savedInstanceState.getSerializable(BACKUP_USER) as User
+        super.onRestoreInstanceState(savedInstanceState)
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         choosePresenter = null
@@ -122,5 +140,6 @@ class ChooseActivity : BaseActivity(), com.techapp.james.buybuygo.view.View {
 
     companion object {
         val REQUEST_CODE_ASK_PERMISSIONS = 0
+        val BACKUP_USER = "USER"
     }
 }

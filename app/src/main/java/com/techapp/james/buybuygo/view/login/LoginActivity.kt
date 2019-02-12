@@ -82,8 +82,9 @@ class LoginActivity : BaseActivity(), View {
                                 return Response.error<ResponseBody>(408, body)
                             }
                         })
-                        .doOnEvent { body, t ->
+                        .doOnEvent { body, throwable ->
                             //onErrorItemReturn will emmit a data which not include throwable to this
+
                             Timber.d("call")
                             progressBar.visibility = android.view.View.GONE
                         }

@@ -14,12 +14,14 @@ import com.techapp.james.buybuygo.view.choose.ChooseActivity
 import com.techapp.james.buybuygo.view.commonFragment.ExpandableAdapter
 import com.techapp.james.buybuygo.view.commonFragment.UserInfoFragment
 import kotlinx.android.synthetic.main.activity_buyer.*
+import timber.log.Timber
 
 class BuyerActivity : AppCompatActivity() {
 
     lateinit var fList: ArrayList<Fragment>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        var user = intent.extras.getSerializable("test") as User
         setContentView(R.layout.activity_buyer)
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
         var liveFragment = LiveFragment.newInstance()
