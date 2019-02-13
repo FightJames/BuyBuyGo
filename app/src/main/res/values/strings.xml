@@ -58,7 +58,9 @@
     <string name="paid">Paid</string>
     <string name="unPaid">Unpaid</string>
     <string name="channelID">Chanel ID : %1$s</string>
-    <string name="effective">Effective : %1$s</string>
+    <string name="isEffective">Effective : %1$s</string>
+    <string name="effective">effective</string>
+    <string name="unEffective">unEffective</string>
     <string name="orderTime">Order Time : %1$s</string>
     <string name="expiryTime">Expiry Time : %1$s</string>
     <string name="toBeDeleteTime">Delete Time : %1$s</string>

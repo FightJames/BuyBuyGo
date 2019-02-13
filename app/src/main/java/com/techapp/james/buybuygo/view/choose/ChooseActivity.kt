@@ -19,6 +19,7 @@ import com.techapp.james.buybuygo.view.buyer.BuyerActivity
 import com.techapp.james.buybuygo.view.seller.SellerActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 import java.util.ArrayList
 
 
@@ -34,9 +35,10 @@ class ChooseActivity : BaseActivity(), com.techapp.james.buybuygo.view.View {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        savedInstanceState?.let {
-            Configure.user = it.getSerializable(BACKUP_USER) as User
-        }
+//        savedInstanceState?.let {
+//            Configure.user = it.getSerializable(BACKUP_USER) as User
+//        }
+        Timber.d("/*/* restore user")
         setContentView(R.layout.activity_choose)
         init()
     }
@@ -96,6 +98,7 @@ class ChooseActivity : BaseActivity(), com.techapp.james.buybuygo.view.View {
 
     override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle?) {
         outState.putSerializable(BACKUP_USER, Configure.user)
+        Timber.d("/*/* save user")
         super.onSaveInstanceState(outState, outPersistentState)
     }
 // it will call by system scenario, not user scenario ( user back app)

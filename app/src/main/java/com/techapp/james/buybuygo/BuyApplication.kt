@@ -10,8 +10,4 @@ class BuyApplication : Application() {
         Timber.plant(Timber.DebugTree())
         SharePreference.init(this)
     }
-
-    override fun onTerminate() {
-        super.onTerminate()
-    }
 }

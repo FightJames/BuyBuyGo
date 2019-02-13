@@ -28,10 +28,10 @@ class OrderDetail(
 ) {
 }
 
-enum class OrderStatus(val value: Int) {
-    PAID(1), UNPAID(0)
+enum class OrderStatus(val value: String) {
+    PAID("1"), UNPAID("0")
 }
 
-enum class OrderEffective(val value: Int) {
-    EFFECTIVE(1), INEFFECTIVE(0)
+enum class OrderEffective(val value: String) {
+    EFFECTIVE("1"), INEFFECTIVE("0")
 }

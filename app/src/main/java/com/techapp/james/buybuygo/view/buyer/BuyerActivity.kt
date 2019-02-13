@@ -2,6 +2,7 @@ package com.techapp.james.buybuygo.view.buyer
 
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
@@ -45,6 +46,14 @@ class BuyerActivity : AppCompatActivity() {
             viewPagerRoot.currentItem = it.order
             true
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
+        super.onSaveInstanceState(outState, outPersistentState)
     }
 
     override fun onDestroy() {
