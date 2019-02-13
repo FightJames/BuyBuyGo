@@ -34,6 +34,9 @@ class ChooseActivity : BaseActivity(), com.techapp.james.buybuygo.view.View {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        savedInstanceState?.let {
+            Configure.user = it.getSerializable(BACKUP_USER) as User
+        }
         setContentView(R.layout.activity_choose)
         init()
     }
@@ -95,9 +98,8 @@ class ChooseActivity : BaseActivity(), com.techapp.james.buybuygo.view.View {
         outState.putSerializable(BACKUP_USER, Configure.user)
         super.onSaveInstanceState(outState, outPersistentState)
     }
-
+// it will call by system scenario, not user scenario ( user back app)
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        Configure.user = savedInstanceState.getSerializable(BACKUP_USER) as User
         super.onRestoreInstanceState(savedInstanceState)
     }
 

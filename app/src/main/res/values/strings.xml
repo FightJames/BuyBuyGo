@@ -55,8 +55,14 @@
     <string name="unitPrice">Unit : %1$s</string>
     <string name="count">Count : %1$s</string>
     <string name="allPrice">Total : %1$s</string>
-    <string name="payed">Payed</string>
+    <string name="paid">Paid</string>
     <string name="unPaid">Unpaid</string>
+    <string name="channelID">Chanel ID : %1$s</string>
+    <string name="effective">Effective : %1$s</string>
+    <string name="orderTime">Order Time : %1$s</string>
+    <string name="expiryTime">Expiry Time : %1$s</string>
+    <string name="toBeDeleteTime">Delete Time : %1$s</string>
+
     //buy live
     <string name="remainingQuantity">Remain : %1$s</string>
     <string name="soldQuantity">Sold : %1$s</string>

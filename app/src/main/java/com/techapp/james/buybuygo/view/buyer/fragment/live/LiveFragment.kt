@@ -48,6 +48,16 @@ class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
         return inflater.inflate(R.layout.buyer_fragment_live, container, false)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        Timber.d(4567891.toString())
+    }
+
+    override fun onResume() {
+        super.onResume()
+//        Timber.d(456789.toString())
+//        onDestroy()
+    }
 
     fun init() {
         fbLiveWebView.settings.setJavaScriptEnabled(true)
@@ -216,6 +226,7 @@ class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
         timer.subscribe(object : Observer<Long> {
             override fun onSubscribe(d: Disposable) {
             }
+
             override fun onNext(t: Long) {
                 var updateCall = livePresenter.getLiveTimerSoldItem()
                 var response = updateCall.execute()

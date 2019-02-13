@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.widget.NumberPicker
+import com.bumptech.glide.Glide
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.data.buyer.Commodity
 import com.techapp.james.buybuygo.model.data.buyer.PlaceOrder
@@ -83,6 +84,9 @@ class DialogHelper(val activity: Activity) {
             orderView.soldLabel.text =
                     String.format(soldString, commodity.soldQuantity)
             orderView.unitPriceLabel.text = commodity.unitPrice
+            Glide.with(it).load(commodity.imageUrl).into(orderView.commodityImageView)
+
+
             orderView.addBtn.setOnClickListener {
                 orderItem.number++
                 orderView.countLabel.text = orderItem.number.toString()
