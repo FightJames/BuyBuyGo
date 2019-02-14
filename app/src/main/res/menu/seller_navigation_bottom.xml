@@ -15,7 +15,7 @@
         android:id="@+id/action_uploadCommodity"
         android:icon="@drawable/ic_file_upload_black_24dp"
         android:orderInCategory="2"
-        android:title="@string/uploadCommodity" />
+        android:title="@string/channelRecord" />
     <item
         android:id="@+id/action_Order"
         android:icon="@drawable/ic_order_color_black_24dp"

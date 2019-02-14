@@ -2,6 +2,7 @@ package com.techapp.james.buybuygo.presenter.seller
 
 import com.techapp.james.buybuygo.model.data.seller.Channel
 import com.techapp.james.buybuygo.model.data.Wrapper
+import com.techapp.james.buybuygo.model.data.buyer.Commodity
 import com.techapp.james.buybuygo.model.retrofitManager.RetrofitManager
 import com.techapp.james.buybuygo.model.sharePreference.SharePreference
 import com.techapp.james.buybuygo.view.View
@@ -9,15 +10,18 @@ import io.reactivex.Single
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import org.json.JSONObject
+import retrofit2.Call
 import retrofit2.Response
 
 class LivePresenter {
     var raySeller = RetrofitManager.getInstance().getRaySeller()
+    var rayCommon = RetrofitManager.getInstance().getRayCommon()
     var view: View
-var rayToken:String
+    var rayToken: String
+
     constructor(view: View) {
         this.view = view
-        rayToken=SharePreference.getInstance().getRayToken()
+        rayToken = SharePreference.getInstance().getRayToken()
     }
 
     fun startChannel(liveUrl: String, description: String): Single<Response<Wrapper<Channel>>> {
@@ -30,6 +34,10 @@ var rayToken:String
         )
 
         return raySeller.startChannel(rayToken, body)
+    }
+
+    fun getLiveTimerSoldItem(): Call<Wrapper<Commodity>> {
+        return rayCommon.getLiveTimerSoldItem(rayToken)
     }
 
     fun endChannel(): Single<Response<Wrapper<String>>> {

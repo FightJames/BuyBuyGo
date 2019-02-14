@@ -4,6 +4,9 @@ import io.reactivex.Single
 import com.techapp.james.buybuygo.model.data.seller.Channel
 import com.techapp.james.buybuygo.model.data.seller.Commodity
 import com.techapp.james.buybuygo.model.data.Wrapper
+import com.techapp.james.buybuygo.model.data.buyer.OrderDetail
+import com.techapp.james.buybuygo.model.data.seller.ChannelRecord
+import com.techapp.james.buybuygo.model.data.seller.CommodityRecord
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -26,6 +29,21 @@ interface RaySeller {
     @Headers("X-Requested-With: XMLHttpRequest")
     @GET("items")
     fun getUploadedItem(@Header("Authorization") token: String): Single<Response<Wrapper<ArrayList<Commodity>>>>
+
+    @Headers("X-Requested-With: XMLHttpRequest")
+    @GET("channels")
+    fun getChannelRecord(@Header("Authorization") token: String): Single<Response<Wrapper<ArrayList<ChannelRecord>>>>
+
+
+    @Headers("X-Requested-With: XMLHttpRequest")
+    @GET("seller-orders")
+    fun getAllOrder(@Header("Authorization") token: String): Single<Response<Wrapper<ArrayList<OrderDetail>>>>
+
+    @GET("sold-items/{channel_id}")
+    fun getCommodityByChannel(@Header("Authorization") token: String, @Path("channel_id") channelID: String): Single<Response<Wrapper<ArrayList<CommodityRecord>>>>
+
+    @GET("seller-orders/{channel_id}")
+    fun getOrderByChannel(@Header("Authorization") token: String, @Path("channel_id") channelID: String): Single<Response<Wrapper<String>>>
 
     @Headers("Content-Type: application/json")
     @HTTP(method = "DELETE", path = "items", hasBody = true)

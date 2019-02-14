@@ -1,4 +1,4 @@
-package com.techapp.james.buybuygo.view.seller
+package com.techapp.james.buybuygo.view.seller.activity.seller
 
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -8,14 +8,12 @@ import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
 import android.view.Menu
 import com.techapp.james.buybuygo.R
-import com.techapp.james.buybuygo.model.data.User
-import com.techapp.james.buybuygo.view.choose.ChooseActivity
 import com.techapp.james.buybuygo.view.commonFragment.ExpandableAdapter
 import com.techapp.james.buybuygo.view.commonFragment.UserInfoFragment
 import com.techapp.james.buybuygo.view.seller.fragment.commodity.CommodityFragment
 import com.techapp.james.buybuygo.view.seller.fragment.live.LiveFragment
-import com.techapp.james.buybuygo.view.seller.fragment.OrderFragment
-import com.techapp.james.buybuygo.view.seller.fragment.uploaded.UploadFragment
+import com.techapp.james.buybuygo.view.seller.fragment.order.OrderFragment
+import com.techapp.james.buybuygo.view.seller.fragment.channelRecord.ChannelRecordFragment
 import kotlinx.android.synthetic.main.activity_seller.*
 
 class SellerActivity : AppCompatActivity() {
@@ -28,17 +26,21 @@ class SellerActivity : AppCompatActivity() {
         var commodityFragment = CommodityFragment.newInstance()
         var liveFragment = LiveFragment.newInstance()
         var orderFragment = OrderFragment.newInstance()
-        var uploadFragment = UploadFragment.newInstance()
+        var channelRecordFragment = ChannelRecordFragment.newInstance()
         var userInfoFragment = UserInfoFragment.newInstance(ExpandableAdapter.SELLER_MODE)
         fList = arrayListOf<Fragment>(
             commodityFragment,
             liveFragment as Fragment,
+            channelRecordFragment,
             orderFragment,
-            uploadFragment,
             userInfoFragment
         )
 
-        viewPagerRoot.adapter = ContentPagerAdapter(fList as List<Fragment>, supportFragmentManager)
+        viewPagerRoot.adapter =
+                ContentPagerAdapter(
+                    fList as List<Fragment>,
+                    supportFragmentManager
+                )
         viewPagerRoot.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(p0: Int) {
             }

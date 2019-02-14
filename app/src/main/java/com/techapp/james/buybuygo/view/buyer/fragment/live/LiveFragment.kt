@@ -190,7 +190,7 @@ class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
                                     }
                                 }
                             }.subscribe()
-                        //input is a url which seller live in facebook
+                        //input is a liveUrl which seller live in facebook
                         //post api/Channel to get Channel
                         searchView.setQuery("", true)
                     }

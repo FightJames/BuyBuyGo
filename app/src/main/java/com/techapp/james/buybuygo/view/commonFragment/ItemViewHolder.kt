@@ -20,6 +20,5 @@ class ItemViewHolder : RecyclerView.ViewHolder {
                 .load(data.avatarUrl)
                 .into(itemView.avatarImageView)
         itemView.emailField.text = data.email
-        itemView.userIdField.text = data.id
     }
 }

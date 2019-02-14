@@ -11,10 +11,14 @@ import android.widget.EditText
 import android.widget.Toast
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.presenter.seller.LivePresenter
+import io.reactivex.Observable
+import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.seller_fragment_live.*
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
     var streamUrl: String = ""
@@ -83,8 +87,49 @@ class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
                 " allowFullScreen=\"true\">" +
                 "</iframe></ body></html >"
         liveWebView.loadData(streamUrl, "text/html", null)
+        updateCommodity()
     }
 
+    fun updateCommodity() {
+        Schedulers.start()
+        var timer =
+            Observable.interval(5, TimeUnit.SECONDS)
+        timer.subscribe(object : Observer<Long> {
+            override fun onSubscribe(d: Disposable) {
+            }
+
+            override fun onNext(t: Long) {
+                var updateCall = livePresenter.getLiveTimerSoldItem()
+                var response = updateCall.execute()
+                var commodity = response.body()?.response
+                Timber.d(123.toString() + " " + commodity?.id)
+                this@LiveFragment.activity?.runOnUiThread {
+                    if (commodity == null) {
+                    } else {
+                        soldLabel.text = String.format(
+                            resources.getString(R.string.soldQuantity),
+                            commodity.soldQuantity
+                        )
+                        remainLabel.text = String.format(
+                            resources.getString(R.string.remainingQuantity),
+                            commodity.remainingQuantity
+                        )
+                    }
+                }
+            }
+
+            override fun onError(e: Throwable) {
+            }
+
+            override fun onComplete() {
+            }
+        })
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Schedulers.shutdown()
+    }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
@@ -93,13 +138,14 @@ class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
         var searchView: SearchView = searchItem.actionView as SearchView
         searchView.isSubmitButtonEnabled = true
         searchView.queryHint = "Give Me a FB Live Url"
+        //not show search field
         searchView.setIconifiedByDefault(true)
         searchView.maxWidth = Integer.MAX_VALUE
         searchView.setOnQueryTextListener(
             object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(input: String?): Boolean {
                     input?.let {
-                        //input is a url which seller live in facebook
+                        //input is a liveUrl which seller live in facebook
                         //post api/Channel to get Channel
                         var url = getFBLiveUrl(input)
                         if (url.equals("Not Thing")) {

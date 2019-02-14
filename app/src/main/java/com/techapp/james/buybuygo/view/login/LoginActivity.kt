@@ -128,5 +128,6 @@ class LoginActivity : BaseActivity(), View {
         super.onDestroy()
         loginPresenter = null
         LoginManager.getInstance().logOut()
+        // clear sharPreference
     }
 }

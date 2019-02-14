@@ -19,10 +19,26 @@
     <string name="commodity">Commodity</string>
     <string name="live">Live</string>
     <string name="order">Order</string>
-    <string name="uploadCommodity">UploadCommodity</string>
+    <string name="channelRecord">ChannelRecord</string>
     // Commodity Fragment
     //title icon
     <string name="addCommodity">Add</string>
+    //Channel record Fragment
+    <string name="userID">User ID : %1$s</string>
+    <string name="liveUrl">Live Url : %1$s</string>
+    <string name="startTime">Start : %1$s</string>
+    <string name="endTime">End : %1$s</string>
+    <string name="channelDescription">Description : %1$s</string>
+    //Channel Order Detail Activity
+
+    <string name="commodityCost">Cost : %1$s</string>
+    <string name="commodityProfit">Profit : %1$s</string>
+    <string name="commodityTotalCost">TotalCost : %1$s</string>
+    <string name="commodityQuantity">Quantity : %1$s</string>
+    <string name="commodityTurnover">Turnover : %1$s</string>
+    <string name="commodityDescription">Description : %1$s</string>
+    <string name="commodityUnitPrice">Unit : %1$s</string>
+
     //Dialog
     //Create ,Information Field
     <string name="name">Name</string>
@@ -64,6 +80,7 @@
     <string name="orderTime">Order Time : %1$s</string>
     <string name="expiryTime">Expiry Time : %1$s</string>
     <string name="toBeDeleteTime">Delete Time : %1$s</string>
+
 
     //buy live
     <string name="remainingQuantity">Remain : %1$s</string>

@@ -54,7 +54,7 @@ interface RayBuyer {
     fun leaveChannel(@Header("Authorization") token: String): Single<Response<Wrapper<String>>>
 
     @HTTP(method = "PATCH", path = "user-channel-id", hasBody = true)
-    fun joinChannel(@Header("Authorization") token: String, @Body body: RequestBody): Single<Response<Wrapper<String>>> //return a seller's live url
+    fun joinChannel(@Header("Authorization") token: String, @Body body: RequestBody): Single<Response<Wrapper<String>>> //return a seller's live liveUrl
 
     @POST("orders/{itemId}/{recipientId}")
     fun placeOrder(

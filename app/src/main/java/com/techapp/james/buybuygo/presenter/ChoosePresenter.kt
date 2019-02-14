@@ -10,6 +10,7 @@ import com.techapp.james.buybuygo.view.View
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import retrofit2.Response
+import timber.log.Timber
 
 class ChoosePresenter {
     val view: View
@@ -32,6 +33,7 @@ class ChoosePresenter {
                         t1: Response<Wrapper<User>>,
                         t2: Response<Wrapper<ArrayList<Recipient>>>
                     ): User {
+//                        Timber.d("error " + t1.errorBody())
                         var user = t1.body()!!.response
                         if (t2.body() == null) null else user.recipients = t2.body()!!.response
                         return user
