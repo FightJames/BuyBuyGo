@@ -1,15 +1,11 @@
 package com.techapp.james.buybuygo.view.seller.activity.channelOrderDetail
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.techapp.james.buybuygo.R
-import com.techapp.james.buybuygo.model.converter.GsonConverter
-import com.techapp.james.buybuygo.model.data.buyer.OrderDetail
 import com.techapp.james.buybuygo.presenter.seller.ChannelOrderDetailPresenter
 import com.techapp.james.buybuygo.view.View
 import com.techapp.james.buybuygo.view.seller.fragment.channelRecord.ChannelRecordFragment
@@ -17,7 +13,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.seller_activity_channel_order_detail.*
-import timber.log.Timber
 
 class ChannelOrderDetailActivity : AppCompatActivity(), View {
     lateinit var channelOrderDetailPresenter: ChannelOrderDetailPresenter

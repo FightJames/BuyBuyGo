@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit
 
 class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
     var streamUrl: String = ""
+    var flag = false;
     private lateinit var livePresenter: LivePresenter
     lateinit var dialogHelper: DialogHelper
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,14 +39,6 @@ class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
         return inflater.inflate(R.layout.seller_fragment_live, container, false)
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-    }
-
     override fun onResume() {
         super.onResume()
         init()
@@ -59,6 +52,7 @@ class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
         liveWebView.settings.setAppCacheEnabled(false);
         liveWebView.setWebViewClient(WebViewClient());
         endLiveBtn.setOnClickListener {
+            flag = false
             var singleEnd = livePresenter.endChannel()
             singleEnd.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -72,6 +66,11 @@ class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
             ChannelData.channel?.let {
                 dialogHelper.createTokenDialog(this.activity!!, it.channelToken).show()
             }
+        }
+
+        if (flag) {
+            liveWebView.loadData(streamUrl, "text/html", null)
+            updateCommodity()
         }
     }
 
@@ -159,6 +158,7 @@ class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
                                     dialog.findViewById<EditText>(R.id.descriptionField)
                                 var description = descriptonField!!.text.toString()
                                 if (!description.equals("")) {
+                                    flag = true
                                     var singleChannel =
                                         livePresenter.startChannel(
                                             url,

@@ -1,15 +1,9 @@
 package com.techapp.james.buybuygo.presenter
 
-import android.app.Activity
-import android.content.Intent
 import com.techapp.james.buybuygo.model.retrofitManager.RetrofitManager
 import com.techapp.james.buybuygo.model.sharePreference.SharePreference
 import com.techapp.james.buybuygo.view.View
-import com.techapp.james.buybuygo.view.choose.ChooseActivity
 import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -42,24 +36,9 @@ class LoginPresenter {
     ): Single<Response<ResponseBody>> {
         var root = JSONObject()
         root.put("expirationDate", expirationDate)
-
         var requestBody = RequestBody.create(MediaType.parse("application/json"), root.toString())
         var rayCommon = RetrofitManager.getInstance().getRayCommon()
-
         var result = rayCommon.recordUser("Bearer " + fbToken, requestBody)
         return result
-//        result.subscribeOn(Schedulers.newThread())
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .doOnSubscribe {
-//                Configure.RAY_ACCESS_TOKEN = "Bearer ${Configure.FB_ACCESS_TOKEN}"
-//                activity.progressBar.visibility = View.VISIBLE
-//            }
-//            .doOnSuccess {
-//                activity.progressBar.visibility = View.GONE
-//                var i = Intent(activity, ChooseActivity::class.java)
-//                activity.startActivity(i)
-//            }
-//            .doOnError {}
-//            .subscribe()
     }
 }

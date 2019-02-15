@@ -13,7 +13,9 @@ import com.techapp.james.buybuygo.model.data.buyer.OrderDetail
 import com.techapp.james.buybuygo.presenter.seller.OrderPresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_buyer.*
 import kotlinx.android.synthetic.main.seller_fragment_order.*
+import timber.log.Timber
 
 class OrderFragment : Fragment(), com.techapp.james.buybuygo.view.View {
     lateinit var orderPresenter: OrderPresenter
@@ -57,6 +59,15 @@ class OrderFragment : Fragment(), com.techapp.james.buybuygo.view.View {
         return true
     }
 
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        Timber.d("")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+    }
+
     fun updateOrderList() {
         var singleOrder = orderPresenter.getAllOrder()
         singleOrder.subscribeOn(Schedulers.newThread())
@@ -65,7 +76,7 @@ class OrderFragment : Fragment(), com.techapp.james.buybuygo.view.View {
                 loadProgressBar.visibility = View.VISIBLE
             }
             .doOnSuccess {
-                loadProgressBar.visibility = View.GONE
+                loadProgressBar.visibility = View.INVISIBLE
                 it.body()?.let {
                     orderAdapter.dataList = it.response
                     orderAdapter.notifyDataSetChanged()

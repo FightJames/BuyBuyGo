@@ -22,6 +22,13 @@ interface RayBuyer {
         "Content-Type: application/json",
         "X-Requested-With: XMLHttpRequest"
     )
+    @HTTP(method = "DELETE", path = "recipients", hasBody = true)
+    fun deleteRecipient(@Header("Authorization") token: String, @Body itemIds: RequestBody): Single<Response<Wrapper<String>>>
+
+    @Headers(
+        "Content-Type: application/json",
+        "X-Requested-With: XMLHttpRequest"
+    )
     @GET("recipients")
     fun getRecipients(@Header("Authorization") token: String): Single<Response<Wrapper<ArrayList<Recipient>>>>
 
@@ -43,15 +50,11 @@ interface RayBuyer {
     fun getLatestChannelOrder(@Header("Authorization") token: String):
             Single<Response<Wrapper<ArrayList<OrderDetail>>>>
 
-    @Headers(
-        "Content-Type: application/json",
-        "X-Requested-With: XMLHttpRequest"
-    )
-    @HTTP(method = "DELETE", path = "recipients", hasBody = true)
-    fun deleteRecipient(@Header("Authorization") token: String, @Body itemIds: RequestBody): Single<Response<Wrapper<String>>>
-
     @PUT("user-channel-id")
     fun leaveChannel(@Header("Authorization") token: String): Single<Response<Wrapper<String>>>
+
+    @POST("payments/{thirdPartyPaymentService_id}")
+    fun payMoney(@Header("Authorization") token: String, @Path("thirdPartyPaymentService_id") thirdPartyID: String)
 
     @HTTP(method = "PATCH", path = "user-channel-id", hasBody = true)
     fun joinChannel(@Header("Authorization") token: String, @Body body: RequestBody): Single<Response<Wrapper<String>>> //return a seller's live liveUrl
