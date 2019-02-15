@@ -17,6 +17,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.seller_activity_channel_order_detail.*
+import timber.log.Timber
 
 class ChannelOrderDetailActivity : AppCompatActivity(), View {
     lateinit var channelOrderDetailPresenter: ChannelOrderDetailPresenter
@@ -35,10 +36,10 @@ class ChannelOrderDetailActivity : AppCompatActivity(), View {
         detailAdapter = DetailAdapter()
         detailList.layoutManager = LinearLayoutManager(this)
         detailList.adapter = detailAdapter
-        getCommodityByOrder()
+        getCommodityByChannel()
     }
 
-    fun getCommodityByOrder() {
+    fun getCommodityByChannel() {
         compositeDisposable.clear()
         var singleCommodity = channelOrderDetailPresenter.getCommodityByChannelID(channelID)
         var disposable = singleCommodity.subscribeOn(Schedulers.newThread())
@@ -70,7 +71,7 @@ class ChannelOrderDetailActivity : AppCompatActivity(), View {
         item?.let {
             when (item.order) {
                 0 -> {
-                    getCommodityByOrder()
+                    getCommodityByChannel()
                     return true
                 }
                 1 -> {
@@ -87,15 +88,9 @@ class ChannelOrderDetailActivity : AppCompatActivity(), View {
                             detailList.visibility = android.view.View.VISIBLE
                             if (it.code() == 200) {
                                 it.body()?.let {
-                                    if (it.response.length > 3) {
-                                        var data =
-                                            GsonConverter.gson.fromJson<ArrayList<OrderDetail>>(
-                                                it.response
-                                            )
-                                        detailAdapter.orderDataList = data
-                                        detailAdapter.currentMode = DetailAdapter.ORDER_MODE
-                                        detailAdapter.notifyDataSetChanged()
-                                    }
+                                    detailAdapter.orderDataList = it.response
+                                    detailAdapter.currentMode = DetailAdapter.ORDER_MODE
+                                    detailAdapter.notifyDataSetChanged()
                                 }
                             }
                         }.subscribe()
@@ -108,7 +103,4 @@ class ChannelOrderDetailActivity : AppCompatActivity(), View {
         }
         return super.onOptionsItemSelected(item)
     }
-
-    inline fun <reified T> Gson.fromJson(json: String) =
-        this.fromJson<T>(json, object : TypeToken<T>() {}.type)
 }

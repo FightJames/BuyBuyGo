@@ -19,7 +19,7 @@ class ChannelOrderDetailPresenter {
         rayToken = SharePreference.getInstance().getRayToken()
     }
 
-    fun getOrderByChannelID(channelID: String): Single<Response<Wrapper<String>>> =
+    fun getOrderByChannelID(channelID: String): Single<Response<Wrapper<ArrayList<OrderDetail>>>> =
         raySeller.getOrderByChannel(rayToken, channelID)
 
 

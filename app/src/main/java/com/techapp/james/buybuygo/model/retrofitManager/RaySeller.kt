@@ -43,7 +43,7 @@ interface RaySeller {
     fun getCommodityByChannel(@Header("Authorization") token: String, @Path("channel_id") channelID: String): Single<Response<Wrapper<ArrayList<CommodityRecord>>>>
 
     @GET("seller-orders/{channel_id}")
-    fun getOrderByChannel(@Header("Authorization") token: String, @Path("channel_id") channelID: String): Single<Response<Wrapper<String>>>
+    fun getOrderByChannel(@Header("Authorization") token: String, @Path("channel_id") channelID: String): Single<Response<Wrapper<ArrayList<OrderDetail>>>>
 
     @Headers("Content-Type: application/json")
     @HTTP(method = "DELETE", path = "items", hasBody = true)
