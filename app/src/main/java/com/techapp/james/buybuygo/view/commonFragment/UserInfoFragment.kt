@@ -32,15 +32,18 @@ import timber.log.Timber
 const val MODE = "Mode"
 
 class UserInfoFragment : Fragment(), ExpandableAdapter.ItemClick,
-    com.techapp.james.buybuygo.view.View {
+    UserInfoView {
+
     private var mode: Int = ExpandableAdapter.BUYER_MODE
     lateinit var dialogHelper: DialogHelper
     var userInfoPresenter: UserInfoPresenter? = null
     var expandableAdapter: ExpandableAdapter? = null
+    lateinit var loadDialog: ProgressDialog
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         dialogHelper = DialogHelper(this.activity!!)
         userInfoPresenter = UserInfoPresenter(this)
+        loadDialog = ProgressDialog(this.activity)
         arguments?.let {
             mode = it.getInt(MODE)
         }
@@ -67,20 +70,7 @@ class UserInfoFragment : Fragment(), ExpandableAdapter.ItemClick,
         //get countryWrapperList
 
         if (AreaParameter.countryWrapperList.size == 0) {
-            var singleCountryWrapper = userInfoPresenter!!.getCountryWrappers()
-            singleCountryWrapper.subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe {
-                    showLoad()
-                }
-                .doOnSuccess {
-                    loadDialog?.cancel()
-                    it.body()?.let {
-                        AreaParameter.countryWrapperList = it.response
-                    }
-                }.doOnError {
-                    Timber.d("error ${it.message}")
-                }.subscribe()
+            userInfoPresenter!!.getCountryWrappers()
         }
     }
 
@@ -97,6 +87,26 @@ class UserInfoFragment : Fragment(), ExpandableAdapter.ItemClick,
 
     fun createShellDialog(postiveBtn: String): Dialog {
         return dialogHelper.createRecipientDialog(postiveBtn) as AlertDialog
+    }
+
+    override fun isLoadWholeView(flag: Boolean) {
+        if (flag) {
+            loadDialog.setMessage("Loading...")
+            loadDialog.show()
+        } else {
+            loadDialog.cancel()
+        }
+    }
+
+    override fun showRequestMessage(message: String) {
+        Toast.makeText(this.context, message, Toast.LENGTH_LONG).show()
+    }
+
+    override fun updateUserInfo() {
+        expandableAdapter?.let {
+            it.data = Configure.user
+            it.notifyDataSetChanged()
+        }
     }
 
     fun stateDialogCreateModify(
@@ -155,21 +165,7 @@ class UserInfoFragment : Fragment(), ExpandableAdapter.ItemClick,
     }
 
     override fun deleteRecipient(recipient: Recipient) {
-        var singleDelete = userInfoPresenter!!.deleteRecipients(recipient)
-        singleDelete.subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnSubscribe {
-                showLoad()
-            }
-            .doOnSuccess {
-                getUserData(false)
-                Toast.makeText(this.context, it.body()?.response, Toast.LENGTH_LONG).show()
-                Timber.d("error body ${it.errorBody()?.string()}")
-            }
-            .doOnError {
-                Timber.d("error delete " + it.message)
-            }
-            .subscribe()
+        userInfoPresenter!!.deleteRecipients(recipient)
     }
 
     override fun modifyRecipient(recipient: Recipient) {
@@ -197,20 +193,9 @@ class UserInfoFragment : Fragment(), ExpandableAdapter.ItemClick,
             recipients.address.city = cityField
             recipients.address.district = districtField
             recipients.address.others = othersField
-            var singleRecipient = userInfoPresenter!!.createRecipients(recipients)
-            singleRecipient.subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe {
-                    showLoad()
-                }
-                .doOnSuccess {
-                    //                    Toast.makeText(this.context, it.body()?.string(), Toast.LENGTH_LONG)
-//                        .show()
-                    getUserData(false)
-                }
-                .doOnError {
-                }.subscribe()
-            it.dismiss()
+            userInfoPresenter!!.createRecipients(recipients, {
+                it.dismiss()
+            })
         }
     }
 
@@ -235,53 +220,9 @@ class UserInfoFragment : Fragment(), ExpandableAdapter.ItemClick,
             recipient.address.city = cityField
             recipient.address.district = districtField
             recipient.address.others = othersField
-
-            var singleRecipient = userInfoPresenter!!.modifyRecipient(recipient)
-            singleRecipient.subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe {
-                    showLoad()
-                }
-                .doOnSuccess {
-                    Toast.makeText(this.context, "${it.body()?.response}", Toast.LENGTH_LONG).show()
-//                    Toast.makeText(this.context, "${it.errorBody()?.string()}", Toast.LENGTH_LONG)
-//                        .show()
-                    getUserData(false)
-                }
-                .doOnError {
-                }.subscribe()
+            userInfoPresenter!!.modifyRecipient(recipient)
             it.cancel()
         }
-    }
-
-    fun getUserData(isShowLoad: Boolean) {
-        var singleUser = userInfoPresenter!!.getBuyerUser()
-        singleUser.subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnSubscribe {
-                if (isShowLoad)
-                    showLoad()
-            }
-            .doOnSuccess {
-                Configure.user = it
-                expandableAdapter?.let {
-                    it.data =Configure.user
-                    it.notifyDataSetChanged()
-                }
-                loadDialog?.cancel()
-            }
-            .subscribe()
-    }
-
-    var loadDialog: Dialog? = null
-    fun showLoad() {
-        loadDialog =
-                ProgressDialog.show(
-                    this@UserInfoFragment.context,
-                    "Loading",
-                    "Waiting...",
-                    true
-                )
     }
 
     companion object {
