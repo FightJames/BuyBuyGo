@@ -65,7 +65,6 @@ class UserInfoFragment : Fragment(), ExpandableAdapter.ItemClick,
         )
         userInfoList.addItemDecoration(itemDecoration)
         //get countryWrapperList
-        //ToDo store to SQLite
 
         if (AreaParameter.countryWrapperList.size == 0) {
             var singleCountryWrapper = userInfoPresenter!!.getCountryWrappers()

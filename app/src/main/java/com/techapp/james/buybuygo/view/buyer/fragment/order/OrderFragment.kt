@@ -22,7 +22,6 @@ class OrderFragment : Fragment(), OrderView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-
         progressDialog = ProgressDialog(
             this.activity
         )

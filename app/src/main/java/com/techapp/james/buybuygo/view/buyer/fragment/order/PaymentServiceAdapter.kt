@@ -22,7 +22,7 @@ class PaymentServiceAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         var view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.buyer_fragment_order_payment_service_dialog_list_item, null)
+            .inflate(R.layout.buyer_fragment_order_payment_service_dialog_list_item, parent,false)
         return PaymentServiceItemViewHolder(view)
     }
 

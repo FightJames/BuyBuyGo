@@ -11,14 +11,17 @@ import com.techapp.james.buybuygo.model.sharePreference.SharePreference
 import com.techapp.james.buybuygo.view.View
 import com.techapp.james.buybuygo.view.buyer.fragment.live.LiveView
 import io.reactivex.Observable
+import io.reactivex.Observer
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Response
+import java.util.concurrent.TimeUnit
 
 
 class LivePresenter {
@@ -63,14 +66,14 @@ class LivePresenter {
     }
 
     fun leaveChannel() {
-
         var singleLeave = rayBuyer.leaveChannel(rayToken)
-
         singleLeave.subscribeOn(Schedulers.newThread())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe {
                 view.isLoadWeb(true)
                 view.stopWeb()
+                var commodity = Commodity()
+                view.updateCommodityState(commodity)
             }
             .doOnSuccess {
                 view.isLoadWeb(false)
@@ -108,8 +111,36 @@ class LivePresenter {
             }.subscribe()
     }
 
-    fun getLiveTimerSoldItem(): Call<Wrapper<Commodity>> {
-        return rayCommon.getLiveTimerSoldItem(rayToken)
+    fun timerSoldItem() {
+        Schedulers.start()
+        var timer =
+            Observable.interval(5, TimeUnit.SECONDS)
+        timer.subscribe(object : Observer<Long> {
+            override fun onSubscribe(d: Disposable) {
+            }
+
+            override fun onNext(t: Long) {
+
+                var updateCall = rayCommon.getLiveTimerSoldItem(rayToken)
+                var response = updateCall.execute()
+                var commodity = response.body()?.response
+//                Timber.d(123.toString() + " " + commodity?.id)
+                if (commodity == null) {
+                } else {
+                    view.updateCommodityState(commodity)
+                }
+            }
+
+            override fun onError(e: Throwable) {
+            }
+
+            override fun onComplete() {
+            }
+        })
+    }
+
+    fun stopTimer() {
+        Schedulers.shutdown()
     }
 
     fun placeOrder(orderItem: PlaceOrder) {

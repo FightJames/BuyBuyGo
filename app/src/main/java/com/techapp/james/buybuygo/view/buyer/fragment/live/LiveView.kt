@@ -10,4 +10,5 @@ interface LiveView {
     fun isLoadWeb(flag:Boolean)
     fun stopWeb()
     fun loadWeb(url:String)
+    fun updateCommodityState(commodity:Commodity)
 }

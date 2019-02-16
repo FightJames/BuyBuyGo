@@ -22,7 +22,29 @@ import timber.log.Timber
 import java.util.ArrayList
 
 
-class ChooseActivity : BaseActivity(), com.techapp.james.buybuygo.view.View {
+class ChooseActivity : BaseActivity(), ChooseView {
+    override fun isLoad(flag: Boolean) {
+        if (flag) {
+            sellerTextView.visibility = View.INVISIBLE
+            buyerTextView.visibility = View.INVISIBLE
+            loadUserDataprogressBar.visibility = View.VISIBLE
+        } else {
+            sellerTextView.visibility = View.VISIBLE
+            buyerTextView.visibility = View.VISIBLE
+            loadUserDataprogressBar.visibility = View.INVISIBLE
+        }
+    }
+
+    override fun intentToBuyer() {
+        var i = Intent(this, BuyerActivity::class.java)
+        startActivity(i)
+    }
+
+    override fun intentToSeller() {
+        var i = Intent(this, SellerActivity::class.java)
+        startActivity(i)
+    }
+
     var choosePresenter: ChoosePresenter? = null
     private val allPermission = ArrayList<Int>()
     private val permission = arrayOf(
@@ -49,10 +71,6 @@ class ChooseActivity : BaseActivity(), com.techapp.james.buybuygo.view.View {
         loadUserDataprogressBar.visibility = View.GONE
     }
 
-    override fun onPause() {
-        super.onPause()
-    }
-
     fun init() {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
         Glide.with(this)
@@ -60,47 +78,21 @@ class ChooseActivity : BaseActivity(), com.techapp.james.buybuygo.view.View {
             .into(backgroundImageView)
         choosePresenter = ChoosePresenter(this)
         buyerTextView.setOnClickListener {
-            var singleUser = choosePresenter!!.chooseBuyer()
-            singleUser.subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe {
-                    sellerTextView.visibility = View.INVISIBLE
-                    buyerTextView.visibility = View.INVISIBLE
-                    loadUserDataprogressBar.visibility = View.VISIBLE
-                }
-                .doOnSuccess {
-                    var i = Intent(this, BuyerActivity::class.java)
-                    startActivity(i)
-                }.subscribe()
+            choosePresenter!!.chooseBuyer()
         }
+
         sellerTextView.setOnClickListener {
-            var singleUser = choosePresenter!!.chooseSeller()
-            singleUser
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe {
-                    sellerTextView.visibility = View.INVISIBLE
-                    buyerTextView.visibility = View.INVISIBLE
-                    loadUserDataprogressBar.visibility = View.VISIBLE
-                }.doOnSuccess {
-                    var i = Intent(this, SellerActivity::class.java)
-                    startActivity(i)
-                }.subscribe()
+            choosePresenter!!.chooseSeller()
         }
         applyRight()
     }
 
-    override fun onStop() {
-        super.onStop()
-
-    }
-
     override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle?) {
-        outState.putSerializable(BACKUP_USER, Configure.user)
         Timber.d("/*/* save user")
         super.onSaveInstanceState(outState, outPersistentState)
     }
-// it will call by system scenario, not user scenario ( user back app)
+
+    // it will call by system scenario, not user scenario ( user back app)
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
     }
@@ -144,6 +136,5 @@ class ChooseActivity : BaseActivity(), com.techapp.james.buybuygo.view.View {
 
     companion object {
         val REQUEST_CODE_ASK_PERMISSIONS = 0
-        val BACKUP_USER = "USER"
     }
 }
