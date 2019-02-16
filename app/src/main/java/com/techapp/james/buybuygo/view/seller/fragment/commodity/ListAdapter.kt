@@ -12,31 +12,36 @@ import kotlinx.android.synthetic.main.seller_fragment_commodity_list_item.view.*
 import timber.log.Timber
 
 class ListAdapter(
-    var dList: ArrayList<Commodity>,
-    val commodityFragment: CommodityFragment,
+    var dataList: ArrayList<Commodity>,
+    var operationListener: OperationListener? = null,
     val getDialog: ((c: Commodity) -> Dialog)
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    interface OperationListener {
+        fun deleteItem(c: Commodity)
+        fun pushItem(c: Commodity)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        var itemView = LayoutInflater.from(commodityFragment.activity)
+        var itemView = LayoutInflater.from(parent.context)
             .inflate(R.layout.seller_fragment_commodity_list_item, parent, false)
         return ItemViewHolder(itemView)
     }
 
-    override fun getItemCount(): Int = dList.size
+    override fun getItemCount(): Int = dataList.size
 
     override fun onBindViewHolder(itemViewHolder: RecyclerView.ViewHolder, position: Int) {
-        itemViewHolder.itemView.nameTextView.text = dList[position].name
-        Timber.d("image liveUrl " + dList[position].imageUrl)
-        Glide.with(commodityFragment).load(dList[position].imageUrl)
+        itemViewHolder.itemView.nameTextView.text = dataList[position].name
+        Timber.d("image liveUrl " + dataList[position].imageUrl)
+        Glide.with(itemViewHolder.itemView.context).load(dataList[position].imageUrl)
             .into(itemViewHolder.itemView.commodityImageView)
         itemViewHolder.itemView.commodityImageView.setOnClickListener {
-            getDialog.invoke(dList[position]).show()
+            getDialog.invoke(dataList[position]).show()
         }
         itemViewHolder.itemView.deleteImageView.setOnClickListener {
-            commodityFragment.deleteItem(dList[position])
+            operationListener?.deleteItem(dataList[position])
         }
         itemViewHolder.itemView.pushBtn.setOnClickListener {
-            commodityFragment.pushItem(dList[position])
+            operationListener?.pushItem(dataList[position])
         }
     }
 

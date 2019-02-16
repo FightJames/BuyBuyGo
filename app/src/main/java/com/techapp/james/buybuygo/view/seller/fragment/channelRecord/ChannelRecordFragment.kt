@@ -18,7 +18,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.seller_fragment_channel_record.*
 
-class ChannelRecordFragment : Fragment(), com.techapp.james.buybuygo.view.View {
+class ChannelRecordFragment : Fragment(), ChannelRecordView {
     lateinit var listAdapter: ChannelListAdapter
     lateinit var channelRecordPresenter: ChannelRecordPresenter
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,19 +59,20 @@ class ChannelRecordFragment : Fragment(), com.techapp.james.buybuygo.view.View {
         )
         channelRecordList.layoutManager = LinearLayoutManager(this.activity)
         channelRecordList.adapter = listAdapter
-        var singleChannelRecord = channelRecordPresenter.getChannelRecord()
-        singleChannelRecord.subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnSubscribe {
-                loadDataProgressBar.visibility = View.VISIBLE
-            }
-            .doOnSuccess {
-                loadDataProgressBar.visibility = View.INVISIBLE
-                it.body()?.let {
-                    listAdapter.dataList = it.response
-                    listAdapter.notifyDataSetChanged()
-                }
-            }.subscribe()
+        channelRecordPresenter.getChannelRecord()
+    }
+
+    override fun updateChannelRecordList(list: ArrayList<ChannelRecord>) {
+        listAdapter.dataList = list
+        listAdapter.notifyDataSetChanged()
+    }
+
+    override fun isLoad(flag: Boolean) {
+        if (flag) {
+            loadDataProgressBar.visibility = View.VISIBLE
+        } else {
+            loadDataProgressBar.visibility = View.INVISIBLE
+        }
     }
 
     override fun onAttach(context: Context) {

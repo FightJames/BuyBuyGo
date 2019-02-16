@@ -6,8 +6,10 @@ import com.techapp.james.buybuygo.model.file.FileData
 import com.techapp.james.buybuygo.model.retrofitManager.RaySeller
 import com.techapp.james.buybuygo.model.retrofitManager.RetrofitManager
 import com.techapp.james.buybuygo.model.sharePreference.SharePreference
-import com.techapp.james.buybuygo.view.View
+import com.techapp.james.buybuygo.view.seller.fragment.commodity.CommodityView
 import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import okhttp3.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -18,27 +20,62 @@ import java.io.File
 
 class CommodityPresenter {
     private var raySeller: RaySeller
-    var view: View
+    var view: CommodityView
     var rayToken: String
 
-    constructor(view: View) {
+    constructor(view: CommodityView) {
         this.view = view
         raySeller = RetrofitManager.getInstance().getRaySeller()
         rayToken = SharePreference.getInstance().getRayToken()
     }
 
-    fun deleteItem(commodity: Commodity): Single<Response<Wrapper<String>>> {
+    fun deleteItem(commodity: Commodity) {
         var jsonObject = JSONObject()
         var jsonArray = JSONArray()
         jsonArray.put(commodity.id.toInt())
         jsonObject.put("items", jsonArray)
         var requestBody =
             RequestBody.create(MediaType.parse("application/json"), jsonObject.toString())
-        return raySeller.deleteItem(rayToken, requestBody)
+        var singleDelete = raySeller.deleteItem(rayToken, requestBody)
+        singleDelete.subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                view.isLoad(true)
+            }
+            .doOnSuccess {
+                it.body()?.let {
+                    view.showRequestMessage(it.response)
+                }
+                getUploadItem()
+            }
+            .doOnError {
+            }.subscribe()
     }
 
-    fun getUploadItem(): Single<Response<Wrapper<ArrayList<Commodity>>>> {
-        return raySeller.getUploadedItem(rayToken)
+    fun getUploadItem() {
+        var singleUploadedItem = raySeller.getUploadedItem(rayToken)
+        singleUploadedItem.subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                view.isLoad(true)
+            }
+            .doOnSuccess {
+                view.isLoad(false)
+                it.body()?.let {
+                    Timber.d("+++ " + it.response.size)
+                    if (it.result) {
+                        //it is commodityWrapper
+                        var commodityList = it.response
+                        commodityList?.let {
+                            view.updateCommodityList(it)
+                        }
+                    }
+                }
+            }
+            .doOnError {
+                Timber.d("error  " + it.message)
+            }
+            .subscribe()
     }
 
     fun insertItem(commodity: Commodity, fileData: FileData): Single<Response<ResponseBody>> {
@@ -92,8 +129,15 @@ class CommodityPresenter {
         return updateOb
     }
 
-    fun pushItem(commodity: Commodity): Single<Response<Wrapper<String>>> {
-        return raySeller.pushItem(rayToken, commodity.id)
+    fun pushItem(commodity: Commodity) {
+        var singlePush = raySeller.pushItem(rayToken, commodity.id)
+        singlePush.subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSuccess {
+                it.body()?.let {
+                    view.showRequestMessage(it.response)
+                }
+            }.subscribe()
     }
 
 }

@@ -21,7 +21,6 @@ class DialogHelper {
     var fragment: Fragment?
     var intentCamera: (() -> Unit)?
     var presenter: CommodityPresenter?
-    var updateData: (() -> Unit)?
     var fileData: FileData?
     lateinit var customerView: View
 
@@ -29,13 +28,11 @@ class DialogHelper {
         fragment: CommodityFragment,
         intentCamera: () -> Unit,
         presenter: CommodityPresenter,
-        updateComplete: () -> Unit,
         fileData: FileData
     ) {
         this.fragment = fragment
         this.intentCamera = intentCamera
         this.presenter = presenter
-        this.updateData = updateComplete
         this.fileData = fileData
     }
 
@@ -77,7 +74,7 @@ class DialogHelper {
                         .doOnSuccess {
                             Timber.d("success message " + it.message())
                             Timber.d("success message " + it.errorBody()?.string())
-                            updateData!!.invoke()
+                            presenter!!.getUploadItem()
                         }
                         .doOnError {
                             Timber.d("error " + it.message)
@@ -133,7 +130,7 @@ class DialogHelper {
                             updateOB.subscribeOn(Schedulers.newThread())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .doOnSuccess {
-                                    updateData!!.invoke()
+                                    presenter!!.getUploadItem()
                                 }.doOnError {
                                 }.subscribe()
                         } else {
@@ -145,7 +142,7 @@ class DialogHelper {
                                     updateOB.subscribeOn(Schedulers.newThread())
                                         .observeOn(AndroidSchedulers.mainThread())
                                         .doOnSuccess {
-                                            updateData!!.invoke()
+                                            presenter!!.getUploadItem()
                                         }.doOnError {
                                         }.subscribe()
                                 }.subscribe()

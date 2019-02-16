@@ -16,9 +16,8 @@ import android.graphics.Bitmap
 
 class CropActivity : AppCompatActivity() {
     companion object {
-        val CROP_RESULT_CODE = 123
-        val CROP_DATA = 565.toString()
-        val CROP_RESULT_URI = ""
+        val CROP_RESULT_CODE =200
+        val CROP_DATA = "CROP_DATA"
     }
 
     lateinit var uri: Uri

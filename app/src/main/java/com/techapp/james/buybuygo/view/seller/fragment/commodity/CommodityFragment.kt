@@ -22,12 +22,10 @@ import kotlinx.android.synthetic.main.seller_fragment_commodity_dialog.view.*
 import timber.log.Timber
 
 
-class CommodityFragment : Fragment(), com.techapp.james.buybuygo.view.View {
-
+class CommodityFragment : Fragment(), CommodityView, ListAdapter.OperationListener {
     private var dialog: Dialog? = null
     private lateinit var dialogHelper: DialogHelper
-    var dataList = ArrayList<Commodity>()
-    var presenter: CommodityPresenter? = null
+    lateinit var presenter: CommodityPresenter
     private lateinit var fileData: FileData
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +33,7 @@ class CommodityFragment : Fragment(), com.techapp.james.buybuygo.view.View {
         fileData = FileManager.createImageFileUri("cacheImage", this.activity!!.applicationContext)
         presenter = CommodityPresenter(this)
         dialogHelper =
-                DialogHelper(this, this::intentToCamera, presenter!!, this::getItem, fileData)
+                DialogHelper(this, this::intentToCamera, presenter!!, fileData)
     }
 
     override fun onCreateView(
@@ -70,11 +68,11 @@ class CommodityFragment : Fragment(), com.techapp.james.buybuygo.view.View {
         itemRecyclerView.layoutManager =
                 GridLayoutManager(this.activity, 3, GridLayoutManager.VERTICAL, false)
         itemRecyclerView.adapter = ListAdapter(
-            dataList,
+            ArrayList<Commodity>(),
             this,
             dialogHelper::createModifyDialog
         )
-        getItem()
+        presenter.getUploadItem()
     }
 
     override fun onResume() {
@@ -89,29 +87,32 @@ class CommodityFragment : Fragment(), com.techapp.james.buybuygo.view.View {
         startActivityForResult(i, CAMERA_RESULT)
     }
 
-    fun deleteItem(c: Commodity) {
-        var deleteObserver = presenter!!.deleteItem(c)
-        deleteObserver.subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnSuccess {
-                it.body()?.let {
-                    Toast.makeText(this.activity, it.response, Toast.LENGTH_LONG).show()
-                }
-                getItem()
-            }
-            .doOnError {
-            }.subscribe()
+    override fun showRequestMessage(s: String) {
+        Toast.makeText(this.activity, s, Toast.LENGTH_LONG).show()
     }
 
-    fun pushItem(c: Commodity) {
-        var singlePush = presenter!!.pushItem(c)
-        singlePush.subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnSuccess {
-                it.body()?.let {
-                    Toast.makeText(this.activity, it.response, Toast.LENGTH_LONG).show()
-                }
-            }.subscribe()
+    override fun isLoad(flag: Boolean) {
+        if (flag) {
+            loadItemProgressBar.visibility = View.VISIBLE
+        } else {
+            loadItemProgressBar.visibility = View.INVISIBLE
+        }
+    }
+
+    override fun updateCommodityList(list: ArrayList<Commodity>) {
+        itemRecyclerView?.adapter?.let {
+            (it as ListAdapter).dataList = list
+            it.notifyDataSetChanged()
+        }
+    }
+
+
+    override fun deleteItem(c: Commodity) {
+        presenter!!.deleteItem(c)
+    }
+
+    override fun pushItem(c: Commodity) {
+        presenter!!.pushItem(c)
     }
 
     companion object {
@@ -141,33 +142,5 @@ class CommodityFragment : Fragment(), com.techapp.james.buybuygo.view.View {
                 }
             }
         }
-    }
-
-    private fun getItem() {
-        presenter!!.getUploadItem().subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnSubscribe {
-                loadItemProgressBar.visibility = View.VISIBLE
-            }
-            .doOnSuccess {
-                loadItemProgressBar?.visibility = View.GONE
-                it.body()?.let {
-                    Timber.d("+++ " + it.response.size)
-                    if (it.result) {
-                        //it is commodityWrapper
-                        var commodityList = it.response
-                        commodityList?.let {
-                            itemRecyclerView?.adapter?.let {
-                                (it as ListAdapter).dList = commodityList
-                                it.notifyDataSetChanged()
-                            }
-                        }
-                    }
-                }
-            }
-            .doOnError {
-                Timber.d("error  " + it.message)
-            }
-            .subscribe()
     }
 }
