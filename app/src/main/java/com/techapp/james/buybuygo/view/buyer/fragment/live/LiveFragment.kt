@@ -11,6 +11,7 @@ import android.widget.Toast
 
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.converter.GsonConverter
+import com.techapp.james.buybuygo.model.data.buyer.Commodity
 import com.techapp.james.buybuygo.model.data.buyer.PlaceOrder
 import com.techapp.james.buybuygo.presenter.buyer.LivePresenter
 import io.reactivex.Observable
@@ -25,12 +26,17 @@ import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 
-class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
+class LiveFragment : Fragment(), LiveView {
+
     lateinit var livePresenter: LivePresenter
     lateinit var dialogHelper: DialogHelper
+    lateinit var loadDialog: ProgressDialog
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        loadDialog = ProgressDialog(
+            this@LiveFragment.activity
+        )
         livePresenter = LivePresenter(this)
         dialogHelper = DialogHelper(this.activity!!)
     }
@@ -48,15 +54,64 @@ class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
         return inflater.inflate(R.layout.buyer_fragment_live, container, false)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        Timber.d(4567891.toString())
+    override fun isLoadWholeView(flag: Boolean) {
+        if (flag) {
+            loadDialog.setMessage("Loading...")
+            loadDialog.show()
+        } else {
+            loadDialog.cancel()
+        }
     }
 
-    override fun onResume() {
-        super.onResume()
-//        Timber.d(456789.toString())
-//        onDestroy()
+    override fun isLoadWeb(flag: Boolean) {
+        if (flag) {
+            progressBar.visibility = View.VISIBLE
+            fbLiveWebView.visibility = View.INVISIBLE
+        } else {
+            progressBar.visibility = View.INVISIBLE
+            fbLiveWebView.visibility = View.VISIBLE
+        }
+    }
+
+    override fun loadWeb(url: String) {
+        loadWebView(url)
+    }
+
+    override fun showRequestMessage(message: String) {
+        Toast.makeText(
+            this@LiveFragment.context,
+            message,
+            Toast.LENGTH_LONG
+        ).show()
+    }
+
+    override fun stopWeb() {
+        fbLiveWebView.loadUrl("about:blank")
+    }
+
+    var placeOrderDialog: Dialog? = null
+    override fun showPlaceOrderDialog(commodity: Commodity) {
+        placeOrderDialog = dialogHelper.createPlaceOrderDialog(commodity,
+            object : DialogHelper.OnPlaceOrderOkPress {
+                override fun onOkPress(
+                    orderItem: PlaceOrder,
+                    dialog: Dialog
+                ) {
+                    Timber.d("***place an order")
+                    if (!(orderItem.itemId.equals("") ||
+                                orderItem.number == 0 ||
+                                orderItem.recipientId.equals(""))
+                    ) {
+                        // place an order
+                        livePresenter.placeOrder(orderItem)
+                    }
+                }
+            })
+        placeOrderDialog?.show()
+    }
+
+    override fun closePlaceOrderDialog() {
+        placeOrderDialog?.cancel()
     }
 
     fun init() {
@@ -72,87 +127,11 @@ class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
             swiperefresh.isRefreshing = false
         }
         leaveBtn.setOnClickListener {
-            var singleLeave = livePresenter.leaveChannel()
-            singleLeave.subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe {
-                    fbLiveWebView.loadUrl("about:blank")
-                    progressBar.visibility = View.VISIBLE
-                }
-                .doOnSuccess {
-                    progressBar.visibility = View.GONE
-                    it.body()?.let {
-                        Toast.makeText(this@LiveFragment.context, it.response, Toast.LENGTH_LONG)
-                            .show()
-                    }
-                    it.errorBody()?.let {
-                        var wrapperString = GsonConverter.convertJsonToWrapperString(it.string())
-                        Toast.makeText(
-                            this@LiveFragment.context,
-                            wrapperString.response,
-                            Toast.LENGTH_LONG
-                        )
-                            .show()
-                    }
-                }.subscribe()
+            livePresenter.leaveChannel()
         }
         buyBtn.setOnClickListener {
-            var singleSoldItem = livePresenter.getLiveSoldItem()
-            singleSoldItem.subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe {
-                    showLoad()
-                }.doOnSuccess {
-                    loadDialog?.cancel()
-                    if (it.body() == null) {
-                        it.errorBody()?.let {
-                            var wrapperString = GsonConverter
-                                .convertJsonToWrapperString(it.string())
-                            Toast.makeText(
-                                this@LiveFragment.context,
-                                wrapperString.response,
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-                    } else {
-                        it.body()?.let {
-                            var commodity = it.response
-                            var placeOrderDialog = dialogHelper.createPlaceOrderDialog(commodity,
-                                object : DialogHelper.OnPlaceOrderOkPress {
-                                    override fun onOkPress(
-                                        orderItem: PlaceOrder,
-                                        dialog: Dialog
-                                    ) {
-                                        Timber.d("***place an order")
-                                        if (!(orderItem.itemId.equals("") ||
-                                                    orderItem.number == 0 ||
-                                                    orderItem.recipientId.equals(""))
-                                        ) {
-
-                                            // place an order
-                                            var singleString = livePresenter.placeOrder(orderItem)
-                                            singleString.subscribeOn(Schedulers.newThread())
-                                                .observeOn(AndroidSchedulers.mainThread())
-                                                .doOnSubscribe {
-                                                    showLoad()
-                                                }.doOnSuccess {
-                                                    dialog.cancel()
-                                                    loadDialog?.cancel()
-                                                    Toast.makeText(
-                                                        this@LiveFragment.context,
-                                                        it.body()?.response,
-                                                        Toast.LENGTH_LONG
-                                                    ).show()
-                                                }.subscribe()
-                                        }
-                                    }
-                                })
-                            placeOrderDialog.show()
-                        }
-                    }
-                }.subscribe()
+            livePresenter.getLiveSoldItem()
         }
-        loadDialog?.cancel()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {
@@ -168,28 +147,7 @@ class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
             object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(input: String?): Boolean {
                     input?.let {
-                        var singleLiveUrl = livePresenter.getLiveUrl(input)
-                        singleLiveUrl.subscribeOn(Schedulers.newThread())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .doOnSubscribe {
-                                progressBar.visibility = View.VISIBLE
-                                fbLiveWebView.visibility = View.INVISIBLE
-                            }
-                            .doOnSuccess {
-                                progressBar.visibility = View.GONE
-                                fbLiveWebView.visibility = View.VISIBLE
-                                if (it.body() == null) {
-                                    Toast.makeText(
-                                        this@LiveFragment.context,
-                                        it.errorBody()?.string(),
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                } else {
-                                    it.body()?.let {
-                                        loadWebView(it.response)
-                                    }
-                                }
-                            }.subscribe()
+                        livePresenter.getLiveUrl(input)
                         //input is a liveUrl which seller live in facebook
                         //post api/Channel to get Channel
                         searchView.setQuery("", true)
@@ -258,21 +216,6 @@ class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
     override fun onStop() {
         super.onStop()
         Schedulers.shutdown()
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-    }
-
-    var loadDialog: Dialog? = null
-    fun showLoad() {
-        loadDialog =
-                ProgressDialog.show(
-                    this@LiveFragment.context,
-                    "Loading",
-                    "Waiting...",
-                    true
-                )
     }
 
     companion object {

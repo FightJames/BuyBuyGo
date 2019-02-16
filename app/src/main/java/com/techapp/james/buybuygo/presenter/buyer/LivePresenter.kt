@@ -1,5 +1,6 @@
 package com.techapp.james.buybuygo.presenter.buyer
 
+import com.techapp.james.buybuygo.model.converter.GsonConverter
 import com.techapp.james.buybuygo.model.data.Wrapper
 import com.techapp.james.buybuygo.model.data.buyer.Commodity
 import com.techapp.james.buybuygo.model.data.buyer.PlaceOrder
@@ -8,8 +9,11 @@ import com.techapp.james.buybuygo.model.retrofitManager.RayCommon
 import com.techapp.james.buybuygo.model.retrofitManager.RetrofitManager
 import com.techapp.james.buybuygo.model.sharePreference.SharePreference
 import com.techapp.james.buybuygo.view.View
+import com.techapp.james.buybuygo.view.buyer.fragment.live.LiveView
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import org.json.JSONObject
@@ -18,12 +22,12 @@ import retrofit2.Response
 
 
 class LivePresenter {
-    var view: View
+    var view: LiveView
     var rayBuyer: RayBuyer
     var rayCommon: RayCommon
     var rayToken: String
 
-    constructor(view: View) {
+    constructor(view: LiveView) {
         this.view = view
         var retrofitManager = RetrofitManager.getInstance()
         rayBuyer = retrofitManager.getRayBuyer()
@@ -31,29 +35,85 @@ class LivePresenter {
         rayToken = SharePreference.getInstance().getRayToken()
     }
 
-    fun getLiveUrl(channelToken: String): Single<Response<Wrapper<String>>> {
+    fun getLiveUrl(channelToken: String) {
         var jsonObject = JSONObject()
         jsonObject.put("channel_token", channelToken)
         var requestBody = RequestBody.create(
             MediaType.parse("application/json"),
             jsonObject.toString()
         )
-        return rayBuyer.joinChannel(rayToken, requestBody)
+        var singleLiveUrl = rayBuyer.joinChannel(rayToken, requestBody)
+        singleLiveUrl.subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                view.isLoadWeb(true)
+            }
+            .doOnSuccess {
+                view.isLoadWeb(false)
+                if (it.body() == null) {
+                    it.errorBody()?.let {
+                        view.showRequestMessage(it.string())
+                    }
+                } else {
+                    it.body()?.let {
+                        view.loadWeb(it.response)
+                    }
+                }
+            }.subscribe()
     }
 
-    fun leaveChannel(): Single<Response<Wrapper<String>>> {
-        return rayBuyer.leaveChannel(rayToken)
+    fun leaveChannel() {
+
+        var singleLeave = rayBuyer.leaveChannel(rayToken)
+
+        singleLeave.subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                view.isLoadWeb(true)
+                view.stopWeb()
+            }
+            .doOnSuccess {
+                view.isLoadWeb(false)
+                it.body()?.let {
+                    view.showRequestMessage(it.response)
+                }
+                it.errorBody()?.let {
+                    var wrapperString = GsonConverter.convertJsonToWrapperString(it.string())
+                    view.showRequestMessage(wrapperString.response)
+                }
+            }.subscribe()
     }
 
-    fun getLiveSoldItem(): Single<Response<Wrapper<Commodity>>> {
-        return rayCommon.getLiveSoldItem(rayToken)
+    fun getLiveSoldItem() {
+        var singleSoldItem = rayCommon.getLiveSoldItem(rayToken)
+        singleSoldItem.subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                view.isLoadWholeView(true)
+            }.doOnSuccess {
+                view.isLoadWholeView(false)
+                if (it.body() == null) {
+                    it.errorBody()?.let {
+                        var wrapperString = GsonConverter
+                            .convertJsonToWrapperString(it.string())
+                        view.showRequestMessage(wrapperString.response)
+
+                    }
+                } else {
+                    it.body()?.let {
+                        var commodity = it.response
+                        view.showPlaceOrderDialog(commodity)
+                    }
+                }
+            }.subscribe()
     }
 
     fun getLiveTimerSoldItem(): Call<Wrapper<Commodity>> {
         return rayCommon.getLiveTimerSoldItem(rayToken)
     }
 
-    fun placeOrder(orderItem: PlaceOrder): Single<Response<Wrapper<String>>> {
+    fun placeOrder(orderItem: PlaceOrder) {
+
         var jsonObject = JSONObject()
         jsonObject.put("number", orderItem.number)
         var body = RequestBody.create(
@@ -61,11 +121,24 @@ class LivePresenter {
                 "application/json"
             ), jsonObject.toString()
         )
-        return rayBuyer.placeOrder(
+
+        var singleString = rayBuyer.placeOrder(
             rayToken,
             orderItem.itemId,
             orderItem.recipientId,
             body
         )
+
+        singleString.subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                view.isLoadWholeView(true)
+            }.doOnSuccess {
+                view.isLoadWholeView(false)
+                view.closePlaceOrderDialog()
+                it.body()?.let {
+                    view.showRequestMessage(it.response)
+                }
+            }.subscribe()
     }
 }
