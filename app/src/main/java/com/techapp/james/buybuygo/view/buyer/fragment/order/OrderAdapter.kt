@@ -7,10 +7,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.data.buyer.OrderDetail
+import kotlinx.android.synthetic.main.buyer_order_fragment_list_item.view.*
 
 class OrderAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
     var activity: Activity
     var dataList: ArrayList<OrderDetail>
+    var payClickListener: ItemViewHolder.PayBtnClickListener? = null
 
     constructor(activity: Activity, dataList: ArrayList<OrderDetail>) {
         this.activity = activity
@@ -31,6 +33,6 @@ class OrderAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
         viewHolder as ItemViewHolder
         //if image is null ,you must set image src is default image
         viewHolder.setData(dataList[position])
-
+        viewHolder.payBtnClickListener = payClickListener
     }
 }

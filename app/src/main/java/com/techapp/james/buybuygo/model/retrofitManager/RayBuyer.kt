@@ -3,6 +3,7 @@ package com.techapp.james.buybuygo.model.retrofitManager
 import com.techapp.james.buybuygo.model.data.buyer.Recipient
 import com.techapp.james.buybuygo.model.data.Wrapper
 import com.techapp.james.buybuygo.model.data.buyer.OrderDetail
+import com.techapp.james.buybuygo.model.data.seller.PaymentServices
 import io.reactivex.Single
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -53,8 +54,11 @@ interface RayBuyer {
     @PUT("user-channel-id")
     fun leaveChannel(@Header("Authorization") token: String): Single<Response<Wrapper<String>>>
 
+    @GET("payment-services")
+    fun getPaymentServices(@Header("Authorization") token: String): Single<Response<Wrapper<ArrayList<PaymentServices>>>>
+
     @POST("payments/{thirdPartyPaymentService_id}")
-    fun payMoney(@Header("Authorization") token: String, @Path("thirdPartyPaymentService_id") thirdPartyID: String)
+    fun payMoney(@Header("Authorization") token: String, @Path("thirdPartyPaymentService_id") thirdPartyID: String, @Body body: RequestBody): Single<Response<ResponseBody>>
 
     @HTTP(method = "PATCH", path = "user-channel-id", hasBody = true)
     fun joinChannel(@Header("Authorization") token: String, @Body body: RequestBody): Single<Response<Wrapper<String>>> //return a seller's live liveUrl

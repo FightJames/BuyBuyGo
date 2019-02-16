@@ -4,20 +4,17 @@ import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.SearchView
 import android.view.*
-
 import com.techapp.james.buybuygo.R
-import com.techapp.james.buybuygo.R.id.action_all_order
 import com.techapp.james.buybuygo.model.data.buyer.OrderDetail
 import com.techapp.james.buybuygo.presenter.seller.OrderPresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_buyer.*
 import kotlinx.android.synthetic.main.seller_fragment_order.*
 import timber.log.Timber
 
-class OrderFragment : Fragment(), com.techapp.james.buybuygo.view.View {
+class OrderFragment : Fragment(), OrderView {
+
     lateinit var orderPresenter: OrderPresenter
     lateinit var orderAdapter: OrderAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,50 +44,34 @@ class OrderFragment : Fragment(), com.techapp.james.buybuygo.view.View {
         orderAdapter = OrderAdapter(ArrayList<OrderDetail>())
         orderList.layoutManager = LinearLayoutManager(this.activity)
         orderList.adapter = orderAdapter
-        updateOrderList()
+        orderPresenter.getAllOrder()
+    }
+
+    override fun isLoad(flag: Boolean) {
+        if (flag) {
+            loadProgressBar.visibility = View.VISIBLE
+        } else {
+            loadProgressBar.visibility = View.INVISIBLE
+        }
+    }
+
+    override fun updateList(list: ArrayList<OrderDetail>) {
+        orderAdapter.dataList = list
+        orderAdapter.notifyDataSetChanged()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.order) {
             0 -> {
-                updateOrderList()
+                orderPresenter.getAllOrder()
             }
         }
         return true
     }
 
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        super.onViewStateRestored(savedInstanceState)
-        Timber.d("")
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
-    }
-
-    fun updateOrderList() {
-        var singleOrder = orderPresenter.getAllOrder()
-        singleOrder.subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnSubscribe {
-                loadProgressBar.visibility = View.VISIBLE
-            }
-            .doOnSuccess {
-                loadProgressBar.visibility = View.INVISIBLE
-                it.body()?.let {
-                    orderAdapter.dataList = it.response
-                    orderAdapter.notifyDataSetChanged()
-                }
-
-            }.subscribe()
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-    }
-
-    override fun onDetach() {
-        super.onDetach()
+        orderPresenter.cancelWholeTask()
     }
 
     companion object {

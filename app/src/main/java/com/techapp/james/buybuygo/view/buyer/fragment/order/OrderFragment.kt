@@ -1,47 +1,84 @@
 package com.techapp.james.buybuygo.view.buyer.fragment.order
 
+import android.app.ProgressDialog
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.widget.CircularProgressDrawable
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import com.techapp.james.buybuygo.R
+import com.techapp.james.buybuygo.model.data.buyer.OrderDetail
+import com.techapp.james.buybuygo.model.data.seller.PaymentServices
 import com.techapp.james.buybuygo.presenter.buyer.OrderPresenter
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.buyer_fragment_order.*
 import timber.log.Timber
 
-class OrderFragment : Fragment(), com.techapp.james.buybuygo.view.View {
+class OrderFragment : Fragment(), OrderView {
     lateinit var orderAdapter: OrderAdapter
     lateinit var orderPresenter: OrderPresenter
-    lateinit var compositeDisposable: CompositeDisposable
+    lateinit var dialogHelper: DialogHelper
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        compositeDisposable = CompositeDisposable()
+
+        progressDialog = ProgressDialog(
+            this.activity
+        )
+        dialogHelper = DialogHelper(this.activity!!)
         orderPresenter = OrderPresenter(this)
+    }
+
+    override fun updateOrderList(list: ArrayList<OrderDetail>) {
+        orderAdapter.dataList = list
+        orderAdapter.notifyDataSetChanged()
+    }
+
+    override fun isLoad(flag: Boolean) {
+        if (flag) {
+            loadProgressBar.visibility = View.VISIBLE
+            orderList.visibility = View.INVISIBLE
+        } else {
+            loadProgressBar.visibility = View.INVISIBLE
+            orderList.visibility = View.VISIBLE
+        }
+    }
+
+    var progressDialog: ProgressDialog? = null
+    override fun isLoadWholeView(flag: Boolean) {
+        if (flag) {
+            Timber.d("Progress show")
+            progressDialog?.setMessage("Loading...")
+            progressDialog?.show()
+        } else {
+            Timber.d("Progress cancel")
+            progressDialog?.cancel()
+        }
+    }
+
+    override fun showPaymentServiceDialog(list: ArrayList<PaymentServices>) {
+        var dialog = dialogHelper.createPaymentServiceDialog(list,
+            object : DialogHelper.PaymentServiceDialogCallback {
+                override fun onSelected(paymentServices: PaymentServices): Boolean {
+                    Timber.d("Select call")
+                    orderPresenter.payMoney(paymentServices)
+                    return true
+                }
+            })
+        dialog.show()
     }
 
     override fun onResume() {
         super.onResume()
-        var singleOrderDetail = orderPresenter.getAllOrder()
-        var des = singleOrderDetail.subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnSubscribe {
+        orderAdapter = OrderAdapter(this.activity!!, ArrayList<OrderDetail>())
+        orderAdapter.payClickListener = object : ItemViewHolder.PayBtnClickListener {
+            override fun onClick(id: String) {
+                Timber.d("PayBtn click $id")
+                orderPresenter.getPaymentService(id)
             }
-            .doOnSuccess {
-                Timber.d(456.toString())
-                it.body()?.let {
-                    Timber.d(456.toString() + it.response.size.toString())
-                    orderAdapter = OrderAdapter(this.activity!!, it.response)
-                    orderList.adapter = orderAdapter
-                    orderAdapter.notifyDataSetChanged()
-                }
-            }.subscribe()
-        compositeDisposable.add(des)
+        }
+        orderList.adapter = orderAdapter
         orderList.layoutManager = LinearLayoutManager(this.activity)
         orderList.addItemDecoration(
             DividerItemDecoration(
@@ -49,52 +86,24 @@ class OrderFragment : Fragment(), com.techapp.james.buybuygo.view.View {
                 DividerItemDecoration.VERTICAL
             )
         )
+        orderPresenter.getAllOrder()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.order) {
             // all order
             0 -> {
-                compositeDisposable.clear()
-                Timber.d("pass 0")
-                var singleOrderDetail = orderPresenter.getAllOrder()
-                var des = singleOrderDetail.subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnSubscribe {
-                    }
-                    .doOnSuccess {
-                        Timber.d(456.toString())
-                        it.body()?.let {
-                            Timber.d(456.toString() + it.response.size.toString())
-                            orderAdapter.dataList = it.response
-                            orderAdapter.notifyDataSetChanged()
-                        }
-                    }.subscribe()
-
-                compositeDisposable.add(des)
+                orderPresenter.cancelWholeTask()
+                orderPresenter.getAllOrder()
                 return true
             }
             //new order
             1 -> {
-                compositeDisposable.clear()
-                Timber.d("pass 1")
-                var singleLatest = orderPresenter.getLatestChannalOrder()
-                var des = singleLatest.subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnSubscribe { }
-                    .doOnSuccess {
-                        it.body()?.let {
-                            Timber.d(456.toString() + it.response.size.toString())
-                            orderAdapter.dataList = it.response
-                            orderAdapter.notifyDataSetChanged()
-                        }
-                    }.subscribe()
-
-                compositeDisposable.add(des)
+                orderPresenter.cancelWholeTask()
+                orderPresenter.getLatestChannalOrder()
                 return true
             }
             else -> {
-                Timber.d("pass else")
                 return false
             }
         }

@@ -17,6 +17,12 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class ItemViewHolder : RecyclerView.ViewHolder {
+    interface PayBtnClickListener {
+        fun onClick(id: String)
+    }
+
+    var payBtnClickListener: PayBtnClickListener? = null
+
     constructor(itemView: View) : super(itemView) {
     }
 
@@ -26,10 +32,10 @@ class ItemViewHolder : RecyclerView.ViewHolder {
         if (orderDetail.status == OrderStatus.UNPAID.value) {
             itemView.statusLabel.text = itemView.context.getString(R.string.unPaid)
             //order is effective
-            if (orderDetail.effective != OrderEffective.EFFECTIVE.value) {
+            if (orderDetail.effective == OrderEffective.EFFECTIVE.value) {
                 itemView.payBtn.visibility = View.VISIBLE
                 itemView.payBtn.setOnClickListener {
-                    Timber.d("James payBtnClick")
+                    payBtnClickListener?.onClick(orderDetail.id)
                 }
             }
         } else {
@@ -71,10 +77,6 @@ class ItemViewHolder : RecyclerView.ViewHolder {
     }
 
     fun createDetialDialog(orderDetail: OrderDetail): Dialog {
-        var format = SimpleDateFormat("EEEEEEEE, dd-MMM-yyyy HH:mm:ss", Locale.UK)
-        val outputFormat = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
-        var date = Date()
-        var cal = Calendar.getInstance()
         var resource = itemView.context.resources
         var detialView = LayoutInflater.from(itemView.context)
             .inflate(R.layout.buyer_order_detial_dialog, null)
@@ -89,36 +91,39 @@ class ItemViewHolder : RecyclerView.ViewHolder {
         detialView.effectiveLabel.text =
                 String.format(resource.getString(R.string.isEffective), isEffective)
 
-        date = format.parse(orderDetail.time)
-        cal.time = date
-        cal.add(Calendar.HOUR, 8)
 
         detialView.orderTimeLabel.text =
                 String.format(
                     resource.getString(R.string.orderTime),
-                    outputFormat.format(cal.time)
+                    calculateTime(orderDetail.time)
                 )
 
-        date = format.parse(orderDetail.expiryTime)
-        cal.time = date
-        cal.add(Calendar.HOUR, 8)
         detialView.expiryTimeLabel.text =
                 String.format(
                     resource.getString(R.string.expiryTime),
-                    outputFormat.format(cal.time)
+                    calculateTime(orderDetail.expiryTime)
                 )
 
-        date = format.parse(orderDetail.orderDeleteTime)
-        cal.time = date
-        cal.add(Calendar.HOUR, 8)
         detialView.toBeDeleteTimeLabel.text =
                 String.format(
                     resource.getString(R.string.toBeDeleteTime),
-                    outputFormat.format(cal.time)
+                    calculateTime(orderDetail.orderDeleteTime)
                 )
         var builder = AlertDialog.Builder(itemView.context)
         builder.setView(detialView)
             .setPositiveButton(R.string.ok, null)
         return builder.create()
+    }
+
+    fun calculateTime(time: String): String {
+        var date: Date
+        var cal = Calendar.getInstance()
+        var format = SimpleDateFormat("EEEEEEEE, dd-MMM-yyyy HH:mm:ss", Locale.UK)
+        val outputFormat = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
+        date = format.parse(time)
+        cal.time = date
+        cal.add(Calendar.HOUR, 8)
+        return outputFormat.format(cal.time)
+
     }
 }
