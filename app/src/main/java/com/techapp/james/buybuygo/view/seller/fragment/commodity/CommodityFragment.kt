@@ -22,7 +22,9 @@ import kotlinx.android.synthetic.main.seller_fragment_commodity_dialog.view.*
 import timber.log.Timber
 
 
-class CommodityFragment : Fragment(), CommodityView, ListAdapter.OperationListener {
+class CommodityFragment : Fragment(), CommodityView, ListAdapter.OperationListener,
+    DialogHelper.CreateCallback, DialogHelper.ModifyCallBack {
+
     private var dialog: Dialog? = null
     private lateinit var dialogHelper: DialogHelper
     lateinit var presenter: CommodityPresenter
@@ -33,7 +35,7 @@ class CommodityFragment : Fragment(), CommodityView, ListAdapter.OperationListen
         fileData = FileManager.createImageFileUri("cacheImage", this.activity!!.applicationContext)
         presenter = CommodityPresenter(this)
         dialogHelper =
-                DialogHelper(this, this::intentToCamera, presenter!!, fileData)
+                DialogHelper(this, this::intentToCamera, fileData)
     }
 
     override fun onCreateView(
@@ -53,7 +55,7 @@ class CommodityFragment : Fragment(), CommodityView, ListAdapter.OperationListen
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.order) {
             0 -> {
-                dialog = dialogHelper.createDialog()
+                dialog = dialogHelper.createDialog(this)
                 dialog!!.show()
             }
         }
@@ -69,8 +71,7 @@ class CommodityFragment : Fragment(), CommodityView, ListAdapter.OperationListen
                 GridLayoutManager(this.activity, 3, GridLayoutManager.VERTICAL, false)
         itemRecyclerView.adapter = ListAdapter(
             ArrayList<Commodity>(),
-            this,
-            dialogHelper::createModifyDialog
+            this
         )
         presenter.getUploadItem()
     }
@@ -94,8 +95,10 @@ class CommodityFragment : Fragment(), CommodityView, ListAdapter.OperationListen
     override fun isLoad(flag: Boolean) {
         if (flag) {
             loadItemProgressBar.visibility = View.VISIBLE
+            itemRecyclerView.visibility = View.INVISIBLE
         } else {
             loadItemProgressBar.visibility = View.INVISIBLE
+            itemRecyclerView.visibility = View.VISIBLE
         }
     }
 
@@ -106,13 +109,28 @@ class CommodityFragment : Fragment(), CommodityView, ListAdapter.OperationListen
         }
     }
 
-
+    // list adapter callback
     override fun deleteItem(c: Commodity) {
         presenter!!.deleteItem(c)
     }
 
     override fun pushItem(c: Commodity) {
         presenter!!.pushItem(c)
+    }
+
+    override fun modifyItem(c: Commodity) {
+        dialogHelper.createModifyDialog(c, this).show()
+    }
+
+
+    //Dialog callback
+    override fun onCreate(c: Commodity, fileData: FileData) {
+        presenter!!.insertItem(c, fileData)
+
+    }
+
+    override fun onModify(c: Commodity, fileData: FileData) {
+        presenter.updateItem(c, fileData)
     }
 
     companion object {

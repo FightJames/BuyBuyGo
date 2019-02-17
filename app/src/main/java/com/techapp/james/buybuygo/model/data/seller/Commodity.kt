@@ -10,6 +10,7 @@ class Commodity(
     var stock: Int,
     var cost: Int,
     @SerializedName("unit_price") var unitPrice: Int,
-    @SerializedName("images") var imageUrl: String
+    @SerializedName("images") var imageUrl: String,
+    var isModifyImage: Boolean = false
 ) {
 }

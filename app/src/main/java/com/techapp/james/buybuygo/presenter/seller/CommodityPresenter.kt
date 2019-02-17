@@ -1,8 +1,8 @@
 package com.techapp.james.buybuygo.presenter.seller
 
 import com.techapp.james.buybuygo.model.data.seller.Commodity
-import com.techapp.james.buybuygo.model.data.Wrapper
 import com.techapp.james.buybuygo.model.file.FileData
+import com.techapp.james.buybuygo.model.networkManager.NetworkManager
 import com.techapp.james.buybuygo.model.retrofitManager.RaySeller
 import com.techapp.james.buybuygo.model.retrofitManager.RetrofitManager
 import com.techapp.james.buybuygo.model.sharePreference.SharePreference
@@ -78,7 +78,7 @@ class CommodityPresenter {
             .subscribe()
     }
 
-    fun insertItem(commodity: Commodity, fileData: FileData): Single<Response<ResponseBody>> {
+    fun insertItem(commodity: Commodity, fileData: FileData) {
         var map = HashMap<String, RequestBody>()
         map.put("name", RequestBody.create(okhttp3.MultipartBody.FORM, commodity.name))
         map.put(
@@ -98,12 +98,25 @@ class CommodityPresenter {
             MediaType.get("image/jpg"), file
         )
         val body = MultipartBody.Part.createFormData("images", "cacheImage", requestFile)
-        var insertOb = raySeller.uploadItem(rayToken, map, body)
-        return insertOb
+        var singleInsert = raySeller.uploadItem(rayToken, map, body)
+        singleInsert.subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                view.isLoad(true)
+            }
+            .doOnSuccess {
+                Timber.d("success message " + it.message())
+                Timber.d("success message " + it.errorBody()?.string())
+                getUploadItem()
+            }
+            .doOnError {
+                Timber.d("error " + it.message)
+            }
+            .subscribe()
     }
 
 
-    fun updateItem(commodity: Commodity, fileData: FileData): Single<Response<ResponseBody>> {
+    fun updateItem(commodity: Commodity, fileData: FileData) {
         var map = HashMap<String, RequestBody>()
         map.put("name", RequestBody.create(okhttp3.MultipartBody.FORM, commodity.name))
         map.put(
@@ -113,20 +126,44 @@ class CommodityPresenter {
         map.put("stock", RequestBody.create(okhttp3.MultipartBody.FORM, commodity.stock.toString()))
         map.put("cost", RequestBody.create(okhttp3.MultipartBody.FORM, commodity.cost.toString()))
         map.put(
-            "unitPrice",
+            "unit_price",
             RequestBody.create(okhttp3.MultipartBody.FORM, commodity.unitPrice.toString())
         )
         map.put("_method", RequestBody.create(okhttp3.MultipartBody.FORM, "PATCH"))
-
         var file = File(fileData.path)
         Timber.d("file path presenter " + file.absolutePath)
-        val requestFile = RequestBody.create(
-            MediaType.get("image/jpg"), file
-        )
-        val body = MultipartBody.Part.createFormData("images", "cacheImage", requestFile)
-        var updateOb =
-            raySeller.updateItem(rayToken, commodity.id.toInt(), map, body)
-        return updateOb
+        var body: MultipartBody.Part? = null
+        if (commodity.isModifyImage) {
+            Timber.d("modifyImage")
+            val requestFile = RequestBody.create(
+                MediaType.get("image/jpg"), file
+            )
+            body = MultipartBody.Part.createFormData("images", "cacheImage", requestFile)
+            var singleUpdate =
+                raySeller.updateItem(rayToken, commodity.id.toInt(), map, body)
+            singleUpdate.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe {
+                    view.isLoad(true)
+                }
+                .doOnSuccess {
+                    getUploadItem()
+                }.doOnError {
+                }.subscribe()
+        } else {
+            Timber.d("NomodifyImage")
+            var singleUpdate =
+                raySeller.updateItem(rayToken, commodity.id.toInt(), map, body)
+            singleUpdate.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe {
+                    view.isLoad(true)
+                }
+                .doOnSuccess {
+                    getUploadItem()
+                }.doOnError {
+                }.subscribe()
+        }
     }
 
     fun pushItem(commodity: Commodity) {

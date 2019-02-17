@@ -21,7 +21,7 @@ interface RaySeller {
 
     @Multipart
     @POST("items/{item_id}")
-    fun updateItem(@Header("Authorization") token: String, @Path("item_id") id: Int, @PartMap() partMap: Map<String, @JvmSuppressWildcards RequestBody>, @Part file: MultipartBody.Part): Single<Response<ResponseBody>>
+    fun updateItem(@Header("Authorization") token: String, @Path("item_id") id: Int, @PartMap() partMap: Map<String, @JvmSuppressWildcards RequestBody>, @Part file: MultipartBody.Part? = null): Single<Response<ResponseBody>>
 
     @Headers("X-Requested-With: XMLHttpRequest")
     @GET("items")

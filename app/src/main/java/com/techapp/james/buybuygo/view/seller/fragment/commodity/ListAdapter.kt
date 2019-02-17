@@ -13,12 +13,12 @@ import timber.log.Timber
 
 class ListAdapter(
     var dataList: ArrayList<Commodity>,
-    var operationListener: OperationListener? = null,
-    val getDialog: ((c: Commodity) -> Dialog)
+    var operationListener: OperationListener? = null
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     interface OperationListener {
         fun deleteItem(c: Commodity)
         fun pushItem(c: Commodity)
+        fun modifyItem(c: Commodity)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -35,7 +35,7 @@ class ListAdapter(
         Glide.with(itemViewHolder.itemView.context).load(dataList[position].imageUrl)
             .into(itemViewHolder.itemView.commodityImageView)
         itemViewHolder.itemView.commodityImageView.setOnClickListener {
-            getDialog.invoke(dataList[position]).show()
+            operationListener?.modifyItem(dataList[position])
         }
         itemViewHolder.itemView.deleteImageView.setOnClickListener {
             operationListener?.deleteItem(dataList[position])

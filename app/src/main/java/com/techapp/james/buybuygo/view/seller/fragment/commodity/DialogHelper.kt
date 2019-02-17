@@ -20,23 +20,24 @@ import timber.log.Timber
 class DialogHelper {
     var fragment: Fragment?
     var intentCamera: (() -> Unit)?
-    var presenter: CommodityPresenter?
     var fileData: FileData?
     lateinit var customerView: View
 
     constructor(
         fragment: CommodityFragment,
         intentCamera: () -> Unit,
-        presenter: CommodityPresenter,
         fileData: FileData
     ) {
         this.fragment = fragment
         this.intentCamera = intentCamera
-        this.presenter = presenter
         this.fileData = fileData
     }
 
-    fun createDialog(): Dialog {
+    interface CreateCallback {
+        fun onCreate(c: Commodity, fileData: FileData)
+    }
+
+    fun createDialog(createCallback: CreateCallback? = null): Dialog {
         return fragment!!.activity?.let {
             val builder = AlertDialog.Builder(it)
             customerView =
@@ -65,31 +66,39 @@ class DialogHelper {
                         if (unitPriceFlag) unitPrice.toInt() else 0,
                         fileData!!.fileUri.toString()
                     )
-                    var insOb = presenter!!.insertItem(commodity, fileData!!)
-                    insOb.subscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .doOnSubscribe {
-                            fragment!!.loadItemProgressBar.visibility = View.VISIBLE
-                        }
-                        .doOnSuccess {
-                            Timber.d("success message " + it.message())
-                            Timber.d("success message " + it.errorBody()?.string())
-                            presenter!!.getUploadItem()
-                        }
-                        .doOnError {
-                            Timber.d("error " + it.message)
-                        }
-                        .subscribe()
+
+                    createCallback?.onCreate(commodity, fileData!!)
+//                    var insOb = presenter!!.insertItem(commodity, fileData!!)
+//                    insOb.subscribeOn(Schedulers.newThread())
+//                        .observeOn(AndroidSchedulers.mainThread())
+//                        .doOnSubscribe {
+//                            fragment!!.loadItemProgressBar.visibility = View.VISIBLE
+//                        }
+//                        .doOnSuccess {
+//                            Timber.d("success message " + it.message())
+//                            Timber.d("success message " + it.errorBody()?.string())
+//                            presenter!!.getUploadItem()
+//                        }
+//                        .doOnError {
+//                            Timber.d("error " + it.message)
+//                        }
+//                        .subscribe()
                 })
                 .setNegativeButton(R.string.cancel,
                     { dialog, id ->
                         dialog.cancel()
                     })
             builder.create()
+
+
         } ?: throw IllegalStateException("Activity cannot be null")
     }
 
-    fun createModifyDialog(commodity: Commodity): Dialog {
+    interface ModifyCallBack {
+        fun onModify(c: Commodity,fileData: FileData)
+    }
+
+    fun createModifyDialog(commodity: Commodity, modifyCallBack: ModifyCallBack? = null): Dialog {
         return fragment!!.activity?.let {
             val builder = AlertDialog.Builder(it)
             customerView =
@@ -125,34 +134,42 @@ class DialogHelper {
                         commodity.stock = if (stockFlag) stock.toInt() else 0
                         commodity.cost = if (costFlag) cost.toInt() else 0
                         commodity.unitPrice = if (unitPriceFlag) unitPrice.toInt() else 0
-                        var updateOB = presenter!!.updateItem(commodity, fileData!!)
-                        if (ConfigUpdatePhoto.IS_UPDATE_PHOTO) {
-                            updateOB.subscribeOn(Schedulers.newThread())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .doOnSuccess {
-                                    presenter!!.getUploadItem()
-                                }.doOnError {
-                                }.subscribe()
-                        } else {
-                            var singleFile = NetworkManager
-                                .downloadImage(commodity.imageUrl, fileData!!.path)
-                            singleFile.subscribeOn(Schedulers.newThread())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .doOnSuccess {
-                                    updateOB.subscribeOn(Schedulers.newThread())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .doOnSuccess {
-                                            presenter!!.getUploadItem()
-                                        }.doOnError {
-                                        }.subscribe()
-                                }.subscribe()
-                        }
+                        commodity.isModifyImage = ConfigUpdatePhoto.IS_UPDATE_PHOTO
+modifyCallBack?.onModify(commodity,fileData!!)
+//                        var updateOB = presenter!!.updateItem(commodity, fileData!!)
+//                        if (ConfigUpdatePhoto.IS_UPDATE_PHOTO) {
+//
+//                            modifyCallBack?.onModify()
+//
+//                            updateOB.subscribeOn(Schedulers.newThread())
+//                                .observeOn(AndroidSchedulers.mainThread())
+//                                .doOnSuccess {
+//                                    presenter!!.getUploadItem()
+//                                }.doOnError {
+//                                }.subscribe()
+//
+//                        } else {
+//                            var singleFile = NetworkManager
+//                                .downloadImage(commodity.imageUrl, fileData!!.path)
+//                            singleFile.subscribeOn(Schedulers.newThread())
+//                                .observeOn(AndroidSchedulers.mainThread())
+//                                .doOnSuccess {
+//                                    updateOB.subscribeOn(Schedulers.newThread())
+//                                        .observeOn(AndroidSchedulers.mainThread())
+//                                        .doOnSuccess {
+//                                            presenter!!.getUploadItem()
+//                                        }.doOnError {
+//                                        }.subscribe()
+//                                }.subscribe()
+//                        }
                     })
                 .setNegativeButton(R.string.cancel,
                     { dialog, id ->
                         dialog.cancel()
                     })
             builder.create()
+
+
         } ?: throw IllegalStateException("Activity cannot be null")
     }
 }
