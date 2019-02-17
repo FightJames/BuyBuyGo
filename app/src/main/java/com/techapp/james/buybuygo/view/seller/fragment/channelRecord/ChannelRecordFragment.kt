@@ -3,6 +3,7 @@ package com.techapp.james.buybuygo.view.seller.fragment.channelRecord
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
@@ -68,10 +69,12 @@ class ChannelRecordFragment : Fragment(), ChannelRecordView {
     }
 
     override fun isLoad(flag: Boolean) {
-        if (flag) {
-            loadDataProgressBar.visibility = View.VISIBLE
-        } else {
-            loadDataProgressBar.visibility = View.INVISIBLE
+        loadDataProgressBar?.let {
+            if (flag) {
+                loadDataProgressBar.visibility = View.VISIBLE
+            } else {
+                loadDataProgressBar.visibility = View.INVISIBLE
+            }
         }
     }
 
