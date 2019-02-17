@@ -9,7 +9,6 @@ import com.bumptech.glide.Glide
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.data.buyer.OrderDetail
 import com.techapp.james.buybuygo.model.data.buyer.OrderEffective
-import com.techapp.james.buybuygo.model.data.buyer.OrderStatus
 import kotlinx.android.synthetic.main.buyer_order_detial_dialog.view.*
 import kotlinx.android.synthetic.main.buyer_order_fragment_list_item.view.*
 import timber.log.Timber
@@ -24,7 +23,7 @@ class ItemViewHolder : RecyclerView.ViewHolder {
 
     fun setData(orderDetail: OrderDetail) {
         itemView.orderIdLabel.text =
-                String.format(itemView.context.getString(R.string.orderId), orderDetail.id)
+                String.format(itemView.context.getString(R.string.orderId), orderDetail.orderNumber)
         itemView.commodityNameLabel.text =
                 String.format(
                     itemView.context.getString(R.string.commodityName),

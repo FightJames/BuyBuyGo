@@ -13,11 +13,8 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.PersistableBundle
 import android.view.View
-import com.techapp.james.buybuygo.presenter.Configure
-import com.techapp.james.buybuygo.view.buyer.BuyerActivity
+import com.techapp.james.buybuygo.view.buyer.activity.BuyerActivity
 import com.techapp.james.buybuygo.view.seller.activity.seller.SellerActivity
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import java.util.ArrayList
 

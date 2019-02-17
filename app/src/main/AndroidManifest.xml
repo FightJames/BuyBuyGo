@@ -51,7 +51,7 @@
             android:theme="@style/NoActionBarTheme" />
         <activity android:name=".view.BaseActivity" />
         <activity
-            android:name=".view.buyer.BuyerActivity"
+            android:name=".view.buyer.activity.BuyerActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".view.seller.activity.seller.SellerActivity" />
         <activity
@@ -73,7 +73,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.seller.activity.channelOrderDetail.ChannelOrderDetailActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
+        <activity android:name=".view.buyer.activity.PaymentActivity"></activity>
     </application>
 
 </manifest>

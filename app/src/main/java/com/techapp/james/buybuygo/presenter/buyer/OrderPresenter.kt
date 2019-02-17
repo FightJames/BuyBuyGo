@@ -84,6 +84,7 @@ class OrderPresenter {
         var jsonObject = JSONObject()
         var orderArray = JSONArray()
         orderArray.put(orderID)
+        Timber.d("orderID  " + orderID)
         jsonObject.put("order_id", orderArray)
         jsonObject.put("ClintBackURL", "testBack")
         var requestBody =
@@ -97,8 +98,12 @@ class OrderPresenter {
             }
             .doOnSuccess {
                 view.isLoadWholeView(false)
+
+                Timber.d("Pay Money Message" + it.message())
                 it.body()?.let {
-                    Timber.d("Pay Money Response" + it.string())
+                    var paymentContent = it.string()
+                    Timber.d("Pay Money Response $paymentContent")
+                    view.intentToPaymentActivity(paymentContent)
                 }
                 it.errorBody()?.let {
                     Timber.d("Pay Money Response Error" + it.string())

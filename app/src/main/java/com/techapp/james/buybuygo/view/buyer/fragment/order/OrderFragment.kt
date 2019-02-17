@@ -2,6 +2,7 @@ package com.techapp.james.buybuygo.view.buyer.fragment.order
 
 import android.app.ProgressDialog
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.widget.CircularProgressDrawable
@@ -12,6 +13,7 @@ import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.data.buyer.OrderDetail
 import com.techapp.james.buybuygo.model.data.seller.PaymentServices
 import com.techapp.james.buybuygo.presenter.buyer.OrderPresenter
+import com.techapp.james.buybuygo.view.buyer.activity.PaymentActivity
 import kotlinx.android.synthetic.main.buyer_fragment_order.*
 import timber.log.Timber
 
@@ -66,6 +68,14 @@ class OrderFragment : Fragment(), OrderView {
                 }
             })
         dialog.show()
+    }
+
+    override fun intentToPaymentActivity(webContent: String) {
+        var i = Intent(this.activity, PaymentActivity::class.java)
+        Timber.d("Payment URL order $webContent")
+
+        i.putExtra(PaymentActivity.PAYMENT_WEB_CONTENT, webContent)
+        this.activity?.startActivity(i)
     }
 
     override fun onResume() {

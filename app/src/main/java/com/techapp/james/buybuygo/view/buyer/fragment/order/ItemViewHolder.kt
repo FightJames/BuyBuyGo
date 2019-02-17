@@ -28,7 +28,7 @@ class ItemViewHolder : RecyclerView.ViewHolder {
 
     fun setData(orderDetail: OrderDetail) {
         itemView.orderIdLabel.text =
-                String.format(itemView.context.getString(R.string.orderId), orderDetail.id)
+                String.format(itemView.context.getString(R.string.orderId), orderDetail.orderNumber)
         if (orderDetail.status == OrderStatus.UNPAID.value) {
             itemView.statusLabel.text = itemView.context.getString(R.string.unPaid)
             //order is effective

@@ -1,4 +1,4 @@
-package com.techapp.james.buybuygo.view.buyer.fragment
+package com.techapp.james.buybuygo.view.buyer.activity
 
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager

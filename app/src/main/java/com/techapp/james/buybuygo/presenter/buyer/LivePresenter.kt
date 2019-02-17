@@ -121,7 +121,7 @@ class LivePresenter {
             var updateCall = rayCommon.getLiveTimerSoldItem(rayToken)
             var response = updateCall.execute()
             var commodity = response.body()?.response
-//                Timber.d(123.toString() + " " + commodity?.id)
+//                Timber.d(123.toString() + " " + commodity?.orderNumber)
             if (commodity == null) {
             } else {
                 view.updateCommodityState(commodity)

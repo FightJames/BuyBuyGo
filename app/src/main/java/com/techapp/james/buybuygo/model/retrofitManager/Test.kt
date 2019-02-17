@@ -296,18 +296,18 @@ class Test {
 
     private fun testRegex() {
         var sArray = "https://www.facebook.com/anastasia918.ha/videos/1012107512284640/".split("/")
-        Timber.d("Video id ${sArray[sArray.size - 2]}")
+        Timber.d("Video orderNumber ${sArray[sArray.size - 2]}")
         var id = sArray[sArray.size - 2]
         var pattern = "^[0-9]*\$".toRegex()
         Timber.d("filter ${pattern.matches(id)}")
 
         sArray =
-                "https://m.facebook.com/story.php?story_fbid=2342076282469919&id=173022516043744".split(
+                "https://m.facebook.com/story.php?story_fbid=2342076282469919&orderNumber=173022516043744".split(
                     "="
                 )
 
         id = sArray[sArray.size - 1]
-        Timber.d("Video id $id")
+        Timber.d("Video orderNumber $id")
         Timber.d("filter ${pattern.matches(id)}")
     }
 }

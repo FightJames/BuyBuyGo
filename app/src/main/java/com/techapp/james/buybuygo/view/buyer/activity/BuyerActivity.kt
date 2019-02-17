@@ -1,4 +1,4 @@
-package com.techapp.james.buybuygo.view.buyer
+package com.techapp.james.buybuygo.view.buyer.activity
 
 import android.content.pm.ActivityInfo
 import android.os.Bundle
@@ -7,15 +7,11 @@ import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import com.techapp.james.buybuygo.R
-import com.techapp.james.buybuygo.model.data.User
-import com.techapp.james.buybuygo.view.buyer.fragment.ContentPagerAdapter
 import com.techapp.james.buybuygo.view.buyer.fragment.live.LiveFragment
 import com.techapp.james.buybuygo.view.buyer.fragment.order.OrderFragment
-import com.techapp.james.buybuygo.view.choose.ChooseActivity
 import com.techapp.james.buybuygo.view.commonFragment.ExpandableAdapter
 import com.techapp.james.buybuygo.view.commonFragment.UserInfoFragment
 import kotlinx.android.synthetic.main.activity_buyer.*
-import timber.log.Timber
 
 class BuyerActivity : AppCompatActivity() {
 
@@ -29,7 +25,10 @@ class BuyerActivity : AppCompatActivity() {
         var userInfoFragment = UserInfoFragment.newInstance(ExpandableAdapter.BUYER_MODE)
         fList = arrayListOf<Fragment>(liveFragment, orderFragment, userInfoFragment)
 
-        viewPagerRoot.adapter = ContentPagerAdapter(fList as List<Fragment>, supportFragmentManager)
+        viewPagerRoot.adapter = ContentPagerAdapter(
+            fList as List<Fragment>,
+            supportFragmentManager
+        )
         viewPagerRoot.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(p0: Int) {
             }

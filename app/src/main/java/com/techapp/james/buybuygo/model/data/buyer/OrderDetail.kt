@@ -3,7 +3,8 @@ package com.techapp.james.buybuygo.model.data.buyer
 import com.google.gson.annotations.SerializedName
 
 class OrderDetail(
-    @SerializedName("order") var id: String = "",
+    var id: String,
+    @SerializedName("order") var orderNumber: String = "",
     @SerializedName("user_id") var userId: String = "",
     @SerializedName("name") var commodityName: String = "",
     @SerializedName("description") var commodityDes: String = "",

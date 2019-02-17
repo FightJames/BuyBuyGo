@@ -52,6 +52,7 @@ class LiveFragment : Fragment(), LiveView {
             livePresenter.endChannel()
         }
         tokenBtn.setOnClickListener {
+
             ChannelData.channel?.let {
                 dialogHelper.createTokenDialog(this.activity!!, it.channelToken).show()
             }
@@ -137,7 +138,7 @@ class LiveFragment : Fragment(), LiveView {
         if (sArray.size < 2) {
             return "Not Thing"
         }
-//        Timber.d("Video id ${sArray[sArray.size - 2]}")
+//        Timber.d("Video orderNumber ${sArray[sArray.size - 2]}")
         var id = sArray[sArray.size - 2]
         if (!pattern.matches(id)) {
             sArray = fbStreamUrl.split("=")
