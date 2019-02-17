@@ -32,6 +32,7 @@ class ChannelRecordPresenter {
             .doOnSuccess {
                 view.isLoad(false)
                 it.body()?.let {
+                    view.updateChannelRecordList(it.response)
                 }
             }.subscribe()
     }

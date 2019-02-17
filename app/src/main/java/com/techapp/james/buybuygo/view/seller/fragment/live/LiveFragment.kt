@@ -1,6 +1,5 @@
 package com.techapp.james.buybuygo.view.seller.fragment.live
 
-import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
@@ -10,19 +9,16 @@ import android.webkit.WebViewClient
 import android.widget.EditText
 import android.widget.Toast
 import com.techapp.james.buybuygo.R
+import com.techapp.james.buybuygo.model.data.buyer.Commodity
+import com.techapp.james.buybuygo.model.data.seller.Channel
 import com.techapp.james.buybuygo.presenter.seller.LivePresenter
-import io.reactivex.Observable
-import io.reactivex.Observer
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.seller_fragment_live.*
-import timber.log.Timber
-import java.util.concurrent.TimeUnit
 
-class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
+class LiveFragment : Fragment(), LiveView {
     var streamUrl: String = ""
     var flag = false;
+    lateinit var searchView: SearchView
+    var descriptionDialog: AlertDialog? = null
     private lateinit var livePresenter: LivePresenter
     lateinit var dialogHelper: DialogHelper
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,14 +49,7 @@ class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
         liveWebView.setWebViewClient(WebViewClient());
         endLiveBtn.setOnClickListener {
             flag = false
-            var singleEnd = livePresenter.endChannel()
-            singleEnd.subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSuccess {
-                    it.body()?.let {
-                        Toast.makeText(this.context, it.response, Toast.LENGTH_LONG).show()
-                    }
-                }.subscribe()
+            livePresenter.endChannel()
         }
         tokenBtn.setOnClickListener {
             ChannelData.channel?.let {
@@ -90,51 +79,18 @@ class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
     }
 
     fun updateCommodity() {
-        Schedulers.start()
-        var timer =
-            Observable.interval(5, TimeUnit.SECONDS)
-        timer.subscribe(object : Observer<Long> {
-            override fun onSubscribe(d: Disposable) {
-            }
-
-            override fun onNext(t: Long) {
-                var updateCall = livePresenter.getLiveTimerSoldItem()
-                var response = updateCall.execute()
-                var commodity = response.body()?.response
-                Timber.d(123.toString() + " " + commodity?.id)
-                this@LiveFragment.activity?.runOnUiThread {
-                    if (commodity == null) {
-                    } else {
-                        soldLabel.text = String.format(
-                            resources.getString(R.string.soldQuantity),
-                            commodity.soldQuantity
-                        )
-                        remainLabel.text = String.format(
-                            resources.getString(R.string.remainingQuantity),
-                            commodity.remainingQuantity
-                        )
-                    }
-                }
-            }
-
-            override fun onError(e: Throwable) {
-            }
-
-            override fun onComplete() {
-            }
-        })
+        livePresenter.trackLiveTimerSoldItem()
     }
 
     override fun onStop() {
         super.onStop()
-        Schedulers.shutdown()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.common_live, menu)
         var searchItem = menu!!.findItem(R.id.search)
-        var searchView: SearchView = searchItem.actionView as SearchView
+        searchView = searchItem.actionView as SearchView
         searchView.isSubmitButtonEnabled = true
         searchView.queryHint = "Give Me a FB Live Url"
         //not show search field
@@ -150,36 +106,19 @@ class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
                         if (url.equals("Not Thing")) {
                             return true
                         }
-                        var dialog = dialogHelper.createDialog()
-                        dialog.show()
-                        dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                            .setOnClickListener {
+                        descriptionDialog = dialogHelper.createDialog()
+                        descriptionDialog?.show()
+                        descriptionDialog?.getButton(AlertDialog.BUTTON_POSITIVE)
+                            ?.setOnClickListener {
                                 var descriptonField =
-                                    dialog.findViewById<EditText>(R.id.descriptionField)
+                                    descriptionDialog?.findViewById<EditText>(R.id.descriptionField)
                                 var description = descriptonField!!.text.toString()
                                 if (!description.equals("")) {
                                     flag = true
-                                    var singleChannel =
-                                        livePresenter.startChannel(
-                                            url,
-                                            description
-                                        )
-                                    singleChannel.subscribeOn(Schedulers.newThread())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .doOnSuccess {
-                                            Timber.d(it.isSuccessful.toString() + " channel data ")
-                                            Timber.d("message ${it.message()} + ${it.errorBody()?.string()}")
-                                            if (it.isSuccessful) {
-                                                ChannelData.channel = it.body()!!.response
-                                                loadWebView(url)
-                                                searchView.setQuery("", true)
-                                                searchView.clearFocus()
-                                                searchView.isIconified = true
-                                                dialog.cancel()
-                                            }
-                                        }.doOnError {
-                                            Timber.d("message" + it.message)
-                                        }.subscribe()
+                                    livePresenter.startChannel(
+                                        url,
+                                        description
+                                    )
                                 }
                             }
                     }
@@ -205,6 +144,37 @@ class LiveFragment : Fragment(), com.techapp.james.buybuygo.view.View {
             id = sArray[sArray.size - 1]
         }
         return "https://www.facebook.com/video/embed?video_id=$id\""
+    }
+
+    override fun stopLive() {
+        liveWebView.loadUrl("about:blank")
+    }
+
+    override fun getChannel(url: String, channel: Channel) {
+        ChannelData.channel = channel
+        loadWebView(url)
+        searchView?.setQuery("", true)
+        searchView?.clearFocus()
+        searchView?.isIconified = true
+        descriptionDialog?.cancel()
+
+    }
+
+    override fun updateCommodity(c: Commodity) {
+        this@LiveFragment.activity?.runOnUiThread {
+            soldLabel.text = String.format(
+                resources.getString(R.string.soldQuantity),
+                c.soldQuantity
+            )
+            remainLabel.text = String.format(
+                resources.getString(R.string.remainingQuantity),
+                c.remainingQuantity
+            )
+        }
+    }
+
+    override fun showRequestMessage(s: String) {
+        Toast.makeText(this.context, s, Toast.LENGTH_LONG).show()
     }
 
     companion object {

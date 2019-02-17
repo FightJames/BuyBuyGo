@@ -13,7 +13,6 @@ import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.data.buyer.Commodity
 import com.techapp.james.buybuygo.model.data.buyer.PlaceOrder
 import com.techapp.james.buybuygo.presenter.buyer.LivePresenter
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.buyer_fragment_live.*
 import timber.log.Timber
 
@@ -166,7 +165,7 @@ class LiveFragment : Fragment(), LiveView {
                 "</iframe></ body></html >"
         fbLiveWebView.loadData(streamUrl, "text/html", null)
         //update cycle
-        livePresenter.timerSoldItem()
+        livePresenter.trackSoldItem()
     }
 
     override fun updateCommodityState(commodity: Commodity) {
@@ -184,7 +183,6 @@ class LiveFragment : Fragment(), LiveView {
 
     override fun onStop() {
         super.onStop()
-        livePresenter.stopTimer()
     }
 
     companion object {

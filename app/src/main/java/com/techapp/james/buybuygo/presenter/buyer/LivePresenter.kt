@@ -66,6 +66,7 @@ class LivePresenter {
     }
 
     fun leaveChannel() {
+        timerDisposable?.dispose()
         var singleLeave = rayBuyer.leaveChannel(rayToken)
         singleLeave.subscribeOn(Schedulers.newThread())
             .observeOn(AndroidSchedulers.mainThread())
@@ -111,37 +112,23 @@ class LivePresenter {
             }.subscribe()
     }
 
-    fun timerSoldItem() {
-        Schedulers.start()
+    var timerDisposable: Disposable? = null
+    fun trackSoldItem() {
+        timerDisposable?.dispose()
         var timer =
             Observable.interval(5, TimeUnit.SECONDS)
-        timer.subscribe(object : Observer<Long> {
-            override fun onSubscribe(d: Disposable) {
-            }
-
-            override fun onNext(t: Long) {
-
-                var updateCall = rayCommon.getLiveTimerSoldItem(rayToken)
-                var response = updateCall.execute()
-                var commodity = response.body()?.response
+        timerDisposable = timer.doOnNext {
+            var updateCall = rayCommon.getLiveTimerSoldItem(rayToken)
+            var response = updateCall.execute()
+            var commodity = response.body()?.response
 //                Timber.d(123.toString() + " " + commodity?.id)
-                if (commodity == null) {
-                } else {
-                    view.updateCommodityState(commodity)
-                }
+            if (commodity == null) {
+            } else {
+                view.updateCommodityState(commodity)
             }
-
-            override fun onError(e: Throwable) {
-            }
-
-            override fun onComplete() {
-            }
-        })
+        }.subscribe()
     }
 
-    fun stopTimer() {
-        Schedulers.shutdown()
-    }
 
     fun placeOrder(orderItem: PlaceOrder) {
 
