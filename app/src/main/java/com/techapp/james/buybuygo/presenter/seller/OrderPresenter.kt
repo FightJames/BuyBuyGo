@@ -1,16 +1,11 @@
 package com.techapp.james.buybuygo.presenter.seller
 
-import com.techapp.james.buybuygo.model.data.Wrapper
-import com.techapp.james.buybuygo.model.data.buyer.OrderDetail
 import com.techapp.james.buybuygo.model.retrofitManager.RetrofitManager
 import com.techapp.james.buybuygo.model.sharePreference.SharePreference
-import com.techapp.james.buybuygo.view.View
 import com.techapp.james.buybuygo.view.seller.fragment.order.OrderView
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import retrofit2.Response
 
 class OrderPresenter {
     var view: OrderView
@@ -33,7 +28,24 @@ class OrderPresenter {
             .doOnSuccess {
                 view.isLoad(false)
                 it.body()?.let {
-                    view.updateList(it.response)
+                    view.updateOrderList(it.response)
+                }
+            }
+        compositeDisposable.add(singleOrder.subscribe())
+
+    }
+
+    fun getAllSoldCommodity() {
+        var singleOrder = raySeller.getAllSoldCommodity(rayToken)
+        singleOrder = singleOrder.subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                view.isLoad(true)
+            }
+            .doOnSuccess {
+                view.isLoad(false)
+                it.body()?.let {
+                    view.updateCommodityList(it.response)
                 }
             }
         compositeDisposable.add(singleOrder.subscribe())

@@ -1,5 +1,6 @@
 package com.techapp.james.buybuygo.presenter.buyer
 
+import com.techapp.james.buybuygo.model.converter.GsonConverter
 import com.techapp.james.buybuygo.model.data.seller.PaymentServices
 import com.techapp.james.buybuygo.model.retrofitManager.RayBuyer
 import com.techapp.james.buybuygo.model.retrofitManager.RetrofitManager
@@ -86,7 +87,12 @@ class OrderPresenter {
         orderArray.put(orderID)
         Timber.d("orderID  " + orderID)
         jsonObject.put("order_id", orderArray)
-        jsonObject.put("ClintBackURL", "testBack")
+        jsonObject.put("ClintBackURL", "http://buybuygo.tech.tw")
+        var isPayPal = false
+        if (paymentServices.id == "2") {
+            jsonObject.put("source", "mobile")
+            isPayPal = true
+        }
         var requestBody =
             RequestBody.create(MediaType.parse("application/json"), jsonObject.toString())
 
@@ -103,7 +109,12 @@ class OrderPresenter {
                 it.body()?.let {
                     var paymentContent = it.string()
                     Timber.d("Pay Money Response $paymentContent")
-                    view.intentToPaymentActivity(paymentContent)
+                    if (isPayPal) {
+                        var wrapperString = GsonConverter.convertJsonToWrapperString(paymentContent)
+                        view.intentToPaymentActivity(wrapperString.response, isPayPal)
+                    } else {
+                        view.intentToPaymentActivity(paymentContent, isPayPal)
+                    }
                 }
                 it.errorBody()?.let {
                     Timber.d("Pay Money Response Error" + it.string())

@@ -28,7 +28,8 @@ class ItemViewHolder : RecyclerView.ViewHolder {
 
     fun setData(orderDetail: OrderDetail) {
         itemView.orderIdLabel.text =
-                String.format(itemView.context.getString(R.string.orderId), orderDetail.orderNumber)
+            String.format(itemView.context.getString(R.string.orderId), orderDetail.orderNumber)
+        itemView.payBtn.visibility = View.GONE
         if (orderDetail.status == OrderStatus.UNPAID.value) {
             itemView.statusLabel.text = itemView.context.getString(R.string.unPaid)
             //order is effective
@@ -44,27 +45,27 @@ class ItemViewHolder : RecyclerView.ViewHolder {
         }
 
         itemView.commodityNameLabel.text =
-                String.format(
-                    itemView.context.getString(R.string.commodityName),
-                    orderDetail.commodityName
-                )
+            String.format(
+                itemView.context.getString(R.string.commodityName),
+                orderDetail.commodityName
+            )
         itemView.countLabel.text =
-                String.format(
-                    itemView.context.getString(R.string.remainingQuantity),
-                    orderDetail.quantity
-                )
+            String.format(
+                itemView.context.getString(R.string.remainingQuantity),
+                orderDetail.quantity
+            )
 
         itemView.allPriceLabel.text =
-                String.format(
-                    itemView.context.getString(R.string.allPrice),
-                    orderDetail.totalAmount
-                )
+            String.format(
+                itemView.context.getString(R.string.allPrice),
+                orderDetail.totalAmount
+            )
 
         itemView.unitPriceLabel.text =
-                String.format(
-                    itemView.context.getString(R.string.unitPrice),
-                    orderDetail.commodityUnitPrice
-                )
+            String.format(
+                itemView.context.getString(R.string.unitPrice),
+                orderDetail.commodityUnitPrice
+            )
         if (orderDetail.image == "") {
 
         }
@@ -81,7 +82,7 @@ class ItemViewHolder : RecyclerView.ViewHolder {
         var detialView = LayoutInflater.from(itemView.context)
             .inflate(R.layout.buyer_order_detial_dialog, null)
         detialView.channelIDLabel.text =
-                String.format(resource.getString(R.string.channelID), orderDetail.channelId)
+            String.format(resource.getString(R.string.channelID), orderDetail.channelId)
         var isEffective: String = ""
         if (orderDetail.effective == OrderEffective.EFFECTIVE.value) {
             isEffective = resource.getString(R.string.effective)
@@ -89,26 +90,26 @@ class ItemViewHolder : RecyclerView.ViewHolder {
             isEffective = resource.getString(R.string.unEffective)
         }
         detialView.effectiveLabel.text =
-                String.format(resource.getString(R.string.isEffective), isEffective)
+            String.format(resource.getString(R.string.isEffective), isEffective)
 
 
         detialView.orderTimeLabel.text =
-                String.format(
-                    resource.getString(R.string.orderTime),
-                    calculateTime(orderDetail.time)
-                )
+            String.format(
+                resource.getString(R.string.orderTime),
+                calculateTime(orderDetail.time)
+            )
 
         detialView.expiryTimeLabel.text =
-                String.format(
-                    resource.getString(R.string.expiryTime),
-                    calculateTime(orderDetail.expiryTime)
-                )
+            String.format(
+                resource.getString(R.string.expiryTime),
+                calculateTime(orderDetail.expiryTime)
+            )
 
         detialView.toBeDeleteTimeLabel.text =
-                String.format(
-                    resource.getString(R.string.toBeDeleteTime),
-                    calculateTime(orderDetail.orderDeleteTime)
-                )
+            String.format(
+                resource.getString(R.string.toBeDeleteTime),
+                calculateTime(orderDetail.orderDeleteTime)
+            )
         var builder = AlertDialog.Builder(itemView.context)
         builder.setView(detialView)
             .setPositiveButton(R.string.ok, null)

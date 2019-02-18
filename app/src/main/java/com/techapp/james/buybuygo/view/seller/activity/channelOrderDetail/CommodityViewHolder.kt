@@ -3,7 +3,7 @@ package com.techapp.james.buybuygo.view.seller.activity.channelOrderDetail
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.techapp.james.buybuygo.model.data.seller.CommodityRecord
-import kotlinx.android.synthetic.main.seller_activity_channel_order_detail_commodity_list_item.view.*
+import kotlinx.android.synthetic.main.seller_activity_channel_order_detail_commodity_record_list_item.view.*
 
 class CommodityViewHolder : RecyclerView.ViewHolder {
     constructor(view: View) : super(view)

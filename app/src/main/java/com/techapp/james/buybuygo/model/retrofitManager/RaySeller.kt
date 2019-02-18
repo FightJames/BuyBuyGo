@@ -36,6 +36,9 @@ interface RaySeller {
     @GET("seller-orders")
     fun getAllOrder(@Header("Authorization") token: String): Single<Response<Wrapper<ArrayList<OrderDetail>>>>
 
+    @Headers("X-Requested-With: XMLHttpRequest")
+    @GET("sold-items")
+    fun getAllSoldCommodity(@Header("Authorization") token: String): Single<Response<Wrapper<ArrayList<CommodityRecord>>>>
     @GET("sold-items/{channel_id}")
     fun getCommodityByChannel(@Header("Authorization") token: String, @Path("channel_id") channelID: String): Single<Response<Wrapper<ArrayList<CommodityRecord>>>>
 

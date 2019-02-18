@@ -8,5 +8,6 @@ interface OrderView {
     fun isLoad(flag: Boolean)
     fun isLoadWholeView(flag:Boolean)
     fun showPaymentServiceDialog(list:ArrayList<PaymentServices>)
-    fun intentToPaymentActivity(webContent:String)
+    fun intentToPaymentActivity(webContent:String,isPayPal:Boolean)
+
 }

@@ -15,7 +15,7 @@ import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
-class ItemViewHolder : RecyclerView.ViewHolder {
+class OrderItemViewHolder : RecyclerView.ViewHolder {
     constructor(itemView: View) : super(itemView) {
         itemView.payBtn.visibility=View.GONE
         itemView.statusLabel.visibility=View.GONE

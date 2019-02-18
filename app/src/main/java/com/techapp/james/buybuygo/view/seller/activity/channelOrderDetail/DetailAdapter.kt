@@ -33,7 +33,7 @@ class DetailAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
             else -> {
                 view = inflater.inflate(
-                    R.layout.seller_activity_channel_order_detail_commodity_list_item,
+                    R.layout.seller_activity_channel_order_detail_commodity_record_list_item,
                     parent,
                     false
                 )

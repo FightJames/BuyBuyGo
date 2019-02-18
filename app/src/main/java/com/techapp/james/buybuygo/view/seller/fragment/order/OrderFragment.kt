@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.data.buyer.OrderDetail
+import com.techapp.james.buybuygo.model.data.seller.CommodityRecord
 import com.techapp.james.buybuygo.presenter.seller.OrderPresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -17,6 +18,7 @@ class OrderFragment : Fragment(), OrderView {
 
     lateinit var orderPresenter: OrderPresenter
     lateinit var orderAdapter: OrderAdapter
+    lateinit var commodityRecordAdapter: CommodityRecordAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -42,6 +44,7 @@ class OrderFragment : Fragment(), OrderView {
 
     fun init() {
         orderAdapter = OrderAdapter(ArrayList<OrderDetail>())
+        commodityRecordAdapter = CommodityRecordAdapter(ArrayList<CommodityRecord>())
         orderList.layoutManager = LinearLayoutManager(this.activity)
         orderList.adapter = orderAdapter
         orderPresenter.getAllOrder()
@@ -55,15 +58,26 @@ class OrderFragment : Fragment(), OrderView {
         }
     }
 
-    override fun updateList(list: ArrayList<OrderDetail>) {
+    override fun updateOrderList(list: ArrayList<OrderDetail>) {
+        orderList.adapter = orderAdapter
         orderAdapter.dataList = list
         orderAdapter.notifyDataSetChanged()
+    }
+
+    override fun updateCommodityList(list: ArrayList<CommodityRecord>) {
+        orderList.adapter = commodityRecordAdapter
+        commodityRecordAdapter.dataList = list
+        commodityRecordAdapter.notifyDataSetChanged()
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.order) {
             0 -> {
                 orderPresenter.getAllOrder()
+            }
+            1 -> {
+                orderPresenter.getAllSoldCommodity()
             }
         }
         return true

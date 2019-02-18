@@ -62,6 +62,23 @@ class LiveFragment : Fragment(), LiveView {
             liveWebView.loadData(streamUrl, "text/html", null)
             updateCommodity()
         }
+
+//        var string = "<!DOCTYPE html>\n" +
+//                "    <html>\n" +
+//                "    \n" +
+//                "        <head>\n" +
+//                "            <meta charset=\"UTF-8\">\n" +
+//                "            <title></title>\n" +
+//                "        </head>\n" +
+//                "    \n" +
+//                "        <body>\n" +
+//                "            <br/>\n" +
+//                "            <!--<a href=\"[scheme]://[host]/[path]?[query]\">启动应用程序</a>-->\n" +
+//                "            <a href=\"buybuygo://buyer/order\">打开app</a><br/>\n" +
+//                "    \n" +
+//                "    </html>"
+//
+//        liveWebView.loadData(string, "text/html", null)
     }
 
     private fun loadWebView(fbLiveUrl: String) {

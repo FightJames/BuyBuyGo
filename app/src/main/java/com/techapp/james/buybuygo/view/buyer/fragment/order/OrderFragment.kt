@@ -70,10 +70,14 @@ class OrderFragment : Fragment(), OrderView {
         dialog.show()
     }
 
-    override fun intentToPaymentActivity(webContent: String) {
+    override fun intentToPaymentActivity(webContent: String, isPayPal: Boolean) {
         var i = Intent(this.activity, PaymentActivity::class.java)
         Timber.d("Payment URL order $webContent")
-
+        if (isPayPal) {
+            i.putExtra(PaymentActivity.PAYMENT_WAY, PaymentActivity.PAYPAL)
+        } else {
+            i.putExtra(PaymentActivity.PAYMENT_WAY, PaymentActivity.ALLPAY)
+        }
         i.putExtra(PaymentActivity.PAYMENT_WEB_CONTENT, webContent)
         this.activity?.startActivity(i)
     }
