@@ -2,12 +2,15 @@ package com.techapp.james.buybuygo.model.sharePreference
 
 import android.content.Context
 import com.techapp.james.buybuygo.model.data.User
+import com.google.gson.Gson
+
 
 class SharePreference {
     val DATA = "data"
     val FB_TOKEN = "fb_token"
     val RAY_TOKEN = "ray_token"
     var EXP_DATE = "exp_date"
+    var USER = "USER"
     var context: Context
 
     private constructor(context: Context) {
@@ -55,7 +58,13 @@ class SharePreference {
             .putString(FB_TOKEN, fbToken)
             .commit()
     }
-    fun saveBuyer(u: User){
 
+    fun saveBuyer(u: User) {
+        val gson = Gson()
+        val serializedObject = gson.toJson(u)
+        var sharePreference = context.getSharedPreferences(DATA, 0)
+        var editor = sharePreference.edit()
+        editor.putString(USER, serializedObject)
+        editor.commit()
     }
 }

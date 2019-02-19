@@ -24,7 +24,7 @@
 
     <EditText
         android:id="@+id/nameField"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
@@ -40,7 +40,7 @@
 
     <EditText
         android:id="@+id/descriptionField"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
@@ -57,7 +57,7 @@
 
     <EditText
         android:id="@+id/remainingField"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
@@ -73,8 +73,9 @@
 
     <EditText
         android:id="@+id/costField"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:hint="@string/cost"
         android:inputType="number"
@@ -88,7 +89,7 @@
 
     <EditText
         android:id="@+id/unitPriceField"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"

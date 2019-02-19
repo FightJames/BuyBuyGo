@@ -11,6 +11,7 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -19,13 +20,11 @@ import android.widget.TextView
 import android.widget.Toast
 
 import com.techapp.james.buybuygo.R
-import com.techapp.james.buybuygo.model.data.User
 import com.techapp.james.buybuygo.model.data.buyer.CountryWrapper
 import com.techapp.james.buybuygo.model.data.buyer.Recipient
 import com.techapp.james.buybuygo.presenter.Configure
 import com.techapp.james.buybuygo.presenter.common.UserInfoPresenter
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.common_user_dialog_recipient.*
 import kotlinx.android.synthetic.main.fragment_user_info.*
 import timber.log.Timber
 
@@ -33,7 +32,6 @@ const val MODE = "Mode"
 
 class UserInfoFragment : Fragment(), ExpandableAdapter.ItemClick,
     UserInfoView {
-
     private var mode: Int = ExpandableAdapter.BUYER_MODE
     lateinit var dialogHelper: DialogHelper
     var userInfoPresenter: UserInfoPresenter? = null
@@ -125,19 +123,88 @@ class UserInfoFragment : Fragment(), ExpandableAdapter.ItemClick,
             var pickerDialog =
                 dialogHelper.createCountryPickerDialog(AreaParameter.countryWrapperList,
                     object : DialogHelper.OnPickValue {
-                        override fun pickValue(countryName: String) {
-                            Timber.d("pickCountryName $countryName")
-                            countryWrapper = AreaParameter.findCountryWrapper(countryName)
+                        override fun pickValue(name: String) {
+                            Timber.d("pickCountryName $name")
+                            countryWrapper = AreaParameter.findCountryWrapper(name)
                         }
                     })
             pickerDialog!!.show()
             (pickerDialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
                 .setOnClickListener {
-                    dialog.findViewById<TextView>(R.id.phoneCodeLabel)!!.text =
-                            countryWrapper?.phoneCode
-                    dialog.findViewById<TextView>(R.id.countryCodeLabel)!!.text =
-                            countryWrapper?.countryCode
+                    dialog.findViewById<TextView>(R.id.phoneCodeLabel)!!
+                        .text = countryWrapper?.phoneCode
+                    dialog.findViewById<TextView>(R.id.countryCodeLabel)!!
+                        .text = countryWrapper?.countryCode
                     pickerDialog.cancel()
+                    //pick area
+                    var cityField = dialog.findViewById<EditText>(R.id.cityField)
+                    var districtField = dialog.findViewById<EditText>(R.id.districtField)
+                    var postCodeField = dialog.findViewById<EditText>(R.id.postCodeField)
+                    if (countryWrapper.countryCode.equals("TW")) {
+                        postCodeField?.isEnabled = false
+                        cityField?.setText("")
+                        districtField?.setText("")
+                        cityField?.setOnTouchListener { v, event ->
+                            if (event.action == MotionEvent.ACTION_DOWN) {
+                                dialogHelper.createAreaPickerDialog(
+                                    AreaParameter.areaWrapperList,
+                                    true,
+                                    object : DialogHelper.OnPickValue {
+                                        override fun pickValue(name: String) {
+                                            cityField.setText(name)
+                                        }
+                                    }
+                                )?.show()
+                            }
+                            true
+                        }
+                        districtField?.setOnTouchListener { v, event ->
+                            if (event.action == MotionEvent.ACTION_DOWN) {
+                                cityField?.let {
+                                    var areaList =
+                                        AreaParameter.findRelationAreaWrappers(
+                                            it.text.toString()
+                                        )
+                                    if (areaList.size != 0) {
+                                        var targetWrapper =
+                                            AreaParameter.findAreaWrappers(
+                                                it.text.toString(),
+                                                areaList[0].area
+                                            )
+                                        targetWrapper?.let {
+                                            postCodeField?.setText(
+                                                it.zipCode.toString()
+                                            )
+                                        }
+                                        dialogHelper.createAreaPickerDialog(
+                                            areaList,
+                                            false,
+                                            object : DialogHelper.OnPickValue {
+                                                override fun pickValue(name: String) {
+                                                    districtField?.setText(name)
+                                                    var targetWrapper =
+                                                        AreaParameter.findAreaWrappers(
+                                                            it.text.toString(),
+                                                            name
+                                                        )
+                                                    targetWrapper?.let {
+                                                        postCodeField?.setText(
+                                                            it.zipCode.toString()
+                                                        )
+                                                    }
+                                                }
+                                            }
+                                        )?.show()
+                                    }
+                                }
+                            }
+                            true
+                        }
+                    } else {
+                        cityField?.setOnTouchListener { v, event -> false }
+                        districtField?.setOnTouchListener { v, event -> false }
+                        postCodeField?.isEnabled = true
+                    }
                 }
         }
         if (isCreate) {

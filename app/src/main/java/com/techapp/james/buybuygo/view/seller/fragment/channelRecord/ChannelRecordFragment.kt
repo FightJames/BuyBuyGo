@@ -11,9 +11,11 @@ import android.view.View
 import android.view.ViewGroup
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.data.seller.ChannelRecord
+import com.techapp.james.buybuygo.model.data.seller.ChannelRecordViewData
 import com.techapp.james.buybuygo.presenter.seller.ChannelRecordPresenter
 import com.techapp.james.buybuygo.view.seller.activity.channelOrderDetail.ChannelOrderDetailActivity
 import kotlinx.android.synthetic.main.seller_fragment_channel_record.*
+import timber.log.Timber
 
 class ChannelRecordFragment : Fragment(), ChannelRecordView {
     lateinit var listAdapter: ChannelListAdapter
@@ -36,9 +38,9 @@ class ChannelRecordFragment : Fragment(), ChannelRecordView {
     }
 
     fun init() {
-        listAdapter = ChannelListAdapter(ArrayList<ChannelRecord>())
+        listAdapter = ChannelListAdapter(ArrayList<ChannelRecordViewData>(),this.activity!!)
         listAdapter.itemClickCallback = object : ChannelListAdapter.OnItemClick {
-            override fun onItemClick(channelRecord: ChannelRecord) {
+            override fun onItemClick(channelRecord: ChannelRecordViewData) {
                 var i = Intent(
                     this@ChannelRecordFragment.activity,
                     ChannelOrderDetailActivity::class.java
@@ -63,9 +65,13 @@ class ChannelRecordFragment : Fragment(), ChannelRecordView {
         }
     }
 
-    override fun updateChannelRecordList(list: ArrayList<ChannelRecord>) {
-        listAdapter.dataList = list
+    override fun updateChannelRecordList(list: ArrayList<ChannelRecordViewData>) {
+        listAdapter.dataList.clear()
+        listAdapter.dataList.addAll(list)
         listAdapter.notifyDataSetChanged()
+//        listAdapter.dataList.forEach {
+//            Timber.d(it.startTime.toString())
+//        }
     }
 
     override fun isLoad(flag: Boolean) {

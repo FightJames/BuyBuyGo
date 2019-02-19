@@ -3,6 +3,7 @@ package com.techapp.james.buybuygo.model.retrofitManager
 import com.techapp.james.buybuygo.model.data.buyer.CountryWrapper
 import com.techapp.james.buybuygo.model.data.User
 import com.techapp.james.buybuygo.model.data.Wrapper
+import com.techapp.james.buybuygo.model.data.buyer.AreaWrapper
 import com.techapp.james.buybuygo.model.data.buyer.Commodity
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -21,6 +22,8 @@ interface RayCommon {
     @POST("token")
     fun recordUser(@Header("Authorization") token: String, @Body requestBody: RequestBody): Single<Response<ResponseBody>>
 
+    @GET("taiwan-post-code")
+    fun getAreaWrapper(@Header("Authorization") token: String): Single<Response<Wrapper<ArrayList<AreaWrapper>>>>
 
     @GET("country-code")
     fun getCountryWrapper(@Header("Authorization") token: String): Single<Response<Wrapper<ArrayList<CountryWrapper>>>>

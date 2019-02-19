@@ -2,42 +2,56 @@ package com.techapp.james.buybuygo.view.seller.fragment.channelRecord
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.data.seller.ChannelRecord
+import com.techapp.james.buybuygo.model.data.seller.ChannelRecordViewData
 import kotlinx.android.synthetic.main.seller_fragment_channel_record_item.view.*
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
 class ChannelViewHolder : RecyclerView.ViewHolder {
-    constructor(view: View) : super(view)
+    var item: View
 
-    fun setData(channelRecord: ChannelRecord) {
-        var format = SimpleDateFormat("EEEEEEEE, dd-MMM-yyyy HH:mm:ss", Locale.UK)
+    constructor(view: View) : super(view) {
+        item = view
+    }
+
+    fun setData(channelRecord: ChannelRecordViewData) {
         val outputFormat = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
-        var date: Date
         var cal = Calendar.getInstance()
-
-        itemView.liveUrlLabel.text =
-                String.format(itemView.liveUrlLabel.text.toString(), channelRecord.liveUrl)
-
-        date = format.parse(channelRecord.startTime)
-        cal.time = date
+        Timber.d("record " + channelRecord.startTime)
+        item.liveUrlLabel.text =
+            String.format(
+                itemView.context.resources
+                    .getString(R.string.liveUrl), channelRecord.liveUrl
+            )
+        cal.time = channelRecord.startTime
         cal.add(Calendar.HOUR, 8)
-        itemView.startTimeLabel.text =
-                String.format(
-                    itemView.startTimeLabel.text.toString(),
-                    outputFormat.format(cal.time)
-                )
+        item.startTimeLabel.text =
+            String.format(
+                itemView.context.resources
+                    .getString(R.string.startTime)
+                ,
+                outputFormat.format(cal.time)
+            )
 
-        date = format.parse(channelRecord.endTime)
-        cal.time = date
+
+        cal.time = channelRecord.endTime
         cal.add(Calendar.HOUR, 8)
-        itemView.endTimeLabel.text =
-                String.format(
-                    itemView.endTimeLabel.text.toString(),
-                    outputFormat.format(cal.time)
-                )
+        item.endTimeLabel.text =
+            String.format(
+                itemView.context.resources
+                    .getString(R.string.endTime)
+                ,
+                outputFormat.format(cal.time)
+            )
 
-        itemView.descriptionLabel.text =
-                String.format(itemView.descriptionLabel.text.toString(), channelRecord.description)
+        item.descriptionLabel.text =
+            String.format(
+                itemView.context.resources
+                    .getString(R.string.description), channelRecord.description
+            )
+
     }
 }

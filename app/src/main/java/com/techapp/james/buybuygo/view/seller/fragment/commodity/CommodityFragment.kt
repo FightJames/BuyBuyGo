@@ -35,7 +35,7 @@ class CommodityFragment : Fragment(), CommodityView, ListAdapter.OperationListen
         fileData = FileManager.createImageFileUri("cacheImage", this.activity!!.applicationContext)
         presenter = CommodityPresenter(this)
         dialogHelper =
-                DialogHelper(this, this::intentToCamera, fileData)
+            DialogHelper(this, this::intentToCamera, fileData)
     }
 
     override fun onCreateView(
@@ -68,7 +68,7 @@ class CommodityFragment : Fragment(), CommodityView, ListAdapter.OperationListen
 
     private fun init() {
         itemRecyclerView.layoutManager =
-                GridLayoutManager(this.activity, 3, GridLayoutManager.VERTICAL, false)
+            GridLayoutManager(this.activity, 3, GridLayoutManager.VERTICAL, false)
         itemRecyclerView.adapter = ListAdapter(
             ArrayList<Commodity>(),
             this
@@ -93,12 +93,14 @@ class CommodityFragment : Fragment(), CommodityView, ListAdapter.OperationListen
     }
 
     override fun isLoad(flag: Boolean) {
-        if (flag) {
-            loadItemProgressBar.visibility = View.VISIBLE
-            itemRecyclerView.visibility = View.INVISIBLE
-        } else {
-            loadItemProgressBar.visibility = View.INVISIBLE
-            itemRecyclerView.visibility = View.VISIBLE
+        loadItemProgressBar?.let {
+            if (flag) {
+                loadItemProgressBar.visibility = View.VISIBLE
+                itemRecyclerView.visibility = View.INVISIBLE
+            } else {
+                loadItemProgressBar.visibility = View.INVISIBLE
+                itemRecyclerView.visibility = View.VISIBLE
+            }
         }
     }
 

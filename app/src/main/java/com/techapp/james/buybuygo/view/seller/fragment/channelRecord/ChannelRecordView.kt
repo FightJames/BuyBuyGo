@@ -1,8 +1,9 @@
 package com.techapp.james.buybuygo.view.seller.fragment.channelRecord
 
 import com.techapp.james.buybuygo.model.data.seller.ChannelRecord
+import com.techapp.james.buybuygo.model.data.seller.ChannelRecordViewData
 
 interface ChannelRecordView {
     fun isLoad(flag: Boolean)
-    fun updateChannelRecordList(list: ArrayList<ChannelRecord>)
+    fun updateChannelRecordList(list: ArrayList<ChannelRecordViewData>)
 }

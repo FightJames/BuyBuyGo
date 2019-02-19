@@ -3,6 +3,8 @@ package com.techapp.james.buybuygo.presenter.common
 import com.techapp.james.buybuygo.model.data.buyer.Recipient
 import com.techapp.james.buybuygo.model.data.User
 import com.techapp.james.buybuygo.model.data.Wrapper
+import com.techapp.james.buybuygo.model.data.buyer.AreaWrapper
+import com.techapp.james.buybuygo.model.data.buyer.CountryWrapper
 import com.techapp.james.buybuygo.model.retrofitManager.RayBuyer
 import com.techapp.james.buybuygo.model.retrofitManager.RayCommon
 import com.techapp.james.buybuygo.model.retrofitManager.RetrofitManager
@@ -147,16 +149,29 @@ class UserInfoPresenter {
     fun getCountryWrappers() {
         var singleCountryWrapper = rayCommon.getCountryWrapper(rayToken)
 
-        singleCountryWrapper.subscribeOn(Schedulers.newThread())
+        singleCountryWrapper
+            .zipWith(rayCommon.getAreaWrapper(rayToken),
+                object :
+                    BiFunction<Response<Wrapper<ArrayList<CountryWrapper>>>, Response<Wrapper<ArrayList<AreaWrapper>>>, AreaParameter> {
+                    override fun apply(
+                        t1: Response<Wrapper<ArrayList<CountryWrapper>>>,
+                        t2: Response<Wrapper<ArrayList<AreaWrapper>>>
+                    ): AreaParameter {
+//                        Timber.d("error " + t1.errorBody())
+                        var countryWrapperList = t1.body()!!.response
+                        var areaWrapperList = t2.body()!!.response
+                        AreaParameter.countryWrapperList = countryWrapperList
+                        AreaParameter.areaWrapperList = areaWrapperList
+                        return AreaParameter
+                    }
+                })
+            .subscribeOn(Schedulers.newThread())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe {
                 view.isLoadWholeView(true)
             }
             .doOnSuccess {
                 view.isLoadWholeView(false)
-                it.body()?.let {
-                    AreaParameter.countryWrapperList = it.response
-                }
             }.doOnError {
                 Timber.d("error ${it.message}")
             }.subscribe()
