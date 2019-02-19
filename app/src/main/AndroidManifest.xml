@@ -53,7 +53,7 @@
         <activity android:name=".view.BaseActivity" />
         <activity
             android:name=".view.buyer.activity.BuyerActivity"
-            android:launchMode="singleInstance"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait">
             <!-- Accept adb data flag -->
             <intent-filter>
@@ -89,7 +89,7 @@
         <activity
             android:name=".view.seller.activity.channelOrderDetail.ChannelOrderDetailActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".view.buyer.activity.PaymentActivity"></activity>
+        <activity android:name=".view.buyer.activity.payment.PaymentActivity"></activity>
     </application>
 
 </manifest>

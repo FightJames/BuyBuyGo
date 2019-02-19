@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.widget.CircularProgressDrawable
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
@@ -13,7 +12,7 @@ import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.data.buyer.OrderDetail
 import com.techapp.james.buybuygo.model.data.seller.PaymentServices
 import com.techapp.james.buybuygo.presenter.buyer.OrderPresenter
-import com.techapp.james.buybuygo.view.buyer.activity.PaymentActivity
+import com.techapp.james.buybuygo.view.buyer.activity.payment.PaymentActivity
 import kotlinx.android.synthetic.main.buyer_fragment_order.*
 import timber.log.Timber
 

@@ -1,15 +1,12 @@
-package com.techapp.james.buybuygo.view.buyer.activity
+package com.techapp.james.buybuygo.view.buyer.activity.payment
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.webkit.WebChromeClient
 import android.webkit.WebViewClient
 import kotlinx.android.synthetic.main.buyer_activity_payment.*
 import timber.log.Timber
-import android.support.v4.content.ContextCompat.startActivity
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.R
 import android.net.Uri
 
 
@@ -34,7 +31,7 @@ class PaymentActivity : AppCompatActivity() {
         payWebView.isVerticalScrollBarEnabled = false
         payWebView.isHorizontalScrollBarEnabled = false
         payWebView.settings.setAppCacheEnabled(false);
-        payWebView.webViewClient = WebViewClient()
+        payWebView.webViewClient = PayWebViewClient()
         when (payWay) {
             PAYPAL -> {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(paymentWebContent))
@@ -42,10 +39,12 @@ class PaymentActivity : AppCompatActivity() {
                 intent.setPackage("com.android.chrome")
                 try {
                     startActivity(intent)
+                    finish()
                 } catch (ex: ActivityNotFoundException) {
                     // Chrome browser presumably not installed so allow user to choose instead
                     intent.setPackage(null)
                     startActivity(intent)
+                    finish()
                 }
 
             }
