@@ -1,17 +1,11 @@
 package com.techapp.james.buybuygo.presenter.seller
 
-import com.techapp.james.buybuygo.model.data.Wrapper
-import com.techapp.james.buybuygo.model.data.seller.ChannelRecord
 import com.techapp.james.buybuygo.model.data.seller.ChannelRecordViewData
 import com.techapp.james.buybuygo.model.retrofitManager.RetrofitManager
 import com.techapp.james.buybuygo.model.sharePreference.SharePreference
-import com.techapp.james.buybuygo.view.View
 import com.techapp.james.buybuygo.view.seller.fragment.channelRecord.ChannelRecordView
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import retrofit2.Response
-import retrofit2.http.Header
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
@@ -39,13 +33,19 @@ class ChannelRecordPresenter {
                 it.body()?.let {
                     var channelRecords = it.response
                     var channelRecordList = ArrayList<ChannelRecordViewData>()
+                    var calStart = Calendar.getInstance()
+                    var calEnd = Calendar.getInstance()
                     for (i in channelRecords.indices) {
+                        calStart.time = format.parse(channelRecords[i].startTime)
+                        calStart.add(Calendar.HOUR, 8)
+                        calEnd.time = format.parse(channelRecords[i].endTime)
+                        calEnd.add(Calendar.HOUR, 8)
                         var channelRecordViewData = ChannelRecordViewData(
                             channelRecords[i].userID,
                             channelRecords[i].liveUrl,
                             channelRecords[i].id,
-                            format.parse(channelRecords[i].startTime),
-                            format.parse(channelRecords[i].endTime),
+                            calStart.time,
+                            calEnd.time,
                             channelRecords[i].description
                         )
                         channelRecordList.add(channelRecordViewData)

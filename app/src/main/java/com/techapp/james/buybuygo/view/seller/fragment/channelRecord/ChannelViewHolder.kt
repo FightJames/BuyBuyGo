@@ -26,31 +26,27 @@ class ChannelViewHolder : RecyclerView.ViewHolder {
                 itemView.context.resources
                     .getString(R.string.liveUrl), channelRecord.liveUrl
             )
-        cal.time = channelRecord.startTime
-        cal.add(Calendar.HOUR, 8)
         item.startTimeLabel.text =
             String.format(
                 itemView.context.resources
                     .getString(R.string.startTime)
                 ,
-                outputFormat.format(cal.time)
+                outputFormat.format(channelRecord.startTime)
             )
 
 
-        cal.time = channelRecord.endTime
-        cal.add(Calendar.HOUR, 8)
         item.endTimeLabel.text =
             String.format(
                 itemView.context.resources
                     .getString(R.string.endTime)
                 ,
-                outputFormat.format(cal.time)
+                outputFormat.format(channelRecord.endTime)
             )
 
         item.descriptionLabel.text =
             String.format(
                 itemView.context.resources
-                    .getString(R.string.description), channelRecord.description
+                    .getString(R.string.channelDescription), channelRecord.description
             )
 
     }
