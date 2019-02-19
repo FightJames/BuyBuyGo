@@ -1,6 +1,7 @@
 package com.techapp.james.buybuygo.model.sharePreference
 
 import android.content.Context
+import com.techapp.james.buybuygo.model.data.User
 
 class SharePreference {
     val DATA = "data"
@@ -53,5 +54,8 @@ class SharePreference {
         sharePreference.edit()
             .putString(FB_TOKEN, fbToken)
             .commit()
+    }
+    fun saveBuyer(u: User){
+
     }
 }

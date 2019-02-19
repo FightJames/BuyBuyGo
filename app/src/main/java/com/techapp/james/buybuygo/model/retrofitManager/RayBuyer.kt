@@ -51,7 +51,7 @@ interface RayBuyer {
     fun getLatestChannelOrder(@Header("Authorization") token: String):
             Single<Response<Wrapper<ArrayList<OrderDetail>>>>
 
-    @PUT("user-channel-orderNumber")
+    @PUT("user-channel-id")
     fun leaveChannel(@Header("Authorization") token: String): Single<Response<Wrapper<String>>>
 
     @GET("payment-services")
@@ -60,7 +60,7 @@ interface RayBuyer {
     @POST("payments/{thirdPartyPaymentService_id}")
     fun payMoney(@Header("Authorization") token: String, @Path("thirdPartyPaymentService_id") thirdPartyID: String, @Body body: RequestBody): Single<Response<ResponseBody>>
 
-    @HTTP(method = "PATCH", path = "user-channel-orderNumber", hasBody = true)
+    @HTTP(method = "PATCH", path = "user-channel-id", hasBody = true)
     fun joinChannel(@Header("Authorization") token: String, @Body body: RequestBody): Single<Response<Wrapper<String>>> //return a seller's live liveUrl
 
     @POST("orders/{itemId}/{recipientId}")

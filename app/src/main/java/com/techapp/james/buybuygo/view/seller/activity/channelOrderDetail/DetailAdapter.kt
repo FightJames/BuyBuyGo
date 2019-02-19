@@ -52,9 +52,18 @@ class DetailAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
-        viewHolder as OrderViewHolder
+        when (viewHolder) {
+            is OrderViewHolder -> {
+
+                viewHolder.setData(orderDataList[position])
+            }
+            else -> {
+                viewHolder as CommodityViewHolder
+                viewHolder.setData(commodityDataList[position])
+            }
+        }
+
         //if image is null ,you must set image src is default image
-        viewHolder.setData(orderDataList[position])
 
     }
 }

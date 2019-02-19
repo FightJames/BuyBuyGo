@@ -170,15 +170,19 @@ class LiveFragment : Fragment(), LiveView {
 
     override fun updateCommodityState(commodity: Commodity) {
 
-        this.activity!!.runOnUiThread {
-            soldQuantity.text = String.format(
-                resources.getString(R.string.soldQuantity),
-                commodity.soldQuantity
-            )
-            remainingQuantity.text = String.format(
-                resources.getString(R.string.remainingQuantity),
-                commodity.remainingQuantity
-            )
+        this.activity?.runOnUiThread {
+            soldQuantity?.let {
+                it.text = String.format(
+                    resources.getString(R.string.soldQuantity),
+                    commodity.soldQuantity
+                )
+            }
+            remainingQuantity?.let {
+                it.text = String.format(
+                    resources.getString(R.string.remainingQuantity),
+                    commodity.remainingQuantity
+                )
+            }
         }
     }
 

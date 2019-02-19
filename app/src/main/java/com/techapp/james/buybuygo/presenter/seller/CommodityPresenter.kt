@@ -1,5 +1,6 @@
 package com.techapp.james.buybuygo.presenter.seller
 
+import com.techapp.james.buybuygo.model.converter.GsonConverter
 import com.techapp.james.buybuygo.model.data.seller.Commodity
 import com.techapp.james.buybuygo.model.file.FileData
 import com.techapp.james.buybuygo.model.networkManager.NetworkManager
@@ -173,6 +174,10 @@ class CommodityPresenter {
             .doOnSuccess {
                 it.body()?.let {
                     view.showRequestMessage(it.response)
+                }
+                it.errorBody()?.let {
+                    var wrapperString = GsonConverter.convertJsonToWrapperString(it.string())
+                    view.showRequestMessage(wrapperString.response)
                 }
             }.subscribe()
     }

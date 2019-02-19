@@ -3,20 +3,16 @@ package com.techapp.james.buybuygo.view.seller.fragment.channelRecord
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.data.seller.ChannelRecord
 import com.techapp.james.buybuygo.presenter.seller.ChannelRecordPresenter
 import com.techapp.james.buybuygo.view.seller.activity.channelOrderDetail.ChannelOrderDetailActivity
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.seller_fragment_channel_record.*
 
 class ChannelRecordFragment : Fragment(), ChannelRecordView {
@@ -61,6 +57,10 @@ class ChannelRecordFragment : Fragment(), ChannelRecordView {
         channelRecordList.layoutManager = LinearLayoutManager(this.activity)
         channelRecordList.adapter = listAdapter
         channelRecordPresenter.getChannelRecord()
+        refresh_layout.setOnRefreshListener {
+            refresh_layout.isRefreshing = false
+            channelRecordPresenter.getChannelRecord()
+        }
     }
 
     override fun updateChannelRecordList(list: ArrayList<ChannelRecord>) {

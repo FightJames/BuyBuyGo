@@ -1,5 +1,6 @@
 package com.techapp.james.buybuygo.presenter.seller
 
+import com.techapp.james.buybuygo.model.converter.GsonConverter
 import com.techapp.james.buybuygo.model.data.seller.Channel
 import com.techapp.james.buybuygo.model.data.Wrapper
 import com.techapp.james.buybuygo.model.data.buyer.Commodity
@@ -45,9 +46,10 @@ class LivePresenter {
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSuccess {
                 Timber.d(it.isSuccessful.toString() + " channel data ")
-                Timber.d("message ${it.message()} + ${it.errorBody()?.string()}")
+//                Timber.d("message ${it.message()} + error ${it.errorBody()?.string()}")
                 it.errorBody()?.let {
-                    view.showRequestMessage(it.string())
+                    var wrapperString = GsonConverter.convertJsonToWrapperString(it.string())
+                    view.showRequestMessage(wrapperString.response)
                 }
                 if (it.isSuccessful) {
                     it.body()?.let {
@@ -80,14 +82,18 @@ class LivePresenter {
     fun endChannel() {
         timerDisposable?.dispose()
         timerDisposable = null
-        view.stopLive()
         var singleEnd = raySeller.endChannel(rayToken)
         singleEnd.subscribeOn(Schedulers.newThread())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSuccess {
+                view.stopLive()
+                view
                 it.body()?.let {
                     view.showRequestMessage(it.response)
-
+                }
+                it.errorBody()?.let {
+                    var wrapperString = GsonConverter.convertJsonToWrapperString(it.string())
+                    view.showRequestMessage(wrapperString.response)
                 }
             }.subscribe()
     }

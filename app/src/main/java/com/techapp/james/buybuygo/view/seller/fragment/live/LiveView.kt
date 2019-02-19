@@ -8,5 +8,4 @@ interface LiveView {
     fun stopLive()
     fun updateCommodity(c: Commodity)
     fun getChannel(url:String,channel: Channel)
-
 }

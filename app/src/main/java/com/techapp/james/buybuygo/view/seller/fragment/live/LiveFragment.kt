@@ -52,7 +52,6 @@ class LiveFragment : Fragment(), LiveView {
             livePresenter.endChannel()
         }
         tokenBtn.setOnClickListener {
-
             ChannelData.channel?.let {
                 dialogHelper.createTokenDialog(this.activity!!, it.channelToken).show()
             }
@@ -166,6 +165,7 @@ class LiveFragment : Fragment(), LiveView {
 
     override fun stopLive() {
         liveWebView.loadUrl("about:blank")
+        ChannelData.channel = null
     }
 
     override fun getChannel(url: String, channel: Channel) {
@@ -180,14 +180,18 @@ class LiveFragment : Fragment(), LiveView {
 
     override fun updateCommodity(c: Commodity) {
         this@LiveFragment.activity?.runOnUiThread {
-            soldLabel.text = String.format(
-                resources.getString(R.string.soldQuantity),
-                c.soldQuantity
-            )
-            remainLabel.text = String.format(
-                resources.getString(R.string.remainingQuantity),
-                c.remainingQuantity
-            )
+            soldLabel?.let {
+                it.text = String.format(
+                    resources.getString(R.string.soldQuantity),
+                    c.soldQuantity
+                )
+            }
+            remainLabel?.let {
+                it.text = String.format(
+                    resources.getString(R.string.remainingQuantity),
+                    c.remainingQuantity
+                )
+            }
         }
     }
 
