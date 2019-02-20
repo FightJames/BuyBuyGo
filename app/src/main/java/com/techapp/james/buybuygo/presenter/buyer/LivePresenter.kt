@@ -55,7 +55,8 @@ class LivePresenter {
                 view.isLoadWeb(false)
                 if (it.body() == null) {
                     it.errorBody()?.let {
-                        view.showRequestMessage(it.string())
+                        var wrapperString = GsonConverter.convertJsonToWrapperString(it.string())
+                        view.showRequestMessage(wrapperString.response)
                     }
                 } else {
                     it.body()?.let {
@@ -126,6 +127,10 @@ class LivePresenter {
             } else {
                 view.updateCommodityState(commodity)
             }
+            if (response.code() == 400) {
+                view.stopWeb()
+            }
+
         }.subscribe()
     }
 

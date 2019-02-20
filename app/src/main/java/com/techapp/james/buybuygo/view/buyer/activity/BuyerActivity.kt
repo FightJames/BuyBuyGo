@@ -20,6 +20,10 @@ class BuyerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_buyer)
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+//        actionBar.title = actionBar.title.toString() + " Buyer"
+        supportActionBar?.let {
+            it.title = it.title.toString() + " Buyer"
+        }
         var liveFragment = LiveFragment.newInstance()
         var orderFragment = OrderFragment.newInstance()
         var userInfoFragment = UserInfoFragment.newInstance(ExpandableAdapter.BUYER_MODE)

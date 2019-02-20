@@ -22,6 +22,8 @@ class LiveFragment : Fragment(), LiveView {
     lateinit var livePresenter: LivePresenter
     lateinit var dialogHelper: DialogHelper
     lateinit var loadDialog: ProgressDialog
+    var isPlay = false
+    var streamUrl: String = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -66,6 +68,7 @@ class LiveFragment : Fragment(), LiveView {
 
     override fun loadWeb(url: String) {
         loadWebView(url)
+        streamUrl = url
     }
 
     override fun showRequestMessage(message: String) {
@@ -122,6 +125,9 @@ class LiveFragment : Fragment(), LiveView {
         }
         buyBtn.setOnClickListener {
             livePresenter.getLiveSoldItem()
+        }
+        if (isPlay) {
+            loadWebView(streamUrl)
         }
     }
 

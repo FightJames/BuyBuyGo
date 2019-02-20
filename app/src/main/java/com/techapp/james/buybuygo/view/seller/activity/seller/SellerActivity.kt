@@ -22,7 +22,11 @@ class SellerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
         setContentView(R.layout.activity_seller)
+//        actionBar.title = actionBar.title.toString() + " Seller"
 
+        supportActionBar?.let {
+            it.title = it.title.toString() + " Seller"
+        }
         var commodityFragment = CommodityFragment.newInstance()
         var liveFragment = LiveFragment.newInstance()
         var orderFragment = OrderFragment.newInstance()
