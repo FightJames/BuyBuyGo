@@ -3,10 +3,12 @@ package com.techapp.james.buybuygo.view.seller.fragment.order
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.data.buyer.OrderDetail
+import com.techapp.james.buybuygo.model.data.buyer.OrderDetailView
 import com.techapp.james.buybuygo.model.data.seller.CommodityRecord
 import com.techapp.james.buybuygo.presenter.seller.OrderPresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -43,10 +45,16 @@ class OrderFragment : Fragment(), OrderView {
     }
 
     fun init() {
-        orderAdapter = OrderAdapter(ArrayList<OrderDetail>())
+        orderAdapter = OrderAdapter(ArrayList<OrderDetailView>())
         commodityRecordAdapter = CommodityRecordAdapter(ArrayList<CommodityRecord>())
         orderList.layoutManager = LinearLayoutManager(this.activity)
         orderList.adapter = orderAdapter
+        orderList.addItemDecoration(
+            DividerItemDecoration(
+                this.activity!!,
+                DividerItemDecoration.VERTICAL
+            )
+        )
         orderPresenter.getAllOrder()
     }
 
@@ -58,7 +66,7 @@ class OrderFragment : Fragment(), OrderView {
         }
     }
 
-    override fun updateOrderList(list: ArrayList<OrderDetail>) {
+    override fun updateOrderList(list: ArrayList<OrderDetailView>) {
         orderList.adapter = orderAdapter
         orderAdapter.dataList = list
         orderAdapter.notifyDataSetChanged()

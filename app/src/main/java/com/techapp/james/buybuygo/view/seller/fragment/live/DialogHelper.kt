@@ -45,7 +45,7 @@ class DialogHelper {
         var tokenView =
             LayoutInflater.from(activity).inflate(R.layout.seller_live_dialog_token, null)
         builder.setView(tokenView)
-        builder.setTitle("Your Token")
+        builder.setTitle("Please Click Token")
         val showText = tokenView.tokenLabel
         showText.text = token
 

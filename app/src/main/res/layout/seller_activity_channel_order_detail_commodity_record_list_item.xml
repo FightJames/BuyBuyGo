@@ -49,14 +49,13 @@
         android:id="@+id/unitPriceLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:text="@string/commodityUnitPrice"
         android:textColor="@android:color/background_dark"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/costLabel"
-        app:layout_constraintTop_toBottomOf="@+id/costLabel" />
+        tools:layout_editor_absoluteY="143dp" />
 
     <TextView
         android:id="@+id/profitLabel"
@@ -64,12 +63,14 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:text="@string/commodityProfit"
         android:textColor="@android:color/background_dark"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/unitPriceLabel"
-        app:layout_constraintTop_toBottomOf="@+id/unitPriceLabel" />
+        app:layout_constraintTop_toBottomOf="@+id/turnoverLabel" />
 
     <TextView
         android:id="@+id/totalCostLabel"
@@ -81,8 +82,8 @@
         android:textColor="@android:color/background_dark"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/profitLabel"
-        app:layout_constraintTop_toBottomOf="@+id/profitLabel" />
+        app:layout_constraintStart_toStartOf="@+id/quantityLabel"
+        app:layout_constraintTop_toBottomOf="@+id/quantityLabel" />
 
     <TextView
         android:id="@+id/quantityLabel"
@@ -94,22 +95,20 @@
         android:textColor="@android:color/background_dark"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/totalCostLabel"
-        app:layout_constraintTop_toBottomOf="@+id/totalCostLabel" />
+        app:layout_constraintStart_toStartOf="@+id/costLabel"
+        app:layout_constraintTop_toBottomOf="@+id/costLabel" />
 
     <TextView
         android:id="@+id/turnoverLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
         android:text="@string/commodityTurnover"
         android:textColor="@android:color/background_dark"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/quantityLabel"
-        app:layout_constraintTop_toBottomOf="@+id/quantityLabel"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/unitPriceLabel" />
 </android.support.constraint.ConstraintLayout>

@@ -7,6 +7,7 @@ import android.support.v7.widget.SearchView
 import android.view.*
 import android.webkit.WebViewClient
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.data.buyer.Commodity
@@ -16,7 +17,7 @@ import kotlinx.android.synthetic.main.seller_fragment_live.*
 
 class LiveFragment : Fragment(), LiveView {
     var streamUrl: String = ""
-    var flag = false;
+    var isPlay = false;
     lateinit var searchView: SearchView
     var descriptionDialog: AlertDialog? = null
     private lateinit var livePresenter: LivePresenter
@@ -48,16 +49,19 @@ class LiveFragment : Fragment(), LiveView {
         liveWebView.settings.setAppCacheEnabled(false);
         liveWebView.setWebViewClient(WebViewClient());
         endLiveBtn.setOnClickListener {
-            flag = false
+            isPlay = false
             livePresenter.endChannel()
         }
         tokenBtn.setOnClickListener {
+            if (ChannelData.channel == null) {
+                showRequestMessage("You do not start a live.")
+            }
             ChannelData.channel?.let {
                 dialogHelper.createTokenDialog(this.activity!!, it.channelToken).show()
             }
         }
 
-        if (flag) {
+        if (isPlay) {
             liveWebView.loadData(streamUrl, "text/html", null)
             updateCommodity()
         }
@@ -105,11 +109,16 @@ class LiveFragment : Fragment(), LiveView {
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.common_live, menu)
-        var searchItem = menu!!.findItem(R.id.search)
+        inflater.inflate(R.menu.buyer_live, menu)
+        var searchItem = menu!!.findItem(R.id.token)
         searchView = searchItem.actionView as SearchView
         searchView.isSubmitButtonEnabled = true
         searchView.queryHint = "Give Me a FB Live Url"
+
+        //set SearchView icon
+        val searchIconView =
+            searchView.findViewById(android.support.v7.appcompat.R.id.search_button) as ImageView
+        searchIconView.setImageResource(R.drawable.ic_live_tv_white_24dp)
         //not show search field
         searchView.setIconifiedByDefault(true)
         searchView.maxWidth = Integer.MAX_VALUE
@@ -131,7 +140,7 @@ class LiveFragment : Fragment(), LiveView {
                                     descriptionDialog?.findViewById<EditText>(R.id.descriptionField)
                                 var description = descriptonField!!.text.toString()
                                 if (!description.equals("")) {
-                                    flag = true
+                                    isPlay = true
                                     livePresenter.startChannel(
                                         url,
                                         description
@@ -166,27 +175,44 @@ class LiveFragment : Fragment(), LiveView {
     override fun stopLive() {
         liveWebView.loadUrl("about:blank")
         ChannelData.channel = null
+        soldLabel?.let {
+            it.visibility = View.INVISIBLE
+            it.text = "Sold"
+        }
+        remainLabel?.let {
+            it.visibility = View.INVISIBLE
+            it.text = "Remain"
+        }
     }
 
-    override fun getChannel(url: String, channel: Channel) {
+    override fun startLive(url: String, channel: Channel) {
         ChannelData.channel = channel
         loadWebView(url)
         searchView?.setQuery("", true)
         searchView?.clearFocus()
         searchView?.isIconified = true
         descriptionDialog?.cancel()
-
+        soldLabel?.let {
+            it.visibility = View.VISIBLE
+            it.text = "Sold"
+        }
+        remainLabel?.let {
+            it.visibility = View.VISIBLE
+            it.text = "Remain"
+        }
     }
 
     override fun updateCommodity(c: Commodity) {
         this@LiveFragment.activity?.runOnUiThread {
             soldLabel?.let {
+                it.visibility = View.VISIBLE
                 it.text = String.format(
                     resources.getString(R.string.soldQuantity),
                     c.soldQuantity
                 )
             }
             remainLabel?.let {
+                it.visibility = View.VISIBLE
                 it.text = String.format(
                     resources.getString(R.string.remainingQuantity),
                     c.remainingQuantity

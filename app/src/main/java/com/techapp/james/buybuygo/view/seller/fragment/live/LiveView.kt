@@ -7,5 +7,5 @@ interface LiveView {
     fun showRequestMessage(s: String)
     fun stopLive()
     fun updateCommodity(c: Commodity)
-    fun getChannel(url:String,channel: Channel)
+    fun startLive(url:String, channel: Channel)
 }

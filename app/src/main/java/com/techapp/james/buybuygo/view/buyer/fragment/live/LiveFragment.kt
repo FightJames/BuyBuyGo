@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment
 import android.support.v7.widget.SearchView
 import android.view.*
 import android.webkit.WebViewClient
+import android.widget.ImageView
 import android.widget.Toast
 
 import com.techapp.james.buybuygo.R
@@ -155,9 +156,15 @@ class LiveFragment : Fragment(), LiveView {
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.common_live, menu)
-        var searchItem = menu!!.findItem(R.id.search)
+        inflater.inflate(R.menu.buyer_live, menu)
+        var searchItem = menu!!.findItem(R.id.token)
         var searchView: SearchView = searchItem.actionView as SearchView
+
+//set SearchView Icon
+        val searchIconView =
+            searchView.findViewById(android.support.v7.appcompat.R.id.search_button) as ImageView
+        searchIconView.setImageResource(R.drawable.ic_token_key_white_24dp)
+
         searchView.isSubmitButtonEnabled = true
         searchView.queryHint = "Give Me a Token"
         searchView.setIconifiedByDefault(true)

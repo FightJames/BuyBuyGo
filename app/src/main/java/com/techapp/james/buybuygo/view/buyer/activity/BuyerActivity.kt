@@ -1,5 +1,6 @@
 package com.techapp.james.buybuygo.view.buyer.activity
 
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.os.PersistableBundle
@@ -16,6 +17,9 @@ import kotlinx.android.synthetic.main.activity_buyer.*
 class BuyerActivity : AppCompatActivity() {
 
     lateinit var fList: ArrayList<Fragment>
+    var liveFragment = LiveFragment.newInstance()
+    var orderFragment = OrderFragment.newInstance()
+    var userInfoFragment = UserInfoFragment.newInstance(ExpandableAdapter.BUYER_MODE)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_buyer)
@@ -24,15 +28,15 @@ class BuyerActivity : AppCompatActivity() {
         supportActionBar?.let {
             it.title = it.title.toString() + " Buyer"
         }
-        var liveFragment = LiveFragment.newInstance()
-        var orderFragment = OrderFragment.newInstance()
-        var userInfoFragment = UserInfoFragment.newInstance(ExpandableAdapter.BUYER_MODE)
         fList = arrayListOf<Fragment>(liveFragment, orderFragment, userInfoFragment)
 
         viewPagerRoot.adapter = ContentPagerAdapter(
             fList as List<Fragment>,
             supportFragmentManager
         )
+
+        viewPagerRoot.setOffscreenPageLimit(0)
+
         viewPagerRoot.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(p0: Int) {
             }
@@ -49,6 +53,11 @@ class BuyerActivity : AppCompatActivity() {
             viewPagerRoot.currentItem = it.order
             true
         }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        orderFragment.onNewIntent()
     }
 
     override fun onPause() {

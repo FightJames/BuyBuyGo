@@ -5,17 +5,20 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.techapp.james.buybuygo.R
-import com.techapp.james.buybuygo.model.data.buyer.OrderDetail
 import com.techapp.james.buybuygo.model.data.buyer.OrderDetailView
 import com.techapp.james.buybuygo.model.data.seller.PaymentServices
 import com.techapp.james.buybuygo.presenter.buyer.OrderPresenter
 import com.techapp.james.buybuygo.view.buyer.activity.payment.PaymentActivity
 import kotlinx.android.synthetic.main.buyer_fragment_order.*
 import timber.log.Timber
+
 
 class OrderFragment : Fragment(), OrderView {
     lateinit var orderAdapter: OrderAdapter
@@ -32,17 +35,21 @@ class OrderFragment : Fragment(), OrderView {
     }
 
     override fun updateOrderList(list: ArrayList<OrderDetailView>) {
-        orderAdapter.dataList = list
-        orderAdapter.notifyDataSetChanged()
+        orderAdapter?.let {
+            orderAdapter.dataList = list
+            orderAdapter.notifyDataSetChanged()
+        }
     }
 
     override fun isLoad(flag: Boolean) {
-        if (flag) {
-            loadProgressBar.visibility = View.VISIBLE
-            orderList.visibility = View.INVISIBLE
-        } else {
-            loadProgressBar.visibility = View.INVISIBLE
-            orderList.visibility = View.VISIBLE
+        loadProgressBar?.let {
+            if (flag) {
+                loadProgressBar.visibility = View.VISIBLE
+                orderList.visibility = View.INVISIBLE
+            } else {
+                loadProgressBar.visibility = View.INVISIBLE
+                orderList.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -84,7 +91,10 @@ class OrderFragment : Fragment(), OrderView {
 
     override fun onResume() {
         super.onResume()
-        orderAdapter = OrderAdapter(this.activity!!, ArrayList<OrderDetailView>())
+        var list = ArrayList<OrderDetailView>()
+        list.add(OrderDetailView())
+
+        orderAdapter = OrderAdapter(this.activity!!, list)
         orderAdapter.payClickListener = object : ItemViewHolder.PayBtnClickListener {
             override fun onClick(id: String) {
                 Timber.d("PayBtn click $id")
@@ -100,8 +110,17 @@ class OrderFragment : Fragment(), OrderView {
             )
         )
         orderPresenter.getAllOrder()
+        refresh_layout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener {
+            refresh_layout.setRefreshing(
+                false
+            )
+            orderPresenter.getAllOrder()
+        })
     }
 
+    fun onNewIntent() {
+        orderPresenter.getAllOrder()
+    }
 //    override fun onOptionsItemSelected(item: MenuItem): Boolean {
 //        when (item.order) {
 //            // all order

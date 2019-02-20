@@ -75,15 +75,32 @@ class DialogHelper(val activity: Activity) {
             orderItem.itemId = commodity.id
             var orderView =
                 LayoutInflater.from(it).inflate(R.layout.buyer_live_commodity_dialog, null)
-            orderView.nameLabel.text = commodity.name
-            orderView.descriptionLabel.text = commodity.description
-            var remainingString = orderView.remainingLabel.text.toString()
+            var resource = it.resources
+            orderView.nameLabel.text =
+                String.format(resource.getString(R.string.commodityName), commodity.name)
+            orderView.descriptionLabel.text =
+                String.format(
+                    resource.getString(R.string.commodityDescription),
+                    commodity.description
+                )
+
+
+
             orderView.remainingLabel.text =
-                    String.format(remainingString, commodity.remainingQuantity)
-            var soldString = orderView.soldLabel.text.toString()
+                String.format(
+                    resource.getString(R.string.remain),
+                    commodity.remainingQuantity
+                )
             orderView.soldLabel.text =
-                    String.format(soldString, commodity.soldQuantity)
-            orderView.unitPriceLabel.text = commodity.unitPrice
+                String.format(
+                    resource.getString(R.string.sold),
+                    commodity.soldQuantity
+                )
+            orderView.unitPriceLabel.text =
+                String.format(
+                    resource.getString(R.string.unitPrice),
+                    commodity.unitPrice
+                )
             Glide.with(it).load(commodity.imageUrl).into(orderView.commodityImageView)
 
 

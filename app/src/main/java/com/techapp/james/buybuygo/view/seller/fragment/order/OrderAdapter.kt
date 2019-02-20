@@ -5,11 +5,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.data.buyer.OrderDetail
+import com.techapp.james.buybuygo.model.data.buyer.OrderDetailView
 
 class OrderAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    var dataList: ArrayList<OrderDetail>
+    var dataList: ArrayList<OrderDetailView>
 
-    constructor( dataList: ArrayList<OrderDetail>) {
+    constructor( dataList: ArrayList<OrderDetailView>) {
         this.dataList = dataList
 
     }

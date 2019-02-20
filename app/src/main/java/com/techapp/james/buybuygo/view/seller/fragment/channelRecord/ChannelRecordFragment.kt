@@ -38,7 +38,7 @@ class ChannelRecordFragment : Fragment(), ChannelRecordView {
     }
 
     fun init() {
-        listAdapter = ChannelListAdapter(ArrayList<ChannelRecordViewData>(),this.activity!!)
+        listAdapter = ChannelListAdapter(ArrayList<ChannelRecordViewData>(), this.activity!!)
         listAdapter.itemClickCallback = object : ChannelListAdapter.OnItemClick {
             override fun onItemClick(channelRecord: ChannelRecordViewData) {
                 var i = Intent(
@@ -58,6 +58,12 @@ class ChannelRecordFragment : Fragment(), ChannelRecordView {
         )
         channelRecordList.layoutManager = LinearLayoutManager(this.activity)
         channelRecordList.adapter = listAdapter
+        channelRecordList.addItemDecoration(
+            DividerItemDecoration(
+                this.activity!!,
+                DividerItemDecoration.VERTICAL
+            )
+        )
         channelRecordPresenter.getChannelRecord()
         refresh_layout.setOnRefreshListener {
             refresh_layout.isRefreshing = false

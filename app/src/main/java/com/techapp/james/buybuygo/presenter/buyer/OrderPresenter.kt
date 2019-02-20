@@ -131,7 +131,6 @@ class OrderPresenter {
 
     fun mappingOrderDetailViewData(list: ArrayList<OrderDetail>): ArrayList<OrderDetailView> {
         var viewlist = ArrayList<OrderDetailView>()
-
         var format = SimpleDateFormat("EEEEEEEE, dd-MMM-yyyy HH:mm:ss", Locale.UK)
         var calex = Calendar.getInstance()
         var calti = Calendar.getInstance()

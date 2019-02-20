@@ -67,8 +67,6 @@ class OrderViewHolder : RecyclerView.ViewHolder {
         var resource = itemView.context.resources
         var detialView = LayoutInflater.from(itemView.context)
             .inflate(R.layout.buyer_order_detial_dialog, null)
-        detialView.channelIDLabel.text =
-                String.format(resource.getString(R.string.channelID), orderDetail.channelId)
         var isEffective: String = ""
         if (orderDetail.effective == OrderEffective.EFFECTIVE.value) {
             isEffective = resource.getString(R.string.effective)

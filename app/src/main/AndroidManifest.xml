@@ -55,7 +55,7 @@
             android:name=".view.buyer.activity.BuyerActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
-            <!-- Accept adb data flag -->
+            <!-- Accept adb data isPlay -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 

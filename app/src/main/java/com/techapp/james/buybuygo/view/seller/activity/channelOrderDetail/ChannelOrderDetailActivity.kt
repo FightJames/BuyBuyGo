@@ -2,6 +2,7 @@ package com.techapp.james.buybuygo.view.seller.activity.channelOrderDetail
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
@@ -31,7 +32,12 @@ class ChannelOrderDetailActivity : AppCompatActivity(), View {
         detailAdapter = DetailAdapter()
         detailList.layoutManager = LinearLayoutManager(this)
         detailList.adapter = detailAdapter
-        getCommodityByChannel()
+        detailList.addItemDecoration(
+            DividerItemDecoration(
+                this,
+                DividerItemDecoration.VERTICAL
+            )
+        )
     }
 
     fun getCommodityByChannel() {

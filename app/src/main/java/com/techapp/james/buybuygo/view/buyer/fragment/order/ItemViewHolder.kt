@@ -68,9 +68,10 @@ class ItemViewHolder : RecyclerView.ViewHolder {
                 orderDetail.commodityUnitPrice
             )
         if (orderDetail.image == "") {
-
+            itemView.imageView.setImageResource(R.drawable.ic_no_image_black_24dp)
+        } else {
+            Glide.with(itemView.context).load(orderDetail.image).into(itemView.imageView)
         }
-        Glide.with(itemView.context).load(orderDetail.image).into(itemView.imageView)
         itemView.setOnClickListener {
             Timber.d("James itemviewClick")
             var dialog = createDetialDialog(orderDetail)
@@ -82,8 +83,6 @@ class ItemViewHolder : RecyclerView.ViewHolder {
         var resource = itemView.context.resources
         var detialView = LayoutInflater.from(itemView.context)
             .inflate(R.layout.buyer_order_detial_dialog, null)
-        detialView.channelIDLabel.text =
-            String.format(resource.getString(R.string.channelID), orderDetail.channelId)
         var isEffective: String = ""
         if (orderDetail.effective == OrderEffective.EFFECTIVE.value) {
             isEffective = resource.getString(R.string.effective)

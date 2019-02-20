@@ -7,6 +7,8 @@ import com.techapp.james.buybuygo.view.seller.fragment.live.LiveView
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import io.reactivex.functions.Consumer
+import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType
 import okhttp3.RequestBody
@@ -23,6 +25,10 @@ class LivePresenter {
     constructor(view: LiveView) {
         this.view = view
         rayToken = SharePreference.getInstance().getRayToken()
+        RxJavaPlugins.setErrorHandler(object : Consumer<Throwable> {
+            override fun accept(t: Throwable?) {
+            }
+        })
     }
 
     fun startChannel(liveUrl: String, description: String) {
@@ -46,7 +52,7 @@ class LivePresenter {
                 }
                 if (it.isSuccessful) {
                     it.body()?.let {
-                        view.getChannel(liveUrl, it.response)
+                        view.startLive(liveUrl, it.response)
                     }
 
                 }

@@ -11,6 +11,8 @@ import com.techapp.james.buybuygo.view.buyer.fragment.live.LiveView
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import io.reactivex.functions.Consumer
+import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType
 import okhttp3.RequestBody
@@ -31,6 +33,10 @@ class LivePresenter {
         rayBuyer = retrofitManager.getRayBuyer()
         rayCommon = retrofitManager.getRayCommon()
         rayToken = SharePreference.getInstance().getRayToken()
+        RxJavaPlugins.setErrorHandler(object : Consumer<Throwable> {
+            override fun accept(t: Throwable?) {
+            }
+        })
     }
 
     fun getLiveUrl(channelToken: String) {

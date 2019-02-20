@@ -33,11 +33,11 @@
 
     <string name="commodityCost">Cost : %1$s</string>
     <string name="commodityProfit">Profit : %1$s</string>
-    <string name="commodityTotalCost">TotalCost : %1$s</string>
+    <string name="commodityTotalCost">Total Cost : %1$s</string>
     <string name="commodityQuantity">Quantity : %1$s</string>
     <string name="commodityTurnover">Turnover : %1$s</string>
     <string name="commodityDescription">Description : %1$s</string>
-    <string name="commodityUnitPrice">Unit : %1$s</string>
+    <string name="commodityUnitPrice">Unit Price : %1$s</string>
 
     //Dialog
     //Create ,Information Field
@@ -55,8 +55,7 @@
 
     //Live Fragment
     //title icon
-    <string name="search">Search</string>
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="url">url</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     //buyer
@@ -68,9 +67,9 @@
     <string name="newestOrder">Newest</string>
     <string name="orderId">Order ID : %1$s</string>
     <string name="commodityName">Name : %1$s</string>
-    <string name="unitPrice">Unit : %1$s</string>
+    <string name="unitPrice">Unit Price: %1$s</string>
     <string name="count">Count : %1$s</string>
-    <string name="allPrice">Total : %1$s</string>
+    <string name="allPrice">Total Pirce: %1$s</string>
     <string name="paid">Paid</string>
     <string name="unPaid">Unpaid</string>
     <string name="channelID">Chanel ID : %1$s</string>
@@ -85,6 +84,7 @@
     //buy live
     <string name="remainingQuantity">Remain : %1$s</string>
     <string name="soldQuantity">Sold : %1$s</string>
+    <string name="token">Token</string>
     //crop
     <string name="crop">CROP</string>
 </resources>
