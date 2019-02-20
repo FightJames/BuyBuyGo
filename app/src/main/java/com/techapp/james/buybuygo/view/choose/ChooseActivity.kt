@@ -13,6 +13,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.PersistableBundle
 import android.view.View
+import com.techapp.james.buybuygo.model.data.common.UserStatus
 import com.techapp.james.buybuygo.view.buyer.activity.BuyerActivity
 import com.techapp.james.buybuygo.view.seller.activity.seller.SellerActivity
 import timber.log.Timber
@@ -20,27 +21,6 @@ import java.util.ArrayList
 
 
 class ChooseActivity : BaseActivity(), ChooseView {
-    override fun isLoad(flag: Boolean) {
-        if (flag) {
-            sellerTextView.visibility = View.INVISIBLE
-            buyerTextView.visibility = View.INVISIBLE
-            loadUserDataprogressBar.visibility = View.VISIBLE
-        } else {
-            sellerTextView.visibility = View.VISIBLE
-            buyerTextView.visibility = View.VISIBLE
-            loadUserDataprogressBar.visibility = View.INVISIBLE
-        }
-    }
-
-    override fun intentToBuyer() {
-        var i = Intent(this, BuyerActivity::class.java)
-        startActivity(i)
-    }
-
-    override fun intentToSeller() {
-        var i = Intent(this, SellerActivity::class.java)
-        startActivity(i)
-    }
 
     var choosePresenter: ChoosePresenter? = null
     private val allPermission = ArrayList<Int>()
@@ -82,11 +62,38 @@ class ChooseActivity : BaseActivity(), ChooseView {
             choosePresenter!!.chooseSeller()
         }
         applyRight()
+        choosePresenter!!.getUserStatus()
     }
 
-    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle?) {
-        Timber.d("/*/* save user")
-        super.onSaveInstanceState(outState, outPersistentState)
+    override fun isLoad(flag: Boolean) {
+        if (flag) {
+            sellerTextView.visibility = View.INVISIBLE
+            buyerTextView.visibility = View.INVISIBLE
+            loadUserDataprogressBar.visibility = View.VISIBLE
+        } else {
+            sellerTextView.visibility = View.VISIBLE
+            buyerTextView.visibility = View.VISIBLE
+            loadUserDataprogressBar.visibility = View.INVISIBLE
+        }
+    }
+
+    override fun autoIntent(userStatus: UserStatus) {
+        if (userStatus.host == 0) {
+            choosePresenter!!.chooseBuyer()
+        } else {
+            choosePresenter!!.chooseSeller()
+        }
+
+    }
+
+    override fun intentToBuyer() {
+        var i = Intent(this, BuyerActivity::class.java)
+        startActivity(i)
+    }
+
+    override fun intentToSeller() {
+        var i = Intent(this, SellerActivity::class.java)
+        startActivity(i)
     }
 
     // it will call by system scenario, not user scenario ( user back app)

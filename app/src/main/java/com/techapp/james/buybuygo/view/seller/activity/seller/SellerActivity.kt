@@ -1,20 +1,20 @@
 package com.techapp.james.buybuygo.view.seller.activity.seller
 
-import android.content.Intent
 import android.content.pm.ActivityInfo
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
-import android.view.Menu
+import android.support.v7.app.AlertDialog
+import android.support.v7.app.AppCompatActivity
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.view.commonFragment.ExpandableAdapter
 import com.techapp.james.buybuygo.view.commonFragment.UserInfoFragment
+import com.techapp.james.buybuygo.view.seller.fragment.channelRecord.ChannelRecordFragment
 import com.techapp.james.buybuygo.view.seller.fragment.commodity.CommodityFragment
 import com.techapp.james.buybuygo.view.seller.fragment.live.LiveFragment
 import com.techapp.james.buybuygo.view.seller.fragment.order.OrderFragment
-import com.techapp.james.buybuygo.view.seller.fragment.channelRecord.ChannelRecordFragment
 import kotlinx.android.synthetic.main.activity_seller.*
+
 
 class SellerActivity : AppCompatActivity() {
     lateinit var fList: ArrayList<Fragment>
@@ -41,10 +41,10 @@ class SellerActivity : AppCompatActivity() {
         )
 
         viewPagerRoot.adapter =
-                ContentPagerAdapter(
-                    fList as List<Fragment>,
-                    supportFragmentManager
-                )
+            ContentPagerAdapter(
+                fList as List<Fragment>,
+                supportFragmentManager
+            )
         viewPagerRoot.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(p0: Int) {
             }
@@ -63,13 +63,16 @@ class SellerActivity : AppCompatActivity() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-
-        return super.onPrepareOptionsMenu(menu)
+    override fun onBackPressed() {
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage("Are you sure to leave?")
+            .setPositiveButton(R.string.ok, { dialog, which ->
+                this@SellerActivity.finish()
+            })
+            .setNegativeButton(R.string.cancel, { dialog, which ->
+                dialog.cancel()
+            })
+        val dialog = builder.create()
+        dialog.show()
     }
 }

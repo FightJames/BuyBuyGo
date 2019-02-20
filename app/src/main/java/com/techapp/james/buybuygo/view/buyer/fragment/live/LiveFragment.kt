@@ -13,7 +13,10 @@ import android.widget.Toast
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.data.buyer.Commodity
 import com.techapp.james.buybuygo.model.data.buyer.PlaceOrder
+import com.techapp.james.buybuygo.model.data.seller.Channel
+import com.techapp.james.buybuygo.presenter.Configure
 import com.techapp.james.buybuygo.presenter.buyer.LivePresenter
+import com.techapp.james.buybuygo.view.seller.fragment.live.ChannelData
 import kotlinx.android.synthetic.main.buyer_fragment_live.*
 import timber.log.Timber
 
@@ -151,6 +154,15 @@ class LiveFragment : Fragment(), LiveView {
         }
         if (isPlay) {
             loadWebView(streamUrl)
+        }
+
+        Configure.userState?.let {
+            var channel = Channel("", it.channelToken)
+            ChannelData.channel = channel
+            Timber.d("live url " + getFBLiveUrl(streamUrl) + " user Status " + it.liveUrl)
+            isPlay = true
+            loadWebView(getFBLiveUrl(it.liveUrl))
+            livePresenter.trackSoldItem()
         }
     }
 

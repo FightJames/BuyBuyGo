@@ -12,8 +12,10 @@ import android.widget.Toast
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.data.buyer.Commodity
 import com.techapp.james.buybuygo.model.data.seller.Channel
+import com.techapp.james.buybuygo.presenter.Configure
 import com.techapp.james.buybuygo.presenter.seller.LivePresenter
 import kotlinx.android.synthetic.main.seller_fragment_live.*
+import timber.log.Timber
 
 class LiveFragment : Fragment(), LiveView {
     var streamUrl: String = ""
@@ -61,27 +63,23 @@ class LiveFragment : Fragment(), LiveView {
             }
         }
 
+        swiperefresh.setOnRefreshListener {
+            liveWebView.reload()
+            swiperefresh.isRefreshing = false
+        }
         if (isPlay) {
             liveWebView.loadData(streamUrl, "text/html", null)
             updateCommodity()
         }
+        Configure.userState?.let {
+            var channel = Channel("", it.channelToken)
+            ChannelData.channel = channel
 
-//        var string = "<!DOCTYPE html>\n" +
-//                "    <html>\n" +
-//                "    \n" +
-//                "        <head>\n" +
-//                "            <meta charset=\"UTF-8\">\n" +
-//                "            <title></title>\n" +
-//                "        </head>\n" +
-//                "    \n" +
-//                "        <body>\n" +
-//                "            <br/>\n" +
-//                "            <!--<a href=\"[scheme]://[host]/[path]?[query]\">启动应用程序</a>-->\n" +
-//                "            <a href=\"buybuygo://buyer/order\">打开app</a><br/>\n" +
-//                "    \n" +
-//                "    </html>"
-//
-//        liveWebView.loadData(string, "text/html", null)
+            Timber.d("live url " + getFBLiveUrl(streamUrl) + " user Status " + it.liveUrl)
+            isPlay = true
+            loadWebView(getFBLiveUrl(it.liveUrl))
+            updateCommodity()
+        }
     }
 
     private fun loadWebView(fbLiveUrl: String) {
@@ -169,7 +167,7 @@ class LiveFragment : Fragment(), LiveView {
             sArray = fbStreamUrl.split("=")
             id = sArray[sArray.size - 1]
         }
-        return "https://www.facebook.com/video/embed?video_id=$id\""
+        return "https://www.facebook.com/video/embed?video_id=$id"
     }
 
     override fun stopLive() {

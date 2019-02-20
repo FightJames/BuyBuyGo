@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.PersistableBundle
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.view.buyer.fragment.live.LiveFragment
@@ -66,6 +67,19 @@ class BuyerActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
         super.onSaveInstanceState(outState, outPersistentState)
+    }
+
+    override fun onBackPressed() {
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage("Are you sure to leave?")
+            .setPositiveButton(R.string.ok, { dialog, which ->
+                this@BuyerActivity.finish()
+            })
+            .setNegativeButton(R.string.cancel, { dialog, which ->
+                dialog.cancel()
+            })
+        val dialog = builder.create()
+        dialog.show()
     }
 
     override fun onDestroy() {

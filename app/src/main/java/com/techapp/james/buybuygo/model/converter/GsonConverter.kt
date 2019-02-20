@@ -17,12 +17,20 @@ object GsonConverter {
         return wrapperString
     }
 
-    fun convertJsonToWrapperUserStatus(json: String): Wrapper<UserStatus> {
+    fun convertJsonToString(json: String): String {
 //        var type = object : TypeToken<Wrapper<String>>() {}.type
-        var wrapperUserStatus =
 //            gson.fromJson<Wrapper<String>>(json, type)
-            gson.fromJson<Wrapper<UserStatus>>(json)
-        return wrapperUserStatus
+        var string =
+            gson.fromJson<String>(json)
+        return string
+    }
+
+    fun convertJsonToWrapperUserStatus(json: String): UserStatus {
+//        var type = object : TypeToken<Wrapper<String>>() {}.type
+//            gson.fromJson<Wrapper<String>>(json, type)
+        var userStatus =
+            gson.fromJson<UserStatus>(json)
+        return userStatus
     }
 
 

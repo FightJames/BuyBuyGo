@@ -40,7 +40,7 @@ interface RayCommon {
         "X-Requested-With:XMLHttpRequest"
     )
     @GET("user-status")
-    fun getUserStatus(@Header("Authorization") token: String): Single<Response<Wrapper<ResponseBody>>>
+    fun getUserStatus(@Header("Authorization") token: String): Single<Response<ResponseBody>>
 
 
     @Headers(

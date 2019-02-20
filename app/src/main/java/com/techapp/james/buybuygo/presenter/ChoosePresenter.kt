@@ -11,7 +11,9 @@ import com.techapp.james.buybuygo.view.choose.ChooseView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
+import org.json.JSONObject
 import retrofit2.Response
+import timber.log.Timber
 
 class ChoosePresenter {
     val view: ChooseView
@@ -75,12 +77,22 @@ class ChoosePresenter {
             }.doOnSuccess {
                 view.isLoad(false)
                 it.body()?.let {
-                    if (it.result) {
-                        var wrapperUserStatus =
-                            GsonConverter.convertJsonToWrapperUserStatus(it.response.string())
+                    var string = it.string()
+                    var jsonObject = JSONObject(string)
+                    var judge = jsonObject.get("result")
+                    Timber.d("result judge " + judge)
+                    if (judge.toString() == "true") {
+                        var userStatus =
+                            GsonConverter.convertJsonToWrapperUserStatus(jsonObject.get("response").toString())
+                        Configure.userState = userStatus
+                        Timber.d("result " + "autoIntent")
+                        Timber.d("result " + userStatus.host)
+                        view.autoIntent(userStatus)
+
                     } else {
-                        var wrapperUserStatus =
-                            GsonConverter.convertJsonToWrapperUserStatus(it.response.string())
+
+                        var string = jsonObject.get("response").toString()
+                        Timber.d("result " + string)
                     }
                 }
             }.subscribe()
