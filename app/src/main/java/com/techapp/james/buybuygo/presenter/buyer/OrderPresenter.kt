@@ -1,6 +1,8 @@
 package com.techapp.james.buybuygo.presenter.buyer
 
 import com.techapp.james.buybuygo.model.converter.GsonConverter
+import com.techapp.james.buybuygo.model.data.buyer.OrderDetail
+import com.techapp.james.buybuygo.model.data.buyer.OrderDetailView
 import com.techapp.james.buybuygo.model.data.seller.PaymentServices
 import com.techapp.james.buybuygo.model.retrofitManager.RayBuyer
 import com.techapp.james.buybuygo.model.retrofitManager.RetrofitManager
@@ -14,6 +16,8 @@ import okhttp3.RequestBody
 import org.json.JSONArray
 import org.json.JSONObject
 import timber.log.Timber
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class OrderPresenter {
@@ -43,7 +47,7 @@ class OrderPresenter {
             .doOnSuccess {
                 view.isLoad(false)
                 it.body()?.let {
-                    view.updateOrderList(it.response)
+                    view.updateOrderList(mappingOrderDetailViewData(it.response))
                 }
             }
         compositeDisposable.add(singleOrderDetail.subscribe())
@@ -56,7 +60,10 @@ class OrderPresenter {
             .doOnSubscribe { }
             .doOnSuccess {
                 it.body()?.let {
-                    view.updateOrderList(it.response)
+
+                    var orderDetailViewList = mappingOrderDetailViewData(it.response)
+                    orderDetailViewList.sortWith(compareByDescending({ it.time }))
+                    view.updateOrderList(orderDetailViewList)
                 }
             }
         compositeDisposable.add(singleLatest.subscribe())
@@ -121,4 +128,49 @@ class OrderPresenter {
                 }
             }.subscribe()
     }
+
+    fun mappingOrderDetailViewData(list: ArrayList<OrderDetail>): ArrayList<OrderDetailView> {
+        var viewlist = ArrayList<OrderDetailView>()
+
+        var format = SimpleDateFormat("EEEEEEEE, dd-MMM-yyyy HH:mm:ss", Locale.UK)
+        var calex = Calendar.getInstance()
+        var calti = Calendar.getInstance()
+        var calde = Calendar.getInstance()
+        for (i in list.indices) {
+            calex.time = format.parse(list[i].expiryTime)
+            calex.add(Calendar.HOUR, 8)
+            calti.time = format.parse(list[i].time)
+            calti.add(Calendar.HOUR, 8)
+            calde.time = format.parse(list[i].orderDeleteTime)
+            calde.add(Calendar.HOUR, 8)
+            var orderDetailView = OrderDetailView(
+                list[i].id,
+                list[i].orderNumber,
+                list[i].userId,
+                list[i].channelId,
+                list[i].commodityName,
+                list[i].commodityDes,
+                list[i].commodityUnitPrice,
+                list[i].quantity,
+                list[i].totalAmount,
+                list[i].status,
+                list[i].effective,
+                calex.time,
+                calti.time,
+                list[i].image,
+                list[i].recipientName,
+                list[i].phoneCode,
+                list[i].phoneNumber,
+                list[i].postCode,
+                list[i].country,
+                list[i].city,
+                list[i].district,
+                list[i].addressOthers,
+                calde.time
+            )
+            viewlist.add(orderDetailView)
+        }
+        return viewlist;
+    }
+
 }

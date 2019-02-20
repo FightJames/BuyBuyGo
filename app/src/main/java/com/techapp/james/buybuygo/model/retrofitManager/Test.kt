@@ -16,8 +16,8 @@ import java.io.FileOutputStream
 import android.graphics.BitmapFactory
 import android.graphics.Bitmap
 import com.techapp.james.buybuygo.model.data.buyer.Recipient
-import com.techapp.james.buybuygo.model.data.User
-import com.techapp.james.buybuygo.model.data.Wrapper
+import com.techapp.james.buybuygo.model.data.common.User
+import com.techapp.james.buybuygo.model.data.common.Wrapper
 import com.techapp.james.buybuygo.model.sharePreference.SharePreference
 import io.reactivex.Single
 import io.reactivex.SingleEmitter

@@ -127,6 +127,8 @@ class CommodityFragment : Fragment(), CommodityView, ListAdapter.OperationListen
 
     //Dialog callback
     override fun onCreate(c: Commodity, fileData: FileData) {
+
+        Timber.d("crop result" + fileData.fileUri)
         presenter!!.insertItem(c, fileData)
 
     }
@@ -156,11 +158,17 @@ class CommodityFragment : Fragment(), CommodityView, ListAdapter.OperationListen
             }
             CropActivity.CROP_RESULT_CODE -> {
                 if (resultCode == RESULT_OK) {
+                    Timber.d("crop result")
                     dialogHelper.customerView.let {
+                        Timber.d("crop result" + it.commodityImageView)
+                        Timber.d("crop result " + fileData.fileUri)
+                        it.commodityImageView.setImageURI(null)//because imageView not reload same uri
                         it.commodityImageView.setImageURI(fileData.fileUri)
+                        it.commodityImageView.invalidate()
                     }
                 }
             }
         }
     }
+
 }

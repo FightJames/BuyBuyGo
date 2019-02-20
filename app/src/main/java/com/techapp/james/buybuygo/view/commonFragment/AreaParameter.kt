@@ -6,9 +6,15 @@ import com.techapp.james.buybuygo.model.data.buyer.CountryWrapper
 object AreaParameter {
     var countryWrapperList = ArrayList<CountryWrapper>()
     var areaWrapperList = ArrayList<AreaWrapper>()
-    fun findCountryWrapper(s: String): CountryWrapper {
+    fun findCountryWrapperByCountry(s: String): CountryWrapper {
         return countryWrapperList.find { it ->
             it.country == s
+        }!!
+    }
+
+    fun findCountryWrapperByCountryCode(s: String): CountryWrapper {
+        return countryWrapperList.find { it ->
+            it.countryCode == s
         }!!
     }
 

@@ -7,7 +7,7 @@
 
     <EditText
         android:id="@+id/othersField"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -18,12 +18,12 @@
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/othersLabel"
         app:layout_constraintTop_toBottomOf="@+id/districtField" />
 
     <EditText
         android:id="@+id/districtField"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -32,12 +32,12 @@
         android:hint="district"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/districtLabel"
         app:layout_constraintTop_toBottomOf="@+id/cityField" />
 
     <EditText
         android:id="@+id/cityField"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -46,12 +46,12 @@
         android:hint="City"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/cityLabel"
         app:layout_constraintTop_toBottomOf="@+id/postCodeField" />
 
     <EditText
         android:id="@+id/postCodeField"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -60,43 +60,139 @@
         android:hint="Post Code"
         android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/postLabel"
         app:layout_constraintTop_toBottomOf="@+id/phoneNumberField" />
 
     <TextView
-        android:id="@+id/countryCodeLabel"
+        android:id="@+id/countryCodeField"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
         android:ems="10"
-        android:text="Code"
+        android:text="countryCode"
         android:textColor="@android:color/background_dark"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="@+id/countryBtn"
-        app:layout_constraintEnd_toStartOf="@+id/guideline3"
-        app:layout_constraintHorizontal_bias="0.491"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/countryCodeLabel"
+        app:layout_constraintTop_toBottomOf="@+id/countryBtn" />
+
+    <TextView
+        android:id="@+id/countryCodeLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:minEms="5"
+        android:text="Country Code"
+        android:textColor="@android:color/background_dark"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/countryCodeField"
+        app:layout_constraintStart_toStartOf="@+id/countryBtn"
+        app:layout_constraintTop_toTopOf="@+id/countryCodeField" />
+
+    <TextView
+        android:id="@+id/nameLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+
+        android:minEms="5"
+        android:text="Name"
+        android:textColor="@android:color/background_dark"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/nameField"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nameField" />
+        app:layout_constraintTop_toTopOf="@+id/nameField" />
+
+    <TextView
+        android:id="@+id/phoneCodeField"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:minEms="5"
+        android:text="phonecode"
+        android:textColor="@android:color/background_dark"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/phoneCodeLabel"
+        app:layout_constraintTop_toBottomOf="@+id/countryCodeField" />
 
     <TextView
         android:id="@+id/phoneCodeLabel"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:ems="10"
-        android:text="Code"
+        android:minEms="5"
+        android:text="Phone Code"
         android:textColor="@android:color/background_dark"
         android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@+id/guideline3"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/phoneCodeField"
+        app:layout_constraintStart_toStartOf="@+id/countryCodeLabel"
+        app:layout_constraintTop_toTopOf="@+id/phoneCodeField" />
+
+    <TextView
+        android:id="@+id/postLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minEms="5"
+        android:text="Post Code"
+        android:textColor="@android:color/background_dark"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/postCodeField"
+        app:layout_constraintStart_toStartOf="@+id/phoneLable"
+        app:layout_constraintTop_toTopOf="@+id/postCodeField" />
+
+    <TextView
+        android:id="@+id/phoneLable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minEms="5"
+        android:text="Phone"
+        android:textColor="@android:color/background_dark"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/phoneNumberField"
+        app:layout_constraintStart_toStartOf="@+id/phoneCodeLabel"
         app:layout_constraintTop_toTopOf="@+id/phoneNumberField" />
+
+    <TextView
+        android:id="@+id/cityLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minEms="5"
+        android:text="City"
+        android:textColor="@android:color/background_dark"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/cityField"
+        app:layout_constraintStart_toStartOf="@+id/postLabel"
+        app:layout_constraintTop_toTopOf="@+id/cityField" />
+
+    <TextView
+        android:id="@+id/districtLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minEms="5"
+        android:text="District"
+        android:textColor="@android:color/background_dark"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/districtField"
+        app:layout_constraintStart_toStartOf="@+id/cityLabel"
+        app:layout_constraintTop_toTopOf="@+id/districtField" />
+
+    <TextView
+        android:id="@+id/othersLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:minEms="5"
+        android:text="Other"
+        android:textColor="@android:color/background_dark"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/othersField"
+        app:layout_constraintStart_toStartOf="@+id/districtLabel"
+        app:layout_constraintTop_toTopOf="@+id/othersField" />
 
     <EditText
         android:id="@+id/phoneNumberField"
@@ -109,20 +205,12 @@
         android:hint="Phone"
         android:inputType="phone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/guideline3"
-        app:layout_constraintTop_toBottomOf="@+id/countryBtn" />
-
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.3" />
+        app:layout_constraintStart_toEndOf="@+id/phoneLable"
+        app:layout_constraintTop_toBottomOf="@+id/phoneCodeField" />
 
     <EditText
         android:id="@+id/nameField"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -131,19 +219,19 @@
         android:hint="@string/name"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/nameLabel"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/countryBtn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:text="Country"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/countryCodeLabel"
+        app:layout_constraintStart_toStartOf="@+id/nameLabel"
         app:layout_constraintTop_toBottomOf="@+id/nameField" />
 
 </android.support.constraint.ConstraintLayout>

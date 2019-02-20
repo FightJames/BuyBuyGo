@@ -1,7 +1,7 @@
 package com.techapp.james.buybuygo.model.retrofitManager
 
 import com.techapp.james.buybuygo.model.data.buyer.Recipient
-import com.techapp.james.buybuygo.model.data.Wrapper
+import com.techapp.james.buybuygo.model.data.common.Wrapper
 import com.techapp.james.buybuygo.model.data.buyer.OrderDetail
 import com.techapp.james.buybuygo.model.data.seller.PaymentServices
 import io.reactivex.Single

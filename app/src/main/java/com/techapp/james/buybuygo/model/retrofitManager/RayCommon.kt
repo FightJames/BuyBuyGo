@@ -1,11 +1,10 @@
 package com.techapp.james.buybuygo.model.retrofitManager
 
 import com.techapp.james.buybuygo.model.data.buyer.CountryWrapper
-import com.techapp.james.buybuygo.model.data.User
-import com.techapp.james.buybuygo.model.data.Wrapper
+import com.techapp.james.buybuygo.model.data.common.User
+import com.techapp.james.buybuygo.model.data.common.Wrapper
 import com.techapp.james.buybuygo.model.data.buyer.AreaWrapper
 import com.techapp.james.buybuygo.model.data.buyer.Commodity
-import io.reactivex.Observable
 import io.reactivex.Single
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -34,6 +33,14 @@ interface RayCommon {
     )
     @GET("users")
     fun getUser(@Header("Authorization") token: String): Single<Response<Wrapper<User>>>
+
+
+    @Headers(
+        "Content-Type:application/json",
+        "X-Requested-With:XMLHttpRequest"
+    )
+    @GET("user-status")
+    fun getUserStatus(@Header("Authorization") token: String): Single<Response<Wrapper<ResponseBody>>>
 
 
     @Headers(

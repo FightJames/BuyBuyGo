@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.data.buyer.OrderDetail
+import com.techapp.james.buybuygo.model.data.buyer.OrderDetailView
 import com.techapp.james.buybuygo.model.data.seller.PaymentServices
 import com.techapp.james.buybuygo.presenter.buyer.OrderPresenter
 import com.techapp.james.buybuygo.view.buyer.activity.payment.PaymentActivity
@@ -22,7 +23,7 @@ class OrderFragment : Fragment(), OrderView {
     lateinit var dialogHelper: DialogHelper
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
+//        setHasOptionsMenu(true)
         progressDialog = ProgressDialog(
             this.activity
         )
@@ -30,7 +31,7 @@ class OrderFragment : Fragment(), OrderView {
         orderPresenter = OrderPresenter(this)
     }
 
-    override fun updateOrderList(list: ArrayList<OrderDetail>) {
+    override fun updateOrderList(list: ArrayList<OrderDetailView>) {
         orderAdapter.dataList = list
         orderAdapter.notifyDataSetChanged()
     }
@@ -83,7 +84,7 @@ class OrderFragment : Fragment(), OrderView {
 
     override fun onResume() {
         super.onResume()
-        orderAdapter = OrderAdapter(this.activity!!, ArrayList<OrderDetail>())
+        orderAdapter = OrderAdapter(this.activity!!, ArrayList<OrderDetailView>())
         orderAdapter.payClickListener = object : ItemViewHolder.PayBtnClickListener {
             override fun onClick(id: String) {
                 Timber.d("PayBtn click $id")
@@ -101,30 +102,30 @@ class OrderFragment : Fragment(), OrderView {
         orderPresenter.getAllOrder()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.order) {
-            // all order
-            0 -> {
-                orderPresenter.cancelWholeTask()
-                orderPresenter.getAllOrder()
-                return true
-            }
-            //new order
-            1 -> {
-                orderPresenter.cancelWholeTask()
-                orderPresenter.getLatestChannalOrder()
-                return true
-            }
-            else -> {
-                return false
-            }
-        }
-    }
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        when (item.order) {
+//            // all order
+//            0 -> {
+//                orderPresenter.cancelWholeTask()
+//                orderPresenter.getAllOrder()
+//                return true
+//            }
+//            //new order
+//            1 -> {
+//                orderPresenter.cancelWholeTask()
+//                orderPresenter.getLatestChannalOrder()
+//                return true
+//            }
+//            else -> {
+//                return false
+//            }
+//        }
+//    }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.buyer_order_record, menu)
-    }
+//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+//        super.onCreateOptionsMenu(menu, inflater)
+//        inflater.inflate(R.menu.buyer_order_record, menu)
+//    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

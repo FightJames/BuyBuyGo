@@ -1,8 +1,9 @@
 package com.techapp.james.buybuygo.presenter.common
 
+import com.techapp.james.buybuygo.model.converter.GsonConverter
 import com.techapp.james.buybuygo.model.data.buyer.Recipient
-import com.techapp.james.buybuygo.model.data.User
-import com.techapp.james.buybuygo.model.data.Wrapper
+import com.techapp.james.buybuygo.model.data.common.User
+import com.techapp.james.buybuygo.model.data.common.Wrapper
 import com.techapp.james.buybuygo.model.data.buyer.AreaWrapper
 import com.techapp.james.buybuygo.model.data.buyer.CountryWrapper
 import com.techapp.james.buybuygo.model.retrofitManager.RayBuyer
@@ -12,13 +13,11 @@ import com.techapp.james.buybuygo.model.sharePreference.SharePreference
 import com.techapp.james.buybuygo.presenter.Configure
 import com.techapp.james.buybuygo.view.commonFragment.AreaParameter
 import com.techapp.james.buybuygo.view.commonFragment.UserInfoView
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType
 import okhttp3.RequestBody
-import okhttp3.ResponseBody
 import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Response
@@ -49,8 +48,19 @@ class UserInfoPresenter {
                 view.isLoadWholeView(true)
             }
             .doOnSuccess {
-                complete?.invoke()
-                getBuyerUser()
+                if (it.errorBody() != null) {
+                    it.errorBody()?.let {
+                        view.isLoadWholeView(false)
+                        Timber.d("error user info")
+                        var wrapperString = GsonConverter.convertJsonToWrapperString(it.string())
+                        view.showRequestMessage(wrapperString.response)
+                    }
+                } else {
+                    it.body()?.let {
+                        complete?.invoke()
+                        getBuyerUser()
+                    }
+                }
             }
             .doOnError {
             }.subscribe()
@@ -126,7 +136,7 @@ class UserInfoPresenter {
             .subscribe()
     }
 
-    fun modifyRecipient(recipient: Recipient) {
+    fun modifyRecipient(recipient: Recipient,complete: (() -> Unit)?) {
         var jsonObject = convertRecipientToJSON(recipient)
         var requestBody =
             RequestBody.create(MediaType.parse("application/json"), jsonObject.toString())
@@ -137,10 +147,19 @@ class UserInfoPresenter {
                 view.isLoadWholeView(true)
             }
             .doOnSuccess {
-                it.body()?.let {
-                    view.showRequestMessage(it.response)
+                if (it.errorBody() != null) {
+                    it.errorBody()?.let {
+                        view.isLoadWholeView(false)
+                        Timber.d("error user info")
+                        var wrapperString = GsonConverter.convertJsonToWrapperString(it.string())
+                        view.showRequestMessage(wrapperString.response)
+                    }
+                } else {
+                    it.body()?.let {
+                        complete?.invoke()
+                        getBuyerUser()
+                    }
                 }
-                getBuyerUser()
             }
             .doOnError {
             }.subscribe()

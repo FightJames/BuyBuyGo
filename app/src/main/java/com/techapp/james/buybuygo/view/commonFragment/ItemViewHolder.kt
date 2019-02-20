@@ -4,7 +4,7 @@ import android.app.Activity
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.bumptech.glide.Glide
-import com.techapp.james.buybuygo.model.data.User
+import com.techapp.james.buybuygo.model.data.common.User
 import kotlinx.android.synthetic.main.common_user_info_no_collapse.view.*
 import timber.log.Timber
 

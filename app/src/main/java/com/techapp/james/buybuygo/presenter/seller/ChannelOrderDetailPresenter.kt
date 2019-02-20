@@ -1,6 +1,6 @@
 package com.techapp.james.buybuygo.presenter.seller
 
-import com.techapp.james.buybuygo.model.data.Wrapper
+import com.techapp.james.buybuygo.model.data.common.Wrapper
 import com.techapp.james.buybuygo.model.data.buyer.OrderDetail
 import com.techapp.james.buybuygo.model.data.seller.CommodityRecord
 import com.techapp.james.buybuygo.model.retrofitManager.RetrofitManager

@@ -50,7 +50,7 @@ class ChannelRecordPresenter {
                         )
                         channelRecordList.add(channelRecordViewData)
                     }
-                    channelRecordList.sortWith(compareBy({ it.startTime }))
+                    channelRecordList.sortWith(compareByDescending({ it.startTime }))
                     channelRecordList.forEach {
                         Timber.d(it.startTime.toString())
                     }

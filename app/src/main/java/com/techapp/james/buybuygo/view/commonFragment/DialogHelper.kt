@@ -13,7 +13,6 @@ import com.techapp.james.buybuygo.model.data.buyer.CountryWrapper
 import com.techapp.james.buybuygo.model.data.buyer.Phone
 import kotlinx.android.synthetic.main.common_user_dialog_recipient.view.*
 import kotlinx.android.synthetic.main.picker_dialog.view.*
-import android.text.method.TextKeyListener.clear
 import java.util.*
 
 
@@ -28,7 +27,8 @@ class DialogHelper(val activity: Activity) {
 
     fun createCountryPickerDialog(
         countryWrappers: ArrayList<CountryWrapper>,
-        valueListener: OnPickValue
+        valueListener: OnPickValue,
+        okListener: OnOkPress
     ): Dialog {
         return activity.let {
             var countryArray = arrayOfNulls<String>(countryWrappers.size)
@@ -56,7 +56,12 @@ class DialogHelper(val activity: Activity) {
             val builder = AlertDialog.Builder(it)
             builder.setView(pickerView)
                 // Add action buttons
-                .setPositiveButton(R.string.ok, null)
+                .setPositiveButton(R.string.ok, object : DialogInterface.OnClickListener {
+                    override fun onClick(dialog: DialogInterface?, which: Int) {
+                        valueListener.pickValue(countryArray[pickerView.picker.value]!!)
+                        okListener.onOkPress(pickerView)
+                    }
+                })
                 .setNegativeButton(R.string.cancel,
                     { dialog, id ->
                         dialog.cancel()
@@ -137,8 +142,8 @@ class DialogHelper(val activity: Activity) {
             var customerView =
                 LayoutInflater.from(activity).inflate(R.layout.common_user_dialog_recipient, null)
             customerView!!.let {
-                it.phoneCodeLabel.setText(content.code)
-                it.phoneCodeLabel.setText(content.number)
+                it.phoneCodeField.setText(content.code)
+                it.phoneCodeField.setText(content.number)
             }
             builder.setView(customerView)
                 // Add action buttons

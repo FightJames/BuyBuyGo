@@ -8,6 +8,7 @@ import android.view.View
 import com.bumptech.glide.Glide
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.data.buyer.OrderDetail
+import com.techapp.james.buybuygo.model.data.buyer.OrderDetailView
 import com.techapp.james.buybuygo.model.data.buyer.OrderEffective
 import com.techapp.james.buybuygo.model.data.buyer.OrderStatus
 import kotlinx.android.synthetic.main.buyer_order_detial_dialog.view.*
@@ -26,7 +27,7 @@ class ItemViewHolder : RecyclerView.ViewHolder {
     constructor(itemView: View) : super(itemView) {
     }
 
-    fun setData(orderDetail: OrderDetail) {
+    fun setData(orderDetail: OrderDetailView) {
         itemView.orderIdLabel.text =
             String.format(itemView.context.getString(R.string.orderId), orderDetail.orderNumber)
         itemView.payBtn.visibility = View.GONE
@@ -77,7 +78,7 @@ class ItemViewHolder : RecyclerView.ViewHolder {
         }
     }
 
-    fun createDetialDialog(orderDetail: OrderDetail): Dialog {
+    fun createDetialDialog(orderDetail: OrderDetailView): Dialog {
         var resource = itemView.context.resources
         var detialView = LayoutInflater.from(itemView.context)
             .inflate(R.layout.buyer_order_detial_dialog, null)
@@ -116,15 +117,9 @@ class ItemViewHolder : RecyclerView.ViewHolder {
         return builder.create()
     }
 
-    fun calculateTime(time: String): String {
-        var date: Date
-        var cal = Calendar.getInstance()
-        var format = SimpleDateFormat("EEEEEEEE, dd-MMM-yyyy HH:mm:ss", Locale.UK)
+    fun calculateTime(time: Date): String {
         val outputFormat = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
-        date = format.parse(time)
-        cal.time = date
-        cal.add(Calendar.HOUR, 8)
-        return outputFormat.format(cal.time)
+        return outputFormat.format(time)
 
     }
 }

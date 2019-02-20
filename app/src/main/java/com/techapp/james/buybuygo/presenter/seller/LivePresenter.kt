@@ -1,23 +1,16 @@
 package com.techapp.james.buybuygo.presenter.seller
 
 import com.techapp.james.buybuygo.model.converter.GsonConverter
-import com.techapp.james.buybuygo.model.data.seller.Channel
-import com.techapp.james.buybuygo.model.data.Wrapper
-import com.techapp.james.buybuygo.model.data.buyer.Commodity
 import com.techapp.james.buybuygo.model.retrofitManager.RetrofitManager
 import com.techapp.james.buybuygo.model.sharePreference.SharePreference
 import com.techapp.james.buybuygo.view.seller.fragment.live.LiveView
 import io.reactivex.Observable
-import io.reactivex.Observer
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import org.json.JSONObject
-import retrofit2.Call
-import retrofit2.Response
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 

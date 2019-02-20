@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.data.buyer.Recipient
-import com.techapp.james.buybuygo.model.data.User
+import com.techapp.james.buybuygo.model.data.common.User
 import kotlinx.android.synthetic.main.common_user_info_collapse.view.*
 import kotlinx.android.synthetic.main.common_user_info_collapse_recipient_item.view.*
 
@@ -61,6 +61,7 @@ class ExpandableAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 viewHolder.itemView.itemContainer.removeAllViews()
                 data.recipients.let {
                     viewHolder.enableCollapse(true)
+                    var resource = viewHolder.itemView.context.resources
                     it.forEach { r ->
                         //                        Timber.d("1")
                         var recipientView = layoutInflater.inflate(
@@ -70,12 +71,16 @@ class ExpandableAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         recipientView.deleteImageView.setOnClickListener {
                             itemClick?.deleteRecipient(r)
                         }
-                        recipientView.idLabel.text = r.id
-                        recipientView.nameField.text = r.name
+                        var address = r.address
+                        recipientView.addressField.text =
+                            resource.getString(R.string.address) + " : " +
+                                    address.city + address.district + address.others
+                        recipientView.nameField.text =
+                            resource.getString(R.string.name) + " : " + r.name
                         recipientView.nameField.setOnClickListener {
                             itemClick?.modifyRecipient(r)
                         }
-                        recipientView.idLabel.setOnClickListener {
+                        recipientView.addressField.setOnClickListener {
                             itemClick?.modifyRecipient(r)
                         }
                         viewHolder.itemView.itemContainer.addView(recipientView)

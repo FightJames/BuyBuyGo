@@ -7,14 +7,15 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.data.buyer.OrderDetail
+import com.techapp.james.buybuygo.model.data.buyer.OrderDetailView
 import kotlinx.android.synthetic.main.buyer_order_fragment_list_item.view.*
 
 class OrderAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
     var activity: Activity
-    var dataList: ArrayList<OrderDetail>
+    var dataList: ArrayList<OrderDetailView>
     var payClickListener: ItemViewHolder.PayBtnClickListener? = null
 
-    constructor(activity: Activity, dataList: ArrayList<OrderDetail>) {
+    constructor(activity: Activity, dataList: ArrayList<OrderDetailView>) {
         this.activity = activity
         this.dataList = dataList
 

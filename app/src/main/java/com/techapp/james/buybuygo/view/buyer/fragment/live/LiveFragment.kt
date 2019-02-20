@@ -49,6 +49,7 @@ class LiveFragment : Fragment(), LiveView {
 
     override fun isLoadWholeView(flag: Boolean) {
         if (flag) {
+            loadDialog.setCancelable(false)
             loadDialog.setMessage("Loading...")
             loadDialog.show()
         } else {
@@ -79,8 +80,29 @@ class LiveFragment : Fragment(), LiveView {
         ).show()
     }
 
-    override fun stopWeb() {
-        fbLiveWebView.loadUrl("about:blank")
+    override fun stopLive() {
+        this@LiveFragment.activity?.runOnUiThread {
+            fbLiveWebView.loadUrl("about:blank")
+            soldQuantity?.let {
+                it.visibility = View.INVISIBLE
+                it.text = "Sold"
+            }
+            remainingQuantity?.let {
+                it.visibility = View.INVISIBLE
+                it.text = "Remain"
+            }
+        }
+    }
+
+    override fun startLive() {
+        soldQuantity?.let {
+            it.visibility = View.VISIBLE
+            it.text = "Sold"
+        }
+        remainingQuantity?.let {
+            it.visibility = View.VISIBLE
+            it.text = "Remain"
+        }
     }
 
     var placeOrderDialog: Dialog? = null
@@ -160,7 +182,7 @@ class LiveFragment : Fragment(), LiveView {
 
     private fun loadWebView(fbLiveUrl: String) {
         var streamUrl = "<html><body>" +
-                "<iframe" + " src=\"$fbLiveUrl\"" +
+                "<iframe" + " src=\"${getFBLiveUrl(fbLiveUrl)}\"" +
                 " width=\"100%\"" +
                 " height=\"${root.height}\"" +
                 " style=\"border:0;overflow:hidden\"top:0px; left:0px; bottom:0px; right:0px; margin:0; padding=0; " +
@@ -174,8 +196,22 @@ class LiveFragment : Fragment(), LiveView {
         livePresenter.trackSoldItem()
     }
 
-    override fun updateCommodityState(commodity: Commodity) {
+    fun getFBLiveUrl(fbStreamUrl: String): String {
+        var pattern = "^[0-9]*\$".toRegex()
+        var sArray = fbStreamUrl.split("/")
+        if (sArray.size < 2) {
+            return "Not Thing"
+        }
+//        Timber.d("Video orderNumber ${sArray[sArray.size - 2]}")
+        var id = sArray[sArray.size - 2]
+        if (!pattern.matches(id)) {
+            sArray = fbStreamUrl.split("=")
+            id = sArray[sArray.size - 1]
+        }
+        return "https://www.facebook.com/video/embed?video_id=$id\""
+    }
 
+    override fun updateCommodityState(commodity: Commodity) {
         this.activity?.runOnUiThread {
             soldQuantity?.let {
                 it.text = String.format(
@@ -190,10 +226,6 @@ class LiveFragment : Fragment(), LiveView {
                 )
             }
         }
-    }
-
-    override fun onStop() {
-        super.onStop()
     }
 
     companion object {

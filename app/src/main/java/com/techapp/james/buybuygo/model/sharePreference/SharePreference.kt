@@ -1,7 +1,7 @@
 package com.techapp.james.buybuygo.model.sharePreference
 
 import android.content.Context
-import com.techapp.james.buybuygo.model.data.User
+import com.techapp.james.buybuygo.model.data.common.User
 import com.google.gson.Gson
 
 
