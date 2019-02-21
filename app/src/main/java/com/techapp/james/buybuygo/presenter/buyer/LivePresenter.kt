@@ -120,7 +120,7 @@ class LivePresenter {
     fun trackSoldItem() {
         timerDisposable?.dispose()
         var timer =
-            Observable.interval(5, TimeUnit.SECONDS)
+            Observable.interval(3, TimeUnit.SECONDS)
         timerDisposable = timer.doOnNext {
             var updateCall = rayCommon.getLiveTimerSoldItem(rayToken)
             var response = updateCall.execute()
@@ -131,7 +131,13 @@ class LivePresenter {
                 view.updateCommodityState(commodity)
             }
             if (response.code() == 400) {
-//                view.stopLive()
+                response.errorBody()?.let {
+                    var wrapperString = GsonConverter.convertJsonToWrapperString(it.string())
+                    if (wrapperString.response.equals("You have to be in a channel")) {
+                        view.stopLive()
+                    }
+                }
+
             }
 
         }.subscribe()

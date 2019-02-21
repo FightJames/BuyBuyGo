@@ -65,7 +65,7 @@ class LivePresenter {
     fun trackLiveTimerSoldItem() {
         timerDisposable?.dispose()
         var timer =
-            Observable.interval(5, TimeUnit.SECONDS)
+            Observable.interval(3, TimeUnit.SECONDS)
         timerDisposable = timer.doOnNext {
             var singleLiveSoldItem = rayCommon.getLiveTimerSoldItem(rayToken)
             var response = singleLiveSoldItem.execute()

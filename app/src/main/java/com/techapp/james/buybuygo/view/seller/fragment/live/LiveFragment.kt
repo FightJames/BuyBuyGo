@@ -23,6 +23,7 @@ class LiveFragment : Fragment(), LiveView {
     var isPlay = false;
     var searchView: SearchView? = null
     var descriptionDialog: AlertDialog? = null
+    var originUrl: String = ""
     private lateinit var livePresenter: LivePresenter
     lateinit var dialogHelper: DialogHelper
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,7 +70,7 @@ class LiveFragment : Fragment(), LiveView {
             swiperefresh.isRefreshing = false
         }
         if (isPlay) {
-            Timber.d("replay "+streamUrl)
+            Timber.d("replay " + streamUrl)
             liveWebView.loadData(streamUrl, "text/html", null)
             updateCommodity()
         }
@@ -144,7 +145,7 @@ class LiveFragment : Fragment(), LiveView {
                                 if (!description.equals("")) {
                                     isPlay = true
                                     livePresenter.startChannel(
-                                        url,
+                                        input,
                                         description
                                     )
                                 }
@@ -191,7 +192,8 @@ class LiveFragment : Fragment(), LiveView {
     override fun startLive(url: String, channel: Channel) {
         isPlay = true
         ChannelData.channel = channel
-        loadWebView(url)
+        var fbUrl = getFBLiveUrl(url)
+        loadWebView(fbUrl)
         searchView?.setQuery("", true)
         searchView?.clearFocus()
         searchView?.isIconified = true
