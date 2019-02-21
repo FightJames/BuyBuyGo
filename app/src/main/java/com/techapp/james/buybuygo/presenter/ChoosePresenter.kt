@@ -87,7 +87,38 @@ class ChoosePresenter {
                         Configure.userState = userStatus
                         Timber.d("result " + "autoIntent")
                         Timber.d("result " + userStatus.host)
-                        view.autoIntent(userStatus)
+                        view.continueOperation({
+                            view.autoIntent(userStatus)
+                        }, {
+                            if (userStatus.host == 0) {
+                                var rayBuyer = RetrofitManager.getInstance().getRayBuyer()
+                                var singleLeave = rayBuyer.leaveChannel(rayToken)
+                                singleLeave.subscribeOn(Schedulers.newThread())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .doOnSubscribe {
+                                        view.isLoad(true)
+                                    }.doOnSuccess {
+                                        view.isLoad(false)
+                                        it.body()?.let {
+                                            view.showRequestMessage(it.response)
+                                        }
+                                    }.subscribe()
+                            } else {
+                                Configure.userState = null
+                                var raySeller = RetrofitManager.getInstance().getRaySeller()
+                                var singleEndChannel = raySeller.endChannel(rayToken)
+                                singleEndChannel.subscribeOn(Schedulers.newThread())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .doOnSubscribe {
+                                        view.isLoad(true)
+                                    }.doOnSuccess {
+                                        view.isLoad(false)
+                                        it.body()?.let {
+                                            view.showRequestMessage(it.response)
+                                        }
+                                    }.subscribe()
+                            }
+                        })
 
                     } else {
 

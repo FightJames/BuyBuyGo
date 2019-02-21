@@ -32,7 +32,8 @@ class OrderPresenter {
             .doOnSuccess {
                 view.isLoad(false)
                 it.body()?.let {
-                    var list=mappingOrderDetailViewData(it.response)
+                    var list = mappingOrderDetailViewData(it.response)
+                    list.sortWith(compareByDescending({ it.time }))
                     view.updateOrderList(list)
                 }
             }
@@ -74,13 +75,22 @@ class OrderPresenter {
             calti.add(Calendar.HOUR, 8)
             calde.time = format.parse(list[i].orderDeleteTime)
             calde.add(Calendar.HOUR, 8)
+            var des=""
+            if(list[i].commodityDes!=null){
+                des=list[i].commodityDes!!
+            }
+
+            var image=""
+            if (list[i].commodityDes != null) {
+                image =list[i].image !!
+            }
             var orderDetailView = OrderDetailView(
                 list[i].id,
                 list[i].orderNumber,
                 list[i].userId,
                 list[i].channelId,
                 list[i].commodityName,
-                list[i].commodityDes,
+                des,
                 list[i].commodityUnitPrice,
                 list[i].quantity,
                 list[i].totalAmount,
@@ -88,7 +98,7 @@ class OrderPresenter {
                 list[i].effective,
                 calex.time,
                 calti.time,
-                list[i].image,
+                image,
                 list[i].recipientName,
                 list[i].phoneCode,
                 list[i].phoneNumber,

@@ -53,8 +53,10 @@ class ChannelOrderDetailActivity : AppCompatActivity(), View {
                 progressBar.visibility = android.view.View.INVISIBLE
                 detailList.visibility = android.view.View.VISIBLE
                 it.body()?.let {
+                    detailAdapter = DetailAdapter()
                     detailAdapter.commodityDataList = it.response
                     detailAdapter.currentMode = DetailAdapter.COMMODITY_MODE
+                    detailList.adapter=detailAdapter
                     detailAdapter.notifyDataSetChanged()
                 }
             }.subscribe()
@@ -89,8 +91,10 @@ class ChannelOrderDetailActivity : AppCompatActivity(), View {
                             detailList.visibility = android.view.View.VISIBLE
                             if (it.code() == 200) {
                                 it.body()?.let {
+                                    detailAdapter = DetailAdapter()
                                     detailAdapter.orderDataList = it.response
                                     detailAdapter.currentMode = DetailAdapter.ORDER_MODE
+                                    detailList.adapter=detailAdapter
                                     detailAdapter.notifyDataSetChanged()
                                 }
                             }

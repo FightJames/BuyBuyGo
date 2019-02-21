@@ -10,6 +10,7 @@ import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.data.buyer.OrderDetail
 import com.techapp.james.buybuygo.model.data.buyer.OrderDetailView
 import com.techapp.james.buybuygo.model.data.buyer.OrderEffective
+import com.techapp.james.buybuygo.model.data.buyer.OrderStatus
 import kotlinx.android.synthetic.main.buyer_order_detial_dialog.view.*
 import kotlinx.android.synthetic.main.buyer_order_fragment_list_item.view.*
 import timber.log.Timber
@@ -23,7 +24,12 @@ class OrderItemViewHolder : RecyclerView.ViewHolder {
     }
 
     fun setData(orderDetail: OrderDetailView) {
-
+        itemView.statusLabel.visibility = View.VISIBLE
+        if (orderDetail.status == OrderStatus.UNPAID.value) {
+            itemView.statusLabel.text = itemView.context.getString(R.string.unPaid)
+        }else{
+            itemView.statusLabel.text = itemView.context.getString(R.string.paid)
+        }
         itemView.orderIdLabel.text =
             String.format(itemView.context.getString(R.string.orderId), orderDetail.orderNumber)
         itemView.commodityNameLabel.text =

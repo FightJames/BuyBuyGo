@@ -24,13 +24,16 @@
 
     <TextView
         android:id="@+id/nameLabel"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:layout_marginBottom="8dp"
         android:inputType="text"
         android:text="@string/name"
+        android:textAlignment="viewStart"
         android:textColor="@android:color/background_dark"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/descriptionLabel"
@@ -45,7 +48,10 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:autofillHints="@string/description"
+        android:ellipsize="end"
         android:inputType="text"
+        android:maxLines="1"
+        android:singleLine="false"
         android:text="@string/description"
         android:textColor="@android:color/background_dark"
         android:textSize="20sp"
@@ -59,8 +65,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
+
         android:layout_marginBottom="8dp"
+        android:ellipsize="end"
         android:inputType="number"
+        android:maxLines="1"
+        android:singleLine="false"
         android:text="@string/remain"
         android:textColor="@android:color/background_dark"
         android:textSize="20sp"
@@ -71,11 +81,15 @@
 
     <TextView
         android:id="@+id/unitPriceLabel"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        android:ellipsize="end"
         android:inputType="number"
+        android:maxLines="1"
+        android:singleLine="false"
         android:text="@string/unit_price"
         android:textColor="@android:color/background_dark"
         android:textSize="20sp"
@@ -89,7 +103,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
+
         android:layout_marginEnd="24dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:singleLine="false"
         android:text="0"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/addBtn"
@@ -102,7 +120,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.35" />
+        app:layout_constraintGuide_percent="0.1" />
 
     <ImageButton
         android:id="@+id/removeBtn"
@@ -134,9 +152,12 @@
     <TextView
         android:id="@+id/soldLabel"
         android:layout_width="0dp"
+
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:text="@string/sold"
         android:textColor="@android:color/background_dark"
         android:textSize="20sp"

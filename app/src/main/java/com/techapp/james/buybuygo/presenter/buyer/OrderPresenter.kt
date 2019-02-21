@@ -39,6 +39,7 @@ class OrderPresenter {
 
     fun getAllOrder() {
         var singleOrderDetail = rayBuyer.getAllOrder(rayToken)
+
         singleOrderDetail = singleOrderDetail.subscribeOn(Schedulers.newThread())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe {
@@ -46,11 +47,21 @@ class OrderPresenter {
             }
             .doOnSuccess {
                 view.isLoad(false)
+
+                it.errorBody()?.let {
+                    view.showRequestMessage(it.string())
+                }
+
+                println("success " + it.isSuccessful)
                 it.body()?.let {
-                    view.updateOrderList(mappingOrderDetailViewData(it.response))
+                    var orderDetialViewList = mappingOrderDetailViewData(it.response)
+                    orderDetialViewList.sortWith(compareByDescending({ it.time }))
+                    println("success fuck" + orderDetialViewList.size + " size " + it.response.size)
+                    Timber.d("buyer " + orderDetialViewList.size + " size " + it.response.size)
+                    view.updateOrderList(orderDetialViewList)
                 }
             }
-        compositeDisposable.add(singleOrderDetail.subscribe())
+        singleOrderDetail.subscribe()
     }
 
     fun getLatestChannalOrder() {
@@ -142,13 +153,21 @@ class OrderPresenter {
             calti.add(Calendar.HOUR, 8)
             calde.time = format.parse(list[i].orderDeleteTime)
             calde.add(Calendar.HOUR, 8)
+            var des = ""
+            if (list[i].commodityDes != null) {
+                des = list[i].commodityDes!!
+            }
+            var image=""
+            if (list[i].commodityDes != null) {
+                image =list[i].image !!
+            }
             var orderDetailView = OrderDetailView(
                 list[i].id,
                 list[i].orderNumber,
                 list[i].userId,
                 list[i].channelId,
                 list[i].commodityName,
-                list[i].commodityDes,
+                des,
                 list[i].commodityUnitPrice,
                 list[i].quantity,
                 list[i].totalAmount,
@@ -156,7 +175,7 @@ class OrderPresenter {
                 list[i].effective,
                 calex.time,
                 calti.time,
-                list[i].image,
+                image,
                 list[i].recipientName,
                 list[i].phoneCode,
                 list[i].phoneNumber,

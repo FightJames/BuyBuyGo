@@ -7,7 +7,7 @@ class OrderDetail(
     @SerializedName("order") var orderNumber: String = "",
     @SerializedName("user_id") var userId: String = "",
     @SerializedName("name") var commodityName: String = "",
-    @SerializedName("description") var commodityDes: String = "",
+    @SerializedName("description") var commodityDes: String? = "",
     @SerializedName("unit_price") var commodityUnitPrice: String = "",
     @SerializedName("quantity") var quantity: String = "",
     @SerializedName("total_amount") var totalAmount: String = "",
@@ -16,7 +16,7 @@ class OrderDetail(
     @SerializedName("effective") var effective: String = "",
     @SerializedName("expiry_time") var expiryTime: String = "",
     @SerializedName("time") var time: String = "", //remember to add 8 hour
-    @SerializedName("images") var image: String = "",
+    @SerializedName("images") var image: String? = "",
     @SerializedName("recipient") var recipientName: String = "",
     @SerializedName("phone_code") var phoneCode: String = "",
     @SerializedName("phone_number") var phoneNumber: String = "",

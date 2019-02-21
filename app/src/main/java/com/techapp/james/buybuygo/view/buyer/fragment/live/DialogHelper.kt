@@ -83,9 +83,6 @@ class DialogHelper(val activity: Activity) {
                     resource.getString(R.string.commodityDescription),
                     commodity.description
                 )
-
-
-
             orderView.remainingLabel.text =
                 String.format(
                     resource.getString(R.string.remain),

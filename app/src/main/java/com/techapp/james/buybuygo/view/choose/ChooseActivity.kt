@@ -12,7 +12,9 @@ import kotlinx.android.synthetic.main.activity_choose.*
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.PersistableBundle
+import android.support.v7.app.AlertDialog
 import android.view.View
+import android.widget.Toast
 import com.techapp.james.buybuygo.model.data.common.UserStatus
 import com.techapp.james.buybuygo.view.buyer.activity.BuyerActivity
 import com.techapp.james.buybuygo.view.seller.activity.seller.SellerActivity
@@ -99,6 +101,28 @@ class ChooseActivity : BaseActivity(), ChooseView {
     // it will call by system scenario, not user scenario ( user back app)
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
+    }
+
+    override fun continueOperation(okPress: () -> Unit, cancelPress: () -> Unit) {
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage("Continue last operation ?")
+            .setPositiveButton(R.string.ok, { dialog, which ->
+                okPress.invoke()
+            })
+            .setNegativeButton(R.string.cancel, { dialog, which ->
+                cancelPress.invoke()
+                dialog.cancel()
+            })
+        val dialog = builder.create()
+        dialog.show()
+    }
+
+    override fun showRequestMessage(message: String) {
+        Toast.makeText(
+            this@ChooseActivity,
+            message,
+            Toast.LENGTH_LONG
+        ).show()
     }
 
     override fun onDestroy() {

@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.SearchView
 import android.view.*
+import android.webkit.WebChromeClient
 import android.webkit.WebViewClient
 import android.widget.EditText
 import android.widget.ImageView
@@ -20,7 +21,7 @@ import timber.log.Timber
 class LiveFragment : Fragment(), LiveView {
     var streamUrl: String = ""
     var isPlay = false;
-    lateinit var searchView: SearchView
+    var searchView: SearchView? = null
     var descriptionDialog: AlertDialog? = null
     private lateinit var livePresenter: LivePresenter
     lateinit var dialogHelper: DialogHelper
@@ -50,8 +51,8 @@ class LiveFragment : Fragment(), LiveView {
         liveWebView.isHorizontalScrollBarEnabled = false
         liveWebView.settings.setAppCacheEnabled(false);
         liveWebView.setWebViewClient(WebViewClient());
+        liveWebView.webChromeClient = WebChromeClient()
         endLiveBtn.setOnClickListener {
-            isPlay = false
             livePresenter.endChannel()
         }
         tokenBtn.setOnClickListener {
@@ -68,31 +69,34 @@ class LiveFragment : Fragment(), LiveView {
             swiperefresh.isRefreshing = false
         }
         if (isPlay) {
+            Timber.d("replay "+streamUrl)
             liveWebView.loadData(streamUrl, "text/html", null)
             updateCommodity()
         }
         Configure.userState?.let {
             var channel = Channel("", it.channelToken)
-            ChannelData.channel = channel
-
-            Timber.d("live url " + getFBLiveUrl(streamUrl) + " user Status " + it.liveUrl)
-            isPlay = true
-            loadWebView(getFBLiveUrl(it.liveUrl))
-            updateCommodity()
+            startLive(it.liveUrl, channel)
+//            ChannelData.channel = channel
+//
+//            Timber.d("live url " + getFBLiveUrl(streamUrl) + " user Status " + it.liveUrl)
+//            isPlay = true
+//            loadWebView(it.liveUrl)
         }
+        Configure.userState = null
     }
 
     private fun loadWebView(fbLiveUrl: String) {
         streamUrl = "<html><body>" +
                 "<iframe" + " src=\"$fbLiveUrl\"" +
                 " width=\"100%\"" +
-                " height=\"${root.height}\"" +
+                " height=\"100%\"" +
                 " style=\"border:0;overflow:hidden\"top:0px; left:0px; bottom:0px; right:0px; margin:0; padding=0; " +
                 " scrolling=\"no\"" +
                 " frameBorder=\"0\"" +
                 " allowTransparency=\"true\"" +
                 " allowFullScreen=\"true\">" +
                 "</iframe></ body></html >"
+        Timber.d("live url " + streamUrl)
         liveWebView.loadData(streamUrl, "text/html", null)
         updateCommodity()
     }
@@ -110,17 +114,17 @@ class LiveFragment : Fragment(), LiveView {
         inflater.inflate(R.menu.buyer_live, menu)
         var searchItem = menu!!.findItem(R.id.token)
         searchView = searchItem.actionView as SearchView
-        searchView.isSubmitButtonEnabled = true
-        searchView.queryHint = "Give Me a FB Live Url"
+        searchView?.isSubmitButtonEnabled = true
+        searchView?.queryHint = "Give Me a FB Live Url"
 
         //set SearchView icon
         val searchIconView =
-            searchView.findViewById(android.support.v7.appcompat.R.id.search_button) as ImageView
+            searchView?.findViewById(android.support.v7.appcompat.R.id.search_button) as ImageView
         searchIconView.setImageResource(R.drawable.ic_live_tv_white_24dp)
         //not show search field
-        searchView.setIconifiedByDefault(true)
-        searchView.maxWidth = Integer.MAX_VALUE
-        searchView.setOnQueryTextListener(
+        searchView?.setIconifiedByDefault(true)
+        searchView?.maxWidth = Integer.MAX_VALUE
+        searchView?.setOnQueryTextListener(
             object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(input: String?): Boolean {
                     input?.let {
@@ -171,6 +175,7 @@ class LiveFragment : Fragment(), LiveView {
     }
 
     override fun stopLive() {
+        isPlay = false
         liveWebView.loadUrl("about:blank")
         ChannelData.channel = null
         soldLabel?.let {
@@ -184,6 +189,7 @@ class LiveFragment : Fragment(), LiveView {
     }
 
     override fun startLive(url: String, channel: Channel) {
+        isPlay = true
         ChannelData.channel = channel
         loadWebView(url)
         searchView?.setQuery("", true)

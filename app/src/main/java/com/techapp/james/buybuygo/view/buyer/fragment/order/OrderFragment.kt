@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.data.buyer.OrderDetailView
 import com.techapp.james.buybuygo.model.data.seller.PaymentServices
@@ -32,10 +33,14 @@ class OrderFragment : Fragment(), OrderView {
         )
         dialogHelper = DialogHelper(this.activity!!)
         orderPresenter = OrderPresenter(this)
+        orderAdapter = OrderAdapter(this.activity!!, ArrayList<OrderDetailView>())
     }
 
     override fun updateOrderList(list: ArrayList<OrderDetailView>) {
+
+        Timber.d("update list start")
         orderAdapter?.let {
+            Timber.d("update list end")
             orderAdapter.dataList = list
             orderAdapter.notifyDataSetChanged()
         }
@@ -89,12 +94,12 @@ class OrderFragment : Fragment(), OrderView {
         this.activity?.startActivity(i)
     }
 
+    override fun onStart() {
+        super.onStart()
+    }
+
     override fun onResume() {
         super.onResume()
-        var list = ArrayList<OrderDetailView>()
-        list.add(OrderDetailView())
-
-        orderAdapter = OrderAdapter(this.activity!!, list)
         orderAdapter.payClickListener = object : ItemViewHolder.PayBtnClickListener {
             override fun onClick(id: String) {
                 Timber.d("PayBtn click $id")
@@ -116,6 +121,14 @@ class OrderFragment : Fragment(), OrderView {
             )
             orderPresenter.getAllOrder()
         })
+    }
+
+    override fun showRequestMessage(message: String) {
+        Toast.makeText(
+            this@OrderFragment.activity!!,
+            message,
+            Toast.LENGTH_LONG
+        ).show()
     }
 
     fun onNewIntent() {

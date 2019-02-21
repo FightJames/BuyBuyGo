@@ -7,4 +7,6 @@ interface ChooseView {
     fun intentToBuyer()
     fun intentToSeller()
     fun autoIntent(userStatus: UserStatus)
+    fun continueOperation(okPress: () -> Unit, cancelPress: () -> Unit)
+    fun showRequestMessage(message: String)
 }

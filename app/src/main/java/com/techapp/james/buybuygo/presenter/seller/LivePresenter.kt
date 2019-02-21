@@ -86,7 +86,6 @@ class LivePresenter {
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSuccess {
                 view.stopLive()
-                view
                 it.body()?.let {
                     view.showRequestMessage(it.response)
                 }
