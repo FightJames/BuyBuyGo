@@ -54,7 +54,6 @@ class LivePresenter {
                     it.body()?.let {
                         view.startLive(liveUrl, it.response)
                     }
-
                 }
             }.doOnError {
                 Timber.d("message" + it.message)
@@ -76,7 +75,6 @@ class LivePresenter {
             }
         }.subscribe()
     }
-
 
     fun endChannel() {
         timerDisposable?.dispose()

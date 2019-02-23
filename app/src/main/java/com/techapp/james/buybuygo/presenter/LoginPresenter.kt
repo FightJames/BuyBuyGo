@@ -37,6 +37,7 @@ class LoginPresenter {
         fbToken: String,
         expirationDate: String
     ) {
+        Timber.d("FB token "+fbToken)
         var root = JSONObject()
         root.put("expirationDate", expirationDate)
         var requestBody = RequestBody.create(MediaType.parse("application/json"), root.toString())

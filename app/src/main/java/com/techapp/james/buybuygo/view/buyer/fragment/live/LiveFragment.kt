@@ -86,7 +86,7 @@ class LiveFragment : Fragment(), LiveView {
 
     override fun stopLive() {
         this@LiveFragment.activity?.runOnUiThread {
-            isPlay=false
+            isPlay = false
             fbLiveWebView.loadUrl("about:blank")
             soldQuantity?.let {
                 it.visibility = View.INVISIBLE
@@ -100,7 +100,7 @@ class LiveFragment : Fragment(), LiveView {
     }
 
     override fun startLive() {
-        isPlay=true
+        isPlay = true
         soldQuantity?.let {
             it.visibility = View.VISIBLE
             it.text = "Sold"
@@ -156,6 +156,8 @@ class LiveFragment : Fragment(), LiveView {
         }
         if (isPlay) {
             loadWebView(streamUrl)
+            Timber.d("live url " + streamUrl)
+            startLive()
         }
 
         Configure.userState?.let {
@@ -163,6 +165,7 @@ class LiveFragment : Fragment(), LiveView {
             ChannelData.channel = channel
             Timber.d("live url " + getFBLiveUrl(streamUrl) + " user Status " + it.liveUrl)
             isPlay = true
+            startLive()
             loadWebView(it.liveUrl)
         }
         Configure.userState = null

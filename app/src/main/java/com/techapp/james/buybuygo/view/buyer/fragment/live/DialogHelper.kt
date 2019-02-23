@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.widget.NumberPicker
+import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.techapp.james.buybuygo.R
 import com.techapp.james.buybuygo.model.data.buyer.Commodity
@@ -116,9 +117,17 @@ class DialogHelper(val activity: Activity) {
                     Configure.user.recipients,
                     object : OnPickValue {
                         override fun pickValue(index: Int) {
-                            var recipient = Configure.user.recipients[index]
-                            orderItem.recipientId = recipient.id
-                            orderView.pickBtn.setText(recipient.name)
+                            if (index != NO_RECIPIENT) {
+                                var recipient = Configure.user.recipients[index]
+                                orderItem.recipientId = recipient.id
+                                orderView.pickBtn.setText(recipient.name)
+                            } else {
+                                //here must create user recipient dialog
+                                Toast.makeText(
+                                    orderView.context,
+                                    "You must create a recipient in user info.", Toast.LENGTH_LONG
+                                ).show()
+                            }
                         }
                     }
                 ).show()

@@ -160,11 +160,8 @@ class CommodityFragment : Fragment(), CommodityView, ListAdapter.OperationListen
                 if (resultCode == RESULT_OK) {
                     Timber.d("crop result")
                     dialogHelper.customerView.let {
-                        Timber.d("crop result" + it.commodityImageView)
-                        Timber.d("crop result " + fileData.fileUri)
                         it.commodityImageView.setImageURI(null)//because imageView not reload same uri
                         it.commodityImageView.setImageURI(fileData.fileUri)
-                        it.commodityImageView.invalidate()
                     }
                 }
             }

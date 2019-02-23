@@ -20,7 +20,7 @@ import timber.log.Timber
 
 class LiveFragment : Fragment(), LiveView {
     var streamUrl: String = ""
-    var isPlay = false;
+    var isPlay = false
     var searchView: SearchView? = null
     var descriptionDialog: AlertDialog? = null
     var originUrl: String = ""
