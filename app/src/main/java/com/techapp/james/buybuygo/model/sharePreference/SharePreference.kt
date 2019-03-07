@@ -52,6 +52,11 @@ class SharePreference {
             .commit()
     }
 
+    fun removeAll() {
+        var sharePreference = context.getSharedPreferences(DATA, 0)
+        sharePreference.edit().clear().commit()
+    }
+
     fun saveFBToken(fbToken: String) {
         var sharePreference = context.getSharedPreferences(DATA, 0)
         sharePreference.edit()

@@ -45,19 +45,27 @@ class LoginActivity : BaseActivity(), LoginView {
     lateinit var callbackManager: CallbackManager
     var loginPresenter: LoginPresenter? = null
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.NoActionBarTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         Timber.d("hash " + getHash())
         init()
     }
 
+    override fun onStart() {
+        LoginManager.getInstance().logOut()
+        super.onStart()
+    }
+
     fun init() {
+        LoginManager.getInstance().logOut()
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
         loginPresenter = LoginPresenter(this)
         Glide.with(this)
             .load(R.drawable.buy_for_me)
             .into(backgroundImageView)
         callbackManager = CallbackManager.Factory.create()
+
         loginButton.setReadPermissions(arrayListOf("email"))
         loginButton.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
             override fun onSuccess(result: LoginResult) {
@@ -105,7 +113,6 @@ class LoginActivity : BaseActivity(), LoginView {
     override fun onDestroy() {
         super.onDestroy()
         loginPresenter = null
-        LoginManager.getInstance().logOut()
         // clear sharPreference
     }
 }

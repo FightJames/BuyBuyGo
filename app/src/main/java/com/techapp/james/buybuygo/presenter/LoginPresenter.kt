@@ -1,14 +1,12 @@
 package com.techapp.james.buybuygo.presenter
 
+import com.techapp.james.buybuygo.model.converter.GsonConverter
 import com.techapp.james.buybuygo.model.retrofitManager.RetrofitManager
 import com.techapp.james.buybuygo.model.sharePreference.SharePreference
-import com.techapp.james.buybuygo.view.View
 import com.techapp.james.buybuygo.view.login.LoginView
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType
-import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import org.json.JSONObject
 import retrofit2.Response
@@ -16,17 +14,26 @@ import timber.log.Timber
 
 class LoginPresenter {
     val view: LoginView
+    val sharePreference = SharePreference.getInstance()
 
     constructor(view: LoginView) {
         this.view = view
+        var exp = sharePreference.getExpDate()
+        if (!exp.equals("")) {
+            var expMillTime = exp.toLong()
+            if (System.currentTimeMillis() < expMillTime) {
+                Timber.d("toke ${sharePreference.getRayToken()}")
+                view.intentToChoose()
+                view.finish()
+            }
+        }
     }
 
     fun onLoginSuccess(fbToken: String, expirationDate: String) {
-        SharePreference.getInstance().saveFBToken(fbToken)
+        loginBackEnd(fbToken)
+//        Timber.d("FB Token $fbToken")
+//        sharePreference.saveFBToken(fbToken)
         //bug in here when network is slow, It lead other page cant fetch backend item data.
-        SharePreference.getInstance().saveExpDate(expirationDate)
-        SharePreference.getInstance().saveRayToken("Bearer " + fbToken)
-        loginBackEnd(fbToken, expirationDate)
 //        var t = Test()
 //        t.testRecordUser(activity.applicationContext, t::testUpCommodity)
 //        t.testUpCommodity(activity.applicationContext)
@@ -34,15 +41,14 @@ class LoginPresenter {
     }
 
     private fun loginBackEnd(
-        fbToken: String,
-        expirationDate: String
+        fbToken: String
     ) {
-        Timber.d("FB token "+fbToken)
-        var root = JSONObject()
-        root.put("expirationDate", expirationDate)
-        var requestBody = RequestBody.create(MediaType.parse("application/json"), root.toString())
+        Timber.d("FB token " + fbToken)
+//        var root = JSONObject()
+//        root.put("expirationDate", expirationDate)
+//        var requestBody = RequestBody.create(MediaType.parse("application/json"), root.toString())
         var rayCommon = RetrofitManager.getInstance().getRayCommon()
-        var singleRecordUser = rayCommon.recordUser("Bearer " + fbToken, requestBody)
+        var singleRecordUser = rayCommon.recordUser("Bearer " + fbToken)
 
         singleRecordUser.subscribeOn(Schedulers.newThread())
             .observeOn(AndroidSchedulers.mainThread())
@@ -51,10 +57,25 @@ class LoginPresenter {
             }
             .doOnSuccess {
                 view.isLoad(false)
-                view.intentToChoose()
+//                Timber.d("response " + it.body()?.string())
+                if (it.code() == 200) {
+                    it.body()?.let {
+//                        Timber.d("response " + it.string())
+                        var accessToken = GsonConverter.convertJsonToAccessToken(it.string())
+//                        Timber.d("hello success")
+                        var expTime = accessToken.exp.toLong() * 100
+                        var exp = System.currentTimeMillis() + expTime
+                        sharePreference.saveExpDate(exp.toString())
+                        sharePreference.saveRayToken("Bearer " + accessToken.token)
+                        view.intentToChoose()
+                        view.finish()
+                    }
+                }
+
             }
             .onErrorReturn({ error ->
                 view.showMessage(error.message.toString())
+                Timber.d("error " + error.message.toString())
                 var jsonObject = JSONObject()
                 jsonObject.put("expiresIn", "error!")
                 var body = ResponseBody.create(

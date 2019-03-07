@@ -4,4 +4,5 @@ interface LoginView {
     fun isLoad(flag: Boolean)
     fun intentToChoose()
     fun showMessage(message:String)
+    fun finish()
 }

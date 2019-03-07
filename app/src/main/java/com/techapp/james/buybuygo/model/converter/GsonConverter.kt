@@ -5,7 +5,9 @@ import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.techapp.james.buybuygo.model.data.common.Wrapper
 import com.techapp.james.buybuygo.model.data.buyer.OrderDetail
+import com.techapp.james.buybuygo.model.data.common.AccessToken
 import com.techapp.james.buybuygo.model.data.common.UserStatus
+import timber.log.Timber
 
 object GsonConverter {
     var gson = GsonBuilder().create()
@@ -33,6 +35,13 @@ object GsonConverter {
         return userStatus
     }
 
+    fun convertJsonToAccessToken(json: String): AccessToken {
+        var wrapperAccessToken = gson.fromJson<Wrapper<AccessToken>>(json)
+//        if(wrapperAccessToken==null){
+//            Timber.d("wrapper is null")
+//        }
+        return wrapperAccessToken.response
+    }
 
     inline fun <reified T> Gson.fromJson(json: String) =
         this.fromJson<T>(json, object : TypeToken<T>() {}.type)

@@ -30,26 +30,27 @@ import retrofit2.Response
 class Test {
     var retrofit = RetrofitManager.getInstance()
     var sharedPreference = SharePreference.getInstance()
-    fun testRecordUser(context: Context, testT: ((context: Context) -> Unit)) {
-        var root = JSONObject()
-        root.put("expirationDate", sharedPreference.getExpDate())
-        var requestBody = RequestBody.create(MediaType.parse("application/json"), root.toString())
-        var rayCommon = RetrofitManager.getInstance().getRayCommon()
-        var result = rayCommon.recordUser(sharedPreference.getRayToken(), requestBody)
-        result.subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnSuccess {
-                Timber.d(it.message())
-                Timber.d(it.isSuccessful.toString())
-                Timber.d(it.body().toString())
-//            Timber.d(r.errorBody()!!.string())
-                Timber.d(it.headers().toString())
-                testT.invoke(context)
-            }
-            .doOnError {
-                Timber.d(it.message)
-            }.subscribe()
-    }
+//    fun testRecordUser(context: Context, testT: ((context: Context) -> Unit)) {
+//        var root = JSONObject()
+//        root.put("expirationDate", sharedPreference.getExpDate())
+//        var requestBody = RequestBody.create(MediaType.parse("application/json"), root.toString())
+//        var rayCommon = RetrofitManager.getInstance().getRayCommon()
+//        var result = rayCommon.recordUser(sharedPreference.getRayToken(), requestBody)
+//        result.subscribeOn(Schedulers.newThread())
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .doOnSuccess {
+//                Timber.d(it.message())
+//                Timber.d(it.isSuccessful.toString())
+//                Timber.d(it.body().toString())
+////            Timber.d(r.errorBody()!!.string())
+//                Timber.d(it.headers().toString())
+//                testT.invoke(context)
+//            }
+//            .doOnError {
+//                Timber.d(it.message)
+//            }.subscribe()
+//    }
+
 
     fun testUpCommodity(context: Context) {
 

@@ -14,8 +14,8 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:supportsRtl="true">
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
@@ -39,7 +39,7 @@
         <activity
             android:name=".view.login.LoginActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/NoActionBarTheme">
+            android:theme="@style/splashPicture">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -63,8 +63,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="http"
-                    android:host="buybuygo.tech.tw" />
+                    android:host="buybuygo.tech.tw"
+                    android:scheme="http" />
             </intent-filter>
         </activity>
 

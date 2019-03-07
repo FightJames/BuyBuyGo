@@ -19,7 +19,7 @@ interface RayCommon {
         "X-Requested-With:XMLHttpRequest"
     )
     @POST("token")
-    fun recordUser(@Header("Authorization") token: String, @Body requestBody: RequestBody): Single<Response<ResponseBody>>
+    fun recordUser(@Header("Authorization") token: String): Single<Response<ResponseBody>>
 
     @GET("taiwan-post-code")
     fun getAreaWrapper(@Header("Authorization") token: String): Single<Response<Wrapper<ArrayList<AreaWrapper>>>>
